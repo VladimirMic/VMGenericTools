@@ -9,17 +9,10 @@ import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.EigenDecomposition;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.SingularValueDecomposition;
-import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
@@ -58,17 +51,6 @@ public class Tools {
             }
         }
         return ret;
-    }
-
-    public static ExecutorService initExecutor() {
-        return Executors.newCachedThreadPool();
-    }
-
-    public static ExecutorService initExecutor(Integer paralelism) {
-        if (paralelism == null || paralelism <= 0) {
-            return initExecutor();
-        }
-        return Executors.newFixedThreadPool(paralelism);
     }
 
     /**
@@ -121,25 +103,6 @@ public class Tools {
         return evaluator.computeCorrelationMatrix(data).getData();
     }
 
-    public static double[][] covarianceMatrixOfColumns(double[][] data, boolean biasCorrected) {
-        Covariance evaluator = new Covariance(data, biasCorrected);
-        return evaluator.getCovarianceMatrix().getData();
-    }
-
-    public static double[][] pca(double[][] data) {
-        RealMatrix matrix = new Array2DRowRealMatrix(data);
-        SingularValueDecomposition svd = new SingularValueDecomposition(matrix);
-        return svd.getS().getData();
-    }
-
-    public static double[][] singularValueDecomposition(double[][] data, boolean biasCorrected) {
-        RealMatrix matrix = new Array2DRowRealMatrix(data);
-        Covariance covariance = new Covariance(matrix, biasCorrected);
-        RealMatrix covarianceMatrix = covariance.getCovarianceMatrix();
-        EigenDecomposition ed = new EigenDecomposition(covarianceMatrix);
-        return ed.getD().getData();
-    }
-
     public static double getMean(double[] values) {
         return new Mean().evaluate(values);
     }
@@ -154,6 +117,25 @@ public class Tools {
         double ret = mean * mean / 2d / variance;
         if (print) {
             System.out.print(mean + ";" + variance + ";" + ret);
+        }
+        return ret;
+    }
+
+    public static float[] subtractVectors(float[] origVector, float[] toBeSubtracted) {
+        float[] ret = new float[Math.min(origVector.length, toBeSubtracted.length)];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = origVector[i] - toBeSubtracted[i];
+        }
+        return ret;
+    }
+
+    public static double[][] subtractColumnsMeansFromMatrix(float[][] matrix, float[] meansOverColumns) {
+        double[][] ret = new double[matrix.length][meansOverColumns.length];
+        for (int i = 0; i < matrix.length; i++) {
+            float[] row = matrix[i];
+            for (int j = 0; j < row.length; j++) {
+                ret[i][j] = row[j] - meansOverColumns[j];
+            }
         }
         return ret;
     }

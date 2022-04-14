@@ -267,6 +267,32 @@ public class Tools {
         return ret;
     }
 
+    public static int getIndexOfSmallest(double[] array, SortedSet<Integer> indexesToCheck) {
+        int ret = -1;
+        double val = Double.MAX_VALUE;
+        for (int i : indexesToCheck) {
+            if (array[i] < val) {
+                ret = i;
+                val = array[i];
+            };
+        }
+        return ret;
+    }
+
+    public static int[] sortArray(double[] array) {
+        int[] ret = new int[array.length];
+        SortedSet<Integer> indexesToCheck = new TreeSet<>();
+        for (int i = 0; i < array.length; i++) {
+            indexesToCheck.add(i);
+        }
+        for (int i = 0; i < ret.length; i++) {
+            int smallestIndex = getIndexOfSmallest(array, indexesToCheck);
+            ret[i] = smallestIndex;
+            indexesToCheck.remove(smallestIndex);
+        }
+        return ret;
+    }
+
     public static double[] floatsToDoubles(List<Float> list) {
         double[] ret = new double[list.size()];
         for (int i = 0; i < list.size(); i++) {
@@ -281,6 +307,54 @@ public class Tools {
             return "";
         }
         String ret = Float.toString(array[0]);
+        if (array.length > 1) {
+            for (int i = 1; i < array.length; i++) {
+                ret += "," + array[i];
+            }
+        }
+        return ret;
+    }
+
+    public static String matrixToCsvString(float[][] array) {
+        if (array == null || array.length == 0) {
+            return "";
+        }
+        String ret = Tools.floatsToCsvString(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            ret += "\n" + Tools.floatsToCsvString(array[i]);
+        }
+        return ret;
+    }
+
+    public static String doublesToCsvString(double[] array) {
+        if (array == null || array.length == 0) {
+            return "";
+        }
+        String ret = Double.toString(array[0]);
+        if (array.length > 1) {
+            for (int i = 1; i < array.length; i++) {
+                ret += "," + array[i];
+            }
+        }
+        return ret;
+    }
+
+    public static float[] doublesToFloats(double[] array) {
+        if (array == null || array.length == 0) {
+            return null;
+        }
+        float[] ret = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            ret[i] = (float) array[i];
+        }
+        return ret;
+    }
+
+    public static String intsToCsvString(int[] array) {
+        if (array == null || array.length == 0) {
+            return "";
+        }
+        String ret = Integer.toString(array[0]);
         if (array.length > 1) {
             for (int i = 1; i < array.length; i++) {
                 ret += "," + array[i];
@@ -384,6 +458,29 @@ public class Tools {
             ret.add(list.get(idx));
         }
         return ret;
+
+    }
+
+    public static float[][] parseCsvMatrix(String csvMatrix) {
+        String[] rows = csvMatrix.split("\n");
+        float[] row = Tools.parseCsvFloats(rows[0]);
+        float[][] ret = new float[rows.length][row.length];
+        ret[0] = row;
+        if (rows.length > 1) {
+            for (int i = 1; i < rows.length; i++) {
+                ret[i] = Tools.parseCsvFloats(rows[i]);
+            }
+        }
+        return ret;
+    }
+
+    public static float[] parseCsvFloats(String csvFloats) {
+        String[] rows = csvFloats.split(",");
+        float[] ret = new float[rows.length];
+        for (int i = 0; i < rows.length; i++) {
+            ret[i] = Float.parseFloat(rows[i]);
+        }
+        return ret;
     }
 
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
@@ -444,6 +541,10 @@ public class Tools {
         return string;
     }
 
+    public static List<Object> getObjectsFromIterator(Iterator it) {
+        return Tools.getObjectsFromIterator(0, Integer.MAX_VALUE, it);
+    }
+
     public static List<Object> getObjectsFromIterator(int fromPosition, int toPosition, Iterator it) {
         List<Object> ret = new ArrayList<>();
         int counter = 0;
@@ -455,6 +556,16 @@ public class Tools {
         }
         for (counter = fromPosition; counter < toPosition && it.hasNext(); counter++) {
             ret.add(it.next());
+        }
+        return ret;
+    }
+
+    public static float[][] shrinkMatrix(double[][] matrix, int rowCount, int columnCount) {
+        float[][] ret = new float[rowCount][columnCount];
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
+                ret[i][j] = (float) matrix[i][j];
+            }
         }
         return ret;
     }
