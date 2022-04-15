@@ -6,11 +6,14 @@
 package vm.math;
 
 import java.awt.geom.Point2D;
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
@@ -136,6 +139,19 @@ public class Tools {
             for (int j = 0; j < row.length; j++) {
                 ret[i][j] = row[j] - meansOverColumns[j];
             }
+        }
+        return ret;
+    }
+
+    public static SortedSet<Map.Entry<Integer, Float>> evaluateSumsPerRow(float[][] matrix, boolean sortedList) {
+        SortedSet<Map.Entry<Integer, Float>> ret = new TreeSet<>(new vm.datatools.Tools.MapByValueComparator());
+        for (Integer i = 0; i < matrix.length; i++) {
+            float[] row = matrix[i];
+            Float sum = 0.0F;
+            for (int j = 0; j < row.length; j++) {
+                sum += row[j];
+            }
+            ret.add(new AbstractMap.SimpleEntry<>(i, sum));
         }
         return ret;
     }

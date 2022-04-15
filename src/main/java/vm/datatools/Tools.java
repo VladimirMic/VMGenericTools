@@ -11,7 +11,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -37,14 +36,6 @@ public class Tools {
     private static final Logger LOG = Logger.getLogger(vm.math.Tools.class.getName());
     public static final Integer PARALELISATION = 24;
 
-    public static List<Integer> transformStringsToIntegers(List<String> set) {
-        List<Integer> ret = new ArrayList<>();
-        for (int i = 0; i < set.size(); i++) {
-            ret.add(Integer.parseInt(set.get(i)));
-        }
-        return ret;
-    }
-
     public static List<String>[] parseCsvKeysValues(String path) {
         return parseCsv(path, 2, true);
     }
@@ -53,59 +44,12 @@ public class Tools {
         return parseCsv(path, 3, true);
     }
 
-    public static long[] parseArrayOfLongs(String string, String delimiter) {
-        String[] split = string.split(delimiter);
-        long[] ret = new long[split.length];
-        for (int i = 0; i < split.length; i++) {
-            ret[i] = Long.parseLong(split[i]);
-        }
-        return ret;
-    }
-
     public static List<String>[] parseCsv(String path, int columnsNumber, boolean filterOnlyNumberOfColumns) {
         return parseCsv(path, columnsNumber, ";", filterOnlyNumberOfColumns);
     }
 
     public static List<String>[] parseCsv(String path, int columnsNumber, String delimiter, boolean filterOnlyNumberOfColumns) {
         return parseCsv(path, columnsNumber, -1, delimiter, filterOnlyNumberOfColumns);
-    }
-
-    public static float[][] parseSquareMatrixOfFloats(String path, int rowNumber, String delimiter) {
-        BufferedReader br = null;
-        float[][] ret = null;
-        if (rowNumber < 0) {
-            rowNumber = Integer.MAX_VALUE;
-        }
-        try {
-            br = new BufferedReader(new FileReader(path));
-            try {
-                for (int j = 0; j < rowNumber; j++) {
-                    String line = br.readLine();
-                    String[] split = line.split(delimiter);
-                    if (ret == null) {
-                        ret = new float[split.length][split.length];
-                    }
-                    for (int i = 0; i < split.length; i++) {
-                        ret[i][j] = Float.parseFloat(split[i]);
-                        ret[j][i] = ret[i][j];
-                    }
-                    if (j % 500 == 0) {
-                        LOG.log(Level.INFO, "Processed: {0} lines", j);
-                    }
-                }
-            } catch (NullPointerException e) {
-                // ignore
-            }
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                br.close();
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-            }
-        }
-        return ret;
     }
 
     public static List<String>[] parseCsv(String path, int columnNumber, int rowNumber, String delimiter, boolean filterOnlyNumberOfColumns) {
@@ -258,15 +202,6 @@ public class Tools {
         printCollection(collection, ";");
     }
 
-    public static int[] stringToIntArray(String string) {
-        String[] split = string.split(",");
-        int[] ret = new int[split.length];
-        for (int i = 0; i < split.length; i++) {
-            ret[i] = Integer.parseInt(split[i]);
-        }
-        return ret;
-    }
-
     public static int getIndexOfSmallest(double[] array, SortedSet<Integer> indexesToCheck) {
         int ret = -1;
         double val = Double.MAX_VALUE;
@@ -289,89 +224,6 @@ public class Tools {
             int smallestIndex = getIndexOfSmallest(array, indexesToCheck);
             ret[i] = smallestIndex;
             indexesToCheck.remove(smallestIndex);
-        }
-        return ret;
-    }
-
-    public static double[] floatsToDoubles(List<Float> list) {
-        double[] ret = new double[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            Float f = list.get(i);
-            ret[i] = f;
-        }
-        return ret;
-    }
-
-    public static String floatsToCsvString(float[] array) {
-        if (array == null || array.length == 0) {
-            return "";
-        }
-        String ret = Float.toString(array[0]);
-        if (array.length > 1) {
-            for (int i = 1; i < array.length; i++) {
-                ret += "," + array[i];
-            }
-        }
-        return ret;
-    }
-
-    public static String matrixToCsvString(float[][] array) {
-        if (array == null || array.length == 0) {
-            return "";
-        }
-        String ret = Tools.floatsToCsvString(array[0]);
-        for (int i = 1; i < array.length; i++) {
-            ret += "\n" + Tools.floatsToCsvString(array[i]);
-        }
-        return ret;
-    }
-
-    public static String doublesToCsvString(double[] array) {
-        if (array == null || array.length == 0) {
-            return "";
-        }
-        String ret = Double.toString(array[0]);
-        if (array.length > 1) {
-            for (int i = 1; i < array.length; i++) {
-                ret += "," + array[i];
-            }
-        }
-        return ret;
-    }
-
-    public static float[] doublesToFloats(double[] array) {
-        if (array == null || array.length == 0) {
-            return null;
-        }
-        float[] ret = new float[array.length];
-        for (int i = 0; i < array.length; i++) {
-            ret[i] = (float) array[i];
-        }
-        return ret;
-    }
-
-    public static String intsToCsvString(int[] array) {
-        if (array == null || array.length == 0) {
-            return "";
-        }
-        String ret = Integer.toString(array[0]);
-        if (array.length > 1) {
-            for (int i = 1; i < array.length; i++) {
-                ret += "," + array[i];
-            }
-        }
-        return ret;
-    }
-
-    public static String bytesToCsvString(byte[] array) {
-        if (array == null || array.length == 0) {
-            return "";
-        }
-        String ret = Byte.toString(array[0]);
-        if (array.length > 1) {
-            for (int i = 1; i < array.length; i++) {
-                ret += "," + array[i];
-            }
         }
         return ret;
     }
@@ -403,22 +255,6 @@ public class Tools {
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
-    }
-
-    public static float[] listStringsToArrayFloats(List<String> list) {
-        float[] ret = new float[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            ret[i] = Float.parseFloat(list.get(i));
-        }
-        return ret;
-    }
-
-    public static int[] listStringsToArrayInts(List<String> list) {
-        int[] ret = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            ret[i] = Integer.parseInt(list.get(i));
-        }
-        return ret;
     }
 
     public static Object randomObject(List objects) {
@@ -461,24 +297,15 @@ public class Tools {
 
     }
 
-    public static float[][] parseCsvMatrix(String csvMatrix) {
+    public static float[][] parseCsvMatrix(String csvMatrix, String columnsDelimiter) {
         String[] rows = csvMatrix.split("\n");
-        float[] row = Tools.parseCsvFloats(rows[0]);
+        float[] row = DataTypeConvertor.stringToFloats(rows[0], columnsDelimiter);
         float[][] ret = new float[rows.length][row.length];
         ret[0] = row;
         if (rows.length > 1) {
             for (int i = 1; i < rows.length; i++) {
-                ret[i] = Tools.parseCsvFloats(rows[i]);
+                ret[i] = DataTypeConvertor.stringToFloats(rows[i], columnsDelimiter);
             }
-        }
-        return ret;
-    }
-
-    public static float[] parseCsvFloats(String csvFloats) {
-        String[] rows = csvFloats.split(",");
-        float[] ret = new float[rows.length];
-        for (int i = 0; i < rows.length; i++) {
-            ret[i] = Float.parseFloat(rows[i]);
         }
         return ret;
     }
@@ -519,19 +346,6 @@ public class Tools {
     public static Float getRandom(Float[] array) {
         int rnd = RANDOM.nextInt(array.length);
         return array[rnd];
-    }
-
-    public static SortedSet<Map.Entry<Integer, Float>> evaluateSumsPerRow(float[][] matrix, boolean sortedList) {
-        SortedSet<Map.Entry<Integer, Float>> ret = new TreeSet<>(new Tools.MapByValueComparator());
-        for (Integer i = 0; i < matrix.length; i++) {
-            float[] row = matrix[i];
-            Float sum = 0f;
-            for (int j = 0; j < row.length; j++) {
-                sum += row[j];
-            }
-            ret.add(new AbstractMap.SimpleEntry<>(i, sum));
-        }
-        return ret;
     }
 
     public static String removeQuotes(String string) {
