@@ -5,12 +5,8 @@
  */
 package vm.datatools;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -84,10 +80,19 @@ public class DataTypeConvertor {
         return ret;
     }
 
-    public static double[] floatsToDoubles(List<Float> list) {
+    public static double[] floatsListToDoubles(List<Float> list) {
         double[] ret = new double[list.size()];
         for (int i = 0; i < list.size(); i++) {
             Float f = list.get(i);
+            ret[i] = f;
+        }
+        return ret;
+    }
+
+    public static double[] floatsToDoubles(float[] vec) {
+        double[] ret = new double[vec.length];
+        for (int i = 0; i < ret.length; i++) {
+            Float f = vec[i];
             ret[i] = f;
         }
         return ret;
@@ -138,39 +143,30 @@ public class DataTypeConvertor {
         return ret;
     }
 
-    public static float[][] stringSquareMatrixToFloats(String path, int rowNumber, String delimiter) {
-        BufferedReader br = null;
-        float[][] ret = null;
-        if (rowNumber < 0) {
-            rowNumber = Integer.MAX_VALUE;
+    public static double[][] floatMatrixToDoubleMatrix(float[][] matrix) {
+        double[][] ret = new double[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            ret[i] = DataTypeConvertor.floatsToDoubles(matrix[i]);
         }
-        try {
-            br = new BufferedReader(new FileReader(path));
-            try {
-                for (int j = 0; j < rowNumber; j++) {
-                    String line = br.readLine();
-                    String[] split = line.split(delimiter);
-                    if (ret == null) {
-                        ret = new float[split.length][split.length];
-                    }
-                    for (int i = 0; i < split.length; i++) {
-                        ret[i][j] = Float.parseFloat(split[i]);
-                        ret[j][i] = ret[i][j];
-                    }
-                    if (j % 500 == 0) {
-                        LOG.log(Level.INFO, "Processed: {0} lines", j);
-                    }
-                }
-            } catch (NullPointerException e) {
-                // ignore
-            }
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                br.close();
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+        return ret;
+    }
+
+    public static float[][] doubleMatrixToFloatMatrix(double[][] matrix) {
+        float[][] ret = new float[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            ret[i] = DataTypeConvertor.doublesToFloats(matrix[i]);
+        }
+        return ret;
+    }
+
+    public static float[][] stringToFloatMatrix(String csvMatrix, String columnsDelimiter) {
+        String[] rows = csvMatrix.split("\n");
+        float[] row = DataTypeConvertor.stringToFloats(rows[0], columnsDelimiter);
+        float[][] ret = new float[rows.length][row.length];
+        ret[0] = row;
+        if (rows.length > 1) {
+            for (int i = 1; i < rows.length; i++) {
+                ret[i] = DataTypeConvertor.stringToFloats(rows[i], columnsDelimiter);
             }
         }
         return ret;

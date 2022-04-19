@@ -5,6 +5,7 @@
  */
 package vm.javatools;
 
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,6 +26,29 @@ public class Tools {
 
     public static ExecutorService initExecutor() {
         return Executors.newCachedThreadPool();
+    }
+
+    public static class MetricObjectArrayIterator implements Iterator<Object> {
+
+        private final Object[] array;
+        private int currPos;
+
+        public MetricObjectArrayIterator(Object[] array) {
+            this.array = array;
+            currPos = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return currPos < array.length;
+        }
+
+        @Override
+        public Object next() {
+            currPos++;
+            return array[currPos - 1];
+        }
+
     }
 
 }

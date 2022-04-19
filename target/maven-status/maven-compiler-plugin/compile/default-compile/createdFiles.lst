@@ -1,6 +1,7 @@
-vm\datatools\Tools$IntArraySameLengthsComparator.class
 vm\datatools\Tools.class
-vm\datatools\DataTypeConvertor.class
 vm\javatools\Tools.class
-vm\datatools\Tools$MapByValueComparator.class
 vm\math\Tools.class
+vm\datatools\Tools$IntArraySameLengthsComparator.class
+vm\javatools\Tools$MetricObjectArrayIterator.class
+vm\datatools\DataTypeConvertor.class
+vm\datatools\Tools$MapByValueComparator.class

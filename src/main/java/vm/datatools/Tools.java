@@ -297,14 +297,39 @@ public class Tools {
 
     }
 
-    public static float[][] parseCsvMatrix(String csvMatrix, String columnsDelimiter) {
-        String[] rows = csvMatrix.split("\n");
-        float[] row = DataTypeConvertor.stringToFloats(rows[0], columnsDelimiter);
-        float[][] ret = new float[rows.length][row.length];
-        ret[0] = row;
-        if (rows.length > 1) {
-            for (int i = 1; i < rows.length; i++) {
-                ret[i] = DataTypeConvertor.stringToFloats(rows[i], columnsDelimiter);
+    public static float[][] parseFloatMatrix(String path, int rowNumber, String delimiter) {
+        BufferedReader br = null;
+        float[][] ret = null;
+        if (rowNumber < 0) {
+            rowNumber = Integer.MAX_VALUE;
+        }
+        try {
+            br = new BufferedReader(new FileReader(path));
+            try {
+                for (int j = 0; j < rowNumber; j++) {
+                    String line = br.readLine();
+                    String[] split = line.split(delimiter);
+                    if (ret == null) {
+                        ret = new float[split.length][split.length];
+                    }
+                    for (int i = 0; i < split.length; i++) {
+                        ret[i][j] = Float.parseFloat(split[i]);
+                        ret[j][i] = ret[i][j];
+                    }
+                    if (j % 500 == 0) {
+                        LOG.log(Level.INFO, "Processed: {0} lines", j);
+                    }
+                }
+            } catch (NullPointerException e) {
+                // ignore
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                br.close();
+            } catch (IOException ex) {
+                LOG.log(Level.SEVERE, null, ex);
             }
         }
         return ret;
