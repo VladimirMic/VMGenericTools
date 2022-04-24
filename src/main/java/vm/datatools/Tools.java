@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package vm.datatools;
 
 import java.io.BufferedReader;
@@ -368,6 +363,15 @@ public class Tools {
 
     }
 
+    public static double[] getFirstValuesOfVector(double[] array, int finalDimensions) {
+        if (finalDimensions > array.length) {
+            throw new IllegalArgumentException("Cannot extend the vector");
+        }
+        double[] ret = new double[finalDimensions];
+        System.arraycopy(array, 0, ret, 0, finalDimensions);
+        return ret;
+    }
+
     public static Float getRandom(Float[] array) {
         int rnd = RANDOM.nextInt(array.length);
         return array[rnd];
@@ -405,6 +409,14 @@ public class Tools {
             for (int j = 0; j < columnCount; j++) {
                 ret[i][j] = (float) matrix[i][j];
             }
+        }
+        return ret;
+    }
+
+    public static float[][] shrinkMatrix(float[][] matrix, int rowCount, int columnCount) {
+        float[][] ret = new float[rowCount][columnCount];
+        for (int i = 0; i < rowCount; i++) {
+            System.arraycopy(matrix[i], 0, ret[i], 0, columnCount);
         }
         return ret;
     }

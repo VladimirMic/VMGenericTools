@@ -47,13 +47,14 @@ public class DataTypeConvertor {
         if (array == null || array.length == 0) {
             return "";
         }
-        String ret = Float.toString(array[0]);
+        StringBuffer buffer = new StringBuffer(array.length * 4);
+        buffer.append(Float.toString(array[0]));
         if (array.length > 1) {
             for (int i = 1; i < array.length; i++) {
-                ret += delimiter + array[i];
+                buffer.append(delimiter).append(array[i]);
             }
         }
-        return ret;
+        return buffer.toString();
     }
 
     public static String intsToString(int[] array, String delimiter) {
@@ -136,11 +137,12 @@ public class DataTypeConvertor {
         if (array == null || array.length == 0) {
             return "";
         }
-        String ret = DataTypeConvertor.floatsToString(array[0], columnDelimiter);
+        StringBuffer ret = new StringBuffer(array.length * array[0].length * 4);
+        ret.append(DataTypeConvertor.floatsToString(array[0], columnDelimiter));
         for (int i = 1; i < array.length; i++) {
-            ret += "\n" + DataTypeConvertor.floatsToString(array[i], columnDelimiter);
+            ret.append("\n").append(DataTypeConvertor.floatsToString(array[i], columnDelimiter));
         }
-        return ret;
+        return ret.toString();
     }
 
     public static double[][] floatMatrixToDoubleMatrix(float[][] matrix) {

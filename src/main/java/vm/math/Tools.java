@@ -14,8 +14,6 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
@@ -152,6 +150,16 @@ public class Tools {
                 sum += row[j];
             }
             ret.add(new AbstractMap.SimpleEntry<>(i, sum));
+        }
+        return ret;
+    }
+
+    public static float[][] transposeMatrix(float[][] matrix) {
+        float[][] ret = new float[matrix[0].length][matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                ret[j][i] = matrix[i][j];
+            }
         }
         return ret;
     }
