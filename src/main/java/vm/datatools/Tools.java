@@ -347,17 +347,17 @@ public class Tools {
 
     }
 
-    public static class MapByValueComparator implements Comparator<Map.Entry<Integer, Float>> {
+    public static class MapByValueComparator<T extends Comparable> implements Comparator<Map.Entry<T, Float>> {
 
         @Override
-        public int compare(Map.Entry<Integer, Float> o1, Map.Entry<Integer, Float> o2) {
+        public int compare(Map.Entry<T, Float> o1, Map.Entry<T, Float> o2) {
             float val1 = o1.getValue();
             float val2 = o2.getValue();
             if (val1 != val2 && (!Float.isNaN(val1) || !Float.isNaN(val2))) {
                 return Float.compare(val1, val2);
             }
-            Integer key1 = o1.getKey();
-            Integer key2 = o2.getKey();
+            T key1 = o1.getKey();
+            T key2 = o2.getKey();
             return key1.compareTo(key2);
         }
 
@@ -418,6 +418,7 @@ public class Tools {
         for (int i = 0; i < rowCount; i++) {
             System.arraycopy(matrix[i], 0, ret[i], 0, columnCount);
         }
+        LOG.log(Level.INFO, "Matrix shrunk to size {0} x {1}", new Object[]{rowCount, columnCount});
         return ret;
     }
 
