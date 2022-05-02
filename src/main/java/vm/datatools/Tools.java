@@ -422,4 +422,8 @@ public class Tools {
         return ret;
     }
 
+    public static short booleanToShort(boolean value, int shortTrue, int shortFalse) {
+        return (short) (value ? shortTrue : shortFalse);
+    }
+
 }
