@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -330,6 +331,12 @@ public class Tools {
         return ret;
     }
 
+    public static <T> T[] concatArrays(T[] array1, T[] array2) {
+        T[] ret = Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, ret, array1.length, array2.length);
+        return ret;
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;
@@ -388,9 +395,13 @@ public class Tools {
         return Tools.getObjectsFromIterator(0, Integer.MAX_VALUE, it);
     }
 
+    public static List<Object> getObjectsFromIterator(Iterator it, int maxCount) {
+        return Tools.getObjectsFromIterator(0, maxCount, it);
+    }
+
     public static List<Object> getObjectsFromIterator(int fromPosition, int toPosition, Iterator it) {
         List<Object> ret = new ArrayList<>();
-        int counter = 0;
+        int counter;
         for (counter = 0; counter < fromPosition && it.hasNext(); counter++) {
             it.next();
         }
@@ -399,6 +410,9 @@ public class Tools {
         }
         for (counter = fromPosition; counter < toPosition && it.hasNext(); counter++) {
             ret.add(it.next());
+            if (ret.size() % 10000 == 0) {
+                LOG.log(Level.INFO, "Read {0} objects from iterator", ret.size());
+            }
         }
         return ret;
     }
