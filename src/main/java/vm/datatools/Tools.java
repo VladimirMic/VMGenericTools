@@ -337,6 +337,11 @@ public class Tools {
         return ret;
     }
 
+    public static <T> T[] copyArray(T[] array) {
+        T[] ret = Arrays.copyOf(array, array.length);
+        return ret;
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;
