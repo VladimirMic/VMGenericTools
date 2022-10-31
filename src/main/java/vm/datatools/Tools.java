@@ -236,8 +236,14 @@ public class Tools {
 
     public static void printArray(float[] array) {
         for (int i = 0; i < array.length; i++) {
-            float val = array[i];
-            System.err.print(val + ";");
+            System.err.print(array[i] + ";");
+        }
+        System.err.println();
+    }
+
+    public static void printArray(Object[] array) {
+        for (int i = 0; i < array.length; i++) {
+            System.err.print(array[i].toString() + ";");
         }
         System.err.println();
     }
