@@ -164,4 +164,63 @@ public class Tools {
         return ret;
     }
 
+    public static float[] evaluateAnglesOfTriangle(float[] dists, boolean inDegrees) {
+        float a = dists[0];
+        float b = dists[1];
+        float c = dists[2];
+        return evaluateAnglesOfTriangle(a, b, c, inDegrees);
+    }
+
+    public static float[] evaluateAnglesOfTriangle(float a, float b, float c, boolean inDegrees) {
+        float a2 = a * a;
+        float b2 = b * b;
+        float c2 = c * c;
+        float alpha = (float) Math.acos((b2 + c2 - a2) / (2 * b * c));
+        float beta = (float) Math.acos((a2 + c2 - b2) / (2 * a * c));
+        float gamma = (float) Math.acos((a2 + b2 - c2) / (2 * a * b));
+        if (inDegrees) {
+            alpha = (float) (alpha * 180 / Math.PI);
+            beta = (float) (beta * 180 / Math.PI);
+            gamma = (float) (gamma * 180 / Math.PI);
+        }
+        return new float[]{alpha, beta, gamma};
+    }
+
+    public static double degToRad(double angleInDegrees) {
+        return (angleInDegrees / 180) * Math.PI;
+    }
+
+    public static float[] degsToRad(float[] angleInDegrees) {
+        float[] ret = new float[angleInDegrees.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = (float) degToRad(angleInDegrees[i]);
+        }
+        return ret;
+    }
+
+    public static float[] radsToDeg(float[] angleInRads) {
+        float[] ret = new float[angleInRads.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = (float) radToDeg(angleInRads[i]);
+        }
+        return ret;
+    }
+
+    public static double radToDeg(double angleInRads) {
+        return (angleInRads / Math.PI) * 180;
+    }
+
+    /**
+     *
+     * @param value value to round
+     * @param granularity granularity of rounding
+     * @return closest lower or equal number to @value which is equal the some
+     * integer multiplied by a @granularity
+     */
+    public static float floorToGranularity(double value, double granularity) {
+        int m = (int) (value / granularity);
+        float cur = (float) (m * granularity);
+        return cur;
+    }
+
 }

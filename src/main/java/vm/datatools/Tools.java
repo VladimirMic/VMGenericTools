@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -235,10 +236,27 @@ public class Tools {
     }
 
     public static void printArray(float[] array) {
+        printArray(array, true);
+    }
+
+    public static void printArray(float[] array, boolean newline) {
         for (int i = 0; i < array.length; i++) {
-            System.err.print(array[i] + ";");
+            float val = array[i];
+            System.err.print(val + ";");
         }
-        System.err.println();
+        if (newline) {
+            System.err.println();
+        }
+    }
+
+    public static void printArray(double[] array, boolean newline) {
+        for (int i = 0; i < array.length; i++) {
+            double val = array[i];
+            System.err.print(val + ";");
+        }
+        if (newline) {
+            System.err.println();
+        }
     }
 
     public static void printArray(Object[] array) {
@@ -261,6 +279,14 @@ public class Tools {
 
     public static Object randomObject(List objects) {
         return objects.get(RANDOM.nextInt(objects.size()));
+    }
+
+    public static Object[] randomUniqueObjects(List objects, int count) {
+        Set ret = new HashSet();
+        while (ret.size() < count) {
+            ret.add(randomObject(objects));
+        }
+        return ret.toArray();
     }
 
     public static List<Integer> arrayToList(int[] values) {
