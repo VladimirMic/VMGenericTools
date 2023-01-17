@@ -455,6 +455,7 @@ public class Tools {
                 LOG.log(Level.INFO, "Read {0} objects from iterator", ret.size());
             }
         }
+        LOG.log(Level.INFO, "Returning {0} objects from iterator", ret.size());
         return ret;
     }
 

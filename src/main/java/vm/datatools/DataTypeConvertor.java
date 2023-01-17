@@ -43,6 +43,19 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static String shortsToString(short[] array, String delimiter) {
+        if (array == null || array.length == 0) {
+            return "";
+        }
+        String ret = Short.toString(array[0]);
+        if (array.length > 1) {
+            for (int i = 1; i < array.length; i++) {
+                ret += delimiter + array[i];
+            }
+        }
+        return ret;
+    }
+
     public static String floatsToString(float[] array, String delimiter) {
         if (array == null || array.length == 0) {
             return "";
@@ -104,6 +117,24 @@ public class DataTypeConvertor {
         long[] ret = new long[split.length];
         for (int i = 0; i < split.length; i++) {
             ret[i] = Long.parseLong(split[i]);
+        }
+        return ret;
+    }
+
+    public static byte[] stringToBytes(String string, String delimiter) {
+        String[] split = string.split(delimiter);
+        byte[] ret = new byte[split.length];
+        for (int i = 0; i < split.length; i++) {
+            ret[i] = Byte.parseByte(split[i]);
+        }
+        return ret;
+    }
+
+    public static short[] stringToShorts(String string, String delimiter) {
+        String[] split = string.split(delimiter);
+        short[] ret = new short[split.length];
+        for (int i = 0; i < split.length; i++) {
+            ret[i] = Short.parseShort(split[i]);
         }
         return ret;
     }
