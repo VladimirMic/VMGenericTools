@@ -239,14 +239,18 @@ public class Tools {
         printArray(array, true);
     }
 
-    public static void printArray(float[] array, boolean newline) {
+    public static void printArray(float[] array, String separator, boolean newline) {
         for (int i = 0; i < array.length; i++) {
             float val = array[i];
-            System.err.print(val + ";");
+            System.err.print(val + separator);
         }
         if (newline) {
             System.err.println();
         }
+    }
+
+    public static void printArray(float[] array, boolean newline) {
+        Tools.printArray(array, ";", newline);
     }
 
     public static void printArray(double[] array, boolean newline) {
