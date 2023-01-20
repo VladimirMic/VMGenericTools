@@ -309,6 +309,14 @@ public class Tools {
         return ret;
     }
 
+    public static List<String> arrayToList(String[] values) {
+        List<String> ret = new ArrayList<>();
+        for (String i : values) {
+            ret.add(i);
+        }
+        return ret;
+    }
+
     public static void printMapValues(Map<Float, Integer> counts, boolean newLines) {
         for (Map.Entry<Float, Integer> entry : counts.entrySet()) {
             Integer value = entry.getValue();
