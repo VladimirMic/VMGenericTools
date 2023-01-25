@@ -96,6 +96,30 @@ public class Tools {
         return ret;
     }
 
+    public static List<String[]> parseCsvRowOriented(String path, String delimiter) {
+        BufferedReader br = null;
+        List<String[]> ret = null;
+        try {
+            br = new BufferedReader(new FileReader(path));
+            try {
+                String line = br.readLine();
+                String[] split = line.split(delimiter);
+                ret.add(split);
+            } catch (NullPointerException e) {
+                // ignore
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                br.close();
+            } catch (IOException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            }
+        }
+        return ret;
+    }
+
     public static SortedMap<String, String> parseCsvMapStrings(String path) {
         BufferedReader br = null;
         SortedMap<String, String> ret = new TreeMap<>();
@@ -124,33 +148,16 @@ public class Tools {
         return ret;
     }
 
-    public static SortedMap<Float, Float> parseCsvMapFloats(String path) {
-        SortedMap<Float, Float> ret = new TreeMap<>();
-        List<String>[] csv = parseCsvKeysValues(path);
-        int count = csv[0].size();
-        for (int i = 0; i < count; i++) {
-            Float dist = Float.parseFloat(csv[0].get(i));
-            Float prob = Float.parseFloat(csv[1].get(i));
-            ret.put(dist, prob);
-        }
-        return ret;
-    }
-
-    public static SortedMap<String, String> parseCsvMap(String path) {
-        SortedMap<String, String> ret = new TreeMap<>();
-        if (!new File(path).exists()) {
-            return ret;
-        }
+    public static SortedMap<String, String[]> parseCsvMapKeyValues(String path) {
         BufferedReader br = null;
+        SortedMap<String, String[]> ret = new TreeMap<>();
         try {
             br = new BufferedReader(new FileReader(path));
             try {
                 while (true) {
                     String line = br.readLine();
                     String[] split = line.split(";");
-                    if (split.length == 2) {
-                        ret.put(split[0], split[1]);
-                    }
+                    ret.put(split[0], split);
                 }
             } catch (NullPointerException e) {
                 // ignore
@@ -163,6 +170,18 @@ public class Tools {
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, null, ex);
             }
+        }
+        return ret;
+    }
+
+    public static SortedMap<Float, Float> parseCsvMapFloats(String path) {
+        SortedMap<Float, Float> ret = new TreeMap<>();
+        List<String>[] csv = parseCsvKeysValues(path);
+        int count = csv[0].size();
+        for (int i = 0; i < count; i++) {
+            Float dist = Float.parseFloat(csv[0].get(i));
+            Float prob = Float.parseFloat(csv[1].get(i));
+            ret.put(dist, prob);
         }
         return ret;
     }
