@@ -98,7 +98,7 @@ public class Tools {
 
     public static List<String[]> parseCsvRowOriented(String path, String delimiter) {
         BufferedReader br = null;
-        List<String[]> ret = null;
+        List<String[]> ret = new ArrayList<>();
         try {
             br = new BufferedReader(new FileReader(path));
             try {
