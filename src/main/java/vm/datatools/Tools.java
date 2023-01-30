@@ -102,9 +102,12 @@ public class Tools {
         try {
             br = new BufferedReader(new FileReader(path));
             try {
-                String line = br.readLine();
-                String[] split = line.split(delimiter);
-                ret.add(split);
+                String line = "";
+                while (line != null) {
+                    line = br.readLine();
+                    String[] split = line.split(delimiter);
+                    ret.add(split);
+                }
             } catch (NullPointerException e) {
                 // ignore
             }
