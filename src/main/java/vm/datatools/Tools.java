@@ -181,9 +181,21 @@ public class Tools {
         List<String>[] csv = parseCsvKeysValues(path);
         int count = csv[0].size();
         for (int i = 0; i < count; i++) {
-            Float dist = Float.parseFloat(csv[0].get(i));
-            Float prob = Float.parseFloat(csv[1].get(i));
-            ret.put(dist, prob);
+            Float col0 = Float.parseFloat(csv[0].get(i));
+            Float col1 = Float.parseFloat(csv[1].get(i));
+            ret.put(col0, col1);
+        }
+        return ret;
+    }
+
+    public static SortedMap<String, Float> parseCsvMapStringFloat(String path) {
+        SortedMap<String, Float> ret = new TreeMap<>();
+        List<String>[] csv = parseCsvKeysValues(path);
+        int count = csv[0].size();
+        for (int i = 0; i < count; i++) {
+            String col0 = csv[0].get(i);
+            Float col1 = Float.parseFloat(csv[1].get(i));
+            ret.put(col0, col1);
         }
         return ret;
     }
