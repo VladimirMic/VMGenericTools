@@ -424,22 +424,6 @@ public class Tools {
 
     }
 
-    public static class MapByValueComparator<T extends Comparable> implements Comparator<Map.Entry<T, Float>> {
-
-        @Override
-        public int compare(Map.Entry<T, Float> o1, Map.Entry<T, Float> o2) {
-            float val1 = o1.getValue();
-            float val2 = o2.getValue();
-            if (val1 != val2 && (!Float.isNaN(val1) || !Float.isNaN(val2))) {
-                return Float.compare(val1, val2);
-            }
-            T key1 = o1.getKey();
-            T key2 = o2.getKey();
-            return key1.compareTo(key2);
-        }
-
-    }
-
     public static double[] getFirstValuesOfVector(double[] array, int finalDimensions) {
         if (finalDimensions > array.length) {
             throw new IllegalArgumentException("Cannot extend the vector");
@@ -509,6 +493,54 @@ public class Tools {
 
     public static short booleanToShort(boolean value, int shortTrue, int shortFalse) {
         return (short) (value ? shortTrue : shortFalse);
+    }
+
+    public static class MapByValueComparator<T extends Comparable> implements Comparator<Map.Entry<T, Float>> {
+
+        @Override
+        public int compare(Map.Entry<T, Float> o1, Map.Entry<T, Float> o2) {
+            float val1 = o1.getValue();
+            float val2 = o2.getValue();
+            if (val1 != val2 && (!Float.isNaN(val1) || !Float.isNaN(val2))) {
+                return Float.compare(val1, val2);
+            }
+            T key1 = o1.getKey();
+            T key2 = o2.getKey();
+            return key1.compareTo(key2);
+        }
+    }
+
+    public static class MapByValueComparatorWithOwnComparator<T> implements Comparator<Map.Entry<T, Float>> {
+
+        private final Comparator<T> comp;
+
+        public MapByValueComparatorWithOwnComparator(Comparator<T> comp) {
+            this.comp = comp;
+        }
+
+        @Override
+        public int compare(Map.Entry<T, Float> o1, Map.Entry<T, Float> o2) {
+            float val1 = o1.getValue();
+            float val2 = o2.getValue();
+            if (val1 != val2 && (!Float.isNaN(val1) || !Float.isNaN(val2))) {
+                return Float.compare(val1, val2);
+            }
+            T key1 = o1.getKey();
+            T key2 = o2.getKey();
+            return comp.compare(key1, key2);
+        }
+    }
+
+    public static class ObjectArrayIdentityComparator implements Comparator<Object[]> {
+
+        @Override
+        public int compare(Object[] o1, Object[] o2) {
+            if (o1 == o2) {
+                return 0;
+            }
+            return -1;
+        }
+
     }
 
 }
