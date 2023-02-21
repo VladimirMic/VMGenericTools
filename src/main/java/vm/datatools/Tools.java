@@ -176,6 +176,36 @@ public class Tools {
         return ret;
     }
 
+    public static SortedMap<String, float[]> parseCsvMapKeyFloatValues(String path) {
+        BufferedReader br = null;
+        SortedMap<String, float[]> ret = new TreeMap<>();
+        try {
+            br = new BufferedReader(new FileReader(path));
+            try {
+                while (true) {
+                    String line = br.readLine();
+                    String[] split = line.split(";");
+                    float[] floats = new float[split.length - 1];
+                    for (int i = 1; i < split.length; i++) {
+                        floats[i - 1] = Float.parseFloat(split[i]);
+                    }
+                    ret.put(split[0], floats);
+                }
+            } catch (NullPointerException e) {
+                // ignore
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                br.close();
+            } catch (IOException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            }
+        }
+        return ret;
+    }
+
     public static SortedMap<Float, Float> parseCsvMapFloats(String path) {
         SortedMap<Float, Float> ret = new TreeMap<>();
         List<String>[] csv = parseCsvKeysValues(path);
@@ -205,6 +235,16 @@ public class Tools {
         for (Object key : keySet) {
             Object value = map.get(key);
             System.out.println(key + ";" + value);
+        }
+    }
+
+    public static void printMapOfKeyFloatValues(Map<String, float[]> map) {
+        Iterator<Map.Entry<String, float[]>> it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, float[]> next = it.next();
+            System.err.print(next.getKey() + ";");
+            float[] value = next.getValue();
+            printArray(value, true);
         }
     }
 
@@ -239,7 +279,7 @@ public class Tools {
             if (array[i] < val) {
                 ret = i;
                 val = array[i];
-            };
+            }
         }
         return ret;
     }
