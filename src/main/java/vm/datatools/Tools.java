@@ -337,10 +337,16 @@ public class Tools {
     }
 
     public static void printArray(Object[] array) {
+        printArray(array, true);
+    }
+
+    public static void printArray(Object[] array, boolean newline) {
         for (int i = 0; i < array.length; i++) {
             System.err.print(array[i].toString() + ";");
         }
-        System.err.println();
+        if (newline) {
+            System.err.println();
+        }
     }
 
     public static void printAsPairs(int[] selectedIndexes, OutputStream out) {
@@ -570,6 +576,10 @@ public class Tools {
             this.comp = comp;
         }
 
+        public MapByValueComparatorWithOwnComparator() {
+            this.comp = (Comparator<T>) new ObjectArrayIdentityComparator();
+        }
+
         @Override
         public int compare(Map.Entry<T, Float> o1, Map.Entry<T, Float> o2) {
             float val1 = o1.getValue();
@@ -587,10 +597,23 @@ public class Tools {
 
         @Override
         public int compare(Object[] o1, Object[] o2) {
-            if (o1 == o2) {
+            if ((o1 == null && o2 != null) || (o1 != null && o2 == null)) {
+                return -1;
+            }
+            if (o1 == null && o2 == null) {
                 return 0;
             }
-            return -1;
+            if (o1.length != o2.length) {
+                return -1;
+            }
+            for (int i = 0; i < o1.length; i++) {
+                Object oi1 = o1[i];
+                Object oi2 = o2[i];
+                if (!oi1.equals(oi2)) {
+                    return -1;
+                }
+            }
+            return 0;
         }
 
     }
