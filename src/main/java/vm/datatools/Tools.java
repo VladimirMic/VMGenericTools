@@ -465,6 +465,15 @@ public class Tools {
         return ret;
     }
 
+    public static boolean isZeroInArray(float[] dists) {
+        for (float dist : dists) {
+            if (dist == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;
