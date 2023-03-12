@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -380,6 +381,14 @@ public class Tools {
         return ret;
     }
 
+    public static List<Object> arrayToList(Object[] values) {
+        List<Object> ret = new ArrayList<>();
+        for (Object i : values) {
+            ret.add(i);
+        }
+        return ret;
+    }
+
     public static List<Float> arrayToList(float[] values) {
         List<Float> ret = new ArrayList<>();
         for (float i : values) {
@@ -472,6 +481,19 @@ public class Tools {
             }
         }
         return false;
+    }
+
+    public static SortedSet<Map.Entry<Integer, Float>> evaluateSumsPerRow(float[][] matrix) {
+        SortedSet<Map.Entry<Integer, Float>> ret = new TreeSet<>(new Tools.MapByValueComparator());
+        for (Integer i = 0; i < matrix.length; i++) {
+            float[] row = matrix[i];
+            Float sum = 0f;
+            for (int j = 0; j < row.length; j++) {
+                sum += row[j];
+            }
+            ret.add(new AbstractMap.SimpleEntry<>(i, sum));
+        }
+        return ret;
     }
 
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
