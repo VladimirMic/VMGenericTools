@@ -239,11 +239,11 @@ public class Tools {
         }
     }
 
-    public static void printMapOfKeyFloatValues(Map<String, float[]> map) {
-        Iterator<Map.Entry<String, float[]>> it = map.entrySet().iterator();
+    public static void printMapOfKeyFloatValues(Map<Object, float[]> map) {
+        Iterator<Map.Entry<Object, float[]>> it = map.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<String, float[]> next = it.next();
-            System.err.print(next.getKey() + ";");
+            Map.Entry<Object, float[]> next = it.next();
+            System.err.print(next.getKey().toString() + ";");
             float[] value = next.getValue();
             printArray(value, true);
         }
