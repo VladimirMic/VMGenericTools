@@ -65,7 +65,9 @@ public class Tools {
                     String line = br.readLine();
                     String[] split = line.split(delimiter);
                     if (ret == null) {
-                        columnNumber = Math.min(split.length, columnNumber);
+                        if (columnNumber == Integer.MAX_VALUE) {
+                            columnNumber = Math.min(split.length, columnNumber);
+                        }
                         ret = new List[columnNumber];
                         for (int i = 0; i < columnNumber; i++) {
                             ret[i] = new ArrayList<>();
