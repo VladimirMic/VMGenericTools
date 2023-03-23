@@ -7,6 +7,7 @@ package vm.datatools;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -182,11 +183,16 @@ public class DataTypeConvertor {
             return "";
         }
         StringBuffer ret = new StringBuffer(array.length * array[0].length * 4);
-        ret.append(DataTypeConvertor.floatsToString(array[0], columnDelimiter));
-        for (int i = 1; i < array.length; i++) {
-            ret.append("\n").append(DataTypeConvertor.floatsToString(array[i], columnDelimiter));
+        try {
+            ret.append(DataTypeConvertor.floatsToString(array[0], columnDelimiter));
+            for (int i = 1; i < array.length; i++) {
+                ret.append("\n").append(DataTypeConvertor.floatsToString(array[i], columnDelimiter));
+            }
+            return ret.toString();
+        } catch (java.lang.OutOfMemoryError ex) {
+            LOG.log(Level.WARNING, "Unsufficient memory to store the matrix: {0} * {1}", new Object[]{array.length, array[0].length});
         }
-        return ret.toString();
+        return "";
     }
 
     public static double[][] floatMatrixToDoubleMatrix(float[][] matrix) {
