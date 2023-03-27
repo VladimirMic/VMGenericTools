@@ -1,4 +1,6 @@
-vm\datatools\Tools$MapByValueComparatorWithOwnComparator.class
+vm\datatools\Tools$FloatVectorComparator.class
+vm\datatools\Tools$MapByValueComparatorWithOwnKeyComparator.class
+vm\datatools\Tools$MapByValueComparatorWithOwnValueComparator.class
 vm\datatools\Tools.class
 vm\javatools\Tools.class
 vm\math\Tools.class

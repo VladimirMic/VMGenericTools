@@ -498,6 +498,21 @@ public class Tools {
         return ret;
     }
 
+    public static float[] vectorPreffix(float[] vector, int pcaPreffixLength) {
+        int length = Math.min(vector.length, pcaPreffixLength);
+        float[] ret = new float[length];
+        System.arraycopy(vector, 0, ret, 0, length);;
+        return ret;
+    }
+
+    public static List<Object> getAndRemoveFirst(List<Object> list, int countToRemove) {
+        List<Object> ret = new ArrayList<>();
+        for (int i = 0; i < countToRemove; i++) {
+            ret.add(list.remove(0));
+        }
+        return ret;
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;
@@ -601,15 +616,29 @@ public class Tools {
         }
     }
 
-    public static class MapByValueComparatorWithOwnComparator<T> implements Comparator<Map.Entry<T, Float>> {
+    public static class MapByValueComparatorWithOwnValueComparator<T> implements Comparator<Map.Entry<Object, T>> {
 
         private final Comparator<T> comp;
 
-        public MapByValueComparatorWithOwnComparator(Comparator<T> comp) {
+        public MapByValueComparatorWithOwnValueComparator(Comparator<T> comp) {
             this.comp = comp;
         }
 
-        public MapByValueComparatorWithOwnComparator() {
+        @Override
+        public int compare(Map.Entry<Object, T> o1, Map.Entry<Object, T> o2) {
+            return comp.compare(o1.getValue(), o2.getValue());
+        }
+    }
+
+    public static class MapByValueComparatorWithOwnKeyComparator<T> implements Comparator<Map.Entry<T, Float>> {
+
+        private final Comparator<T> comp;
+
+        public MapByValueComparatorWithOwnKeyComparator(Comparator<T> comp) {
+            this.comp = comp;
+        }
+
+        public MapByValueComparatorWithOwnKeyComparator() {
             this.comp = (Comparator<T>) new ObjectArrayIdentityComparator();
         }
 
@@ -623,6 +652,21 @@ public class Tools {
             T key1 = o1.getKey();
             T key2 = o2.getKey();
             return comp.compare(key1, key2);
+        }
+    }
+
+    public static class FloatVectorComparator implements Comparator<float[]> {
+
+        @Override
+        public int compare(float[] o1, float[] o2) {
+            int length = Math.min(o1.length, o2.length);
+            for (int i = 0; i < length; i++) {
+                int ret = Float.compare(o1[i], o2[i]);
+                if (ret != 0) {
+                    return ret;
+                }
+            }
+            return Integer.compare(o1.length, o2.length);
         }
     }
 
