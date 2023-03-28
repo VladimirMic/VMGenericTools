@@ -626,7 +626,11 @@ public class Tools {
 
         @Override
         public int compare(Map.Entry<Object, T> o1, Map.Entry<Object, T> o2) {
-            return comp.compare(o1.getValue(), o2.getValue());
+            int ret = comp.compare(o1.getValue(), o2.getValue());
+            if (ret != 0) {
+                return ret;
+            }
+            return o1.getKey().toString().compareTo(o2.getKey().toString());
         }
     }
 
@@ -659,14 +663,16 @@ public class Tools {
 
         @Override
         public int compare(float[] o1, float[] o2) {
-            int length = Math.min(o1.length, o2.length);
-            for (int i = 0; i < length; i++) {
+            if (o1.length != o2.length) {
+                throw new IllegalArgumentException("Vector do not have the same length");
+            }
+            for (int i = 0; i < o1.length; i++) {
                 int ret = Float.compare(o1[i], o2[i]);
                 if (ret != 0) {
                     return ret;
                 }
             }
-            return Integer.compare(o1.length, o2.length);
+            return 0;
         }
     }
 
