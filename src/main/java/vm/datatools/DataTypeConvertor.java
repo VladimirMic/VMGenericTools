@@ -78,7 +78,8 @@ public class DataTypeConvertor {
         buffer.append(Float.toString(array[0]));
         if (array.length > 1) {
             for (int i = 1; i < array.length; i++) {
-                buffer.append(delimiter).append(array[i]);
+                buffer.append(delimiter);
+                buffer.append(Float.toString(array[i]));
             }
         }
         return buffer.toString();
