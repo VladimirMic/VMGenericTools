@@ -98,6 +98,19 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static String longToString(long[] array, String delimiter) {
+        if (array == null || array.length == 0) {
+            return "";
+        }
+        String ret = Long.toString(array[0]);
+        if (array.length > 1) {
+            for (int i = 1; i < array.length; i++) {
+                ret += delimiter + array[i];
+            }
+        }
+        return ret;
+    }
+
     public static float[] doublesToFloats(double[] array) {
         if (array == null || array.length == 0) {
             return null;
