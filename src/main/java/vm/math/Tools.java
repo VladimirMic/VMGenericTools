@@ -25,13 +25,18 @@ import org.apache.commons.math3.stat.descriptive.moment.Variance;
 public class Tools {
 
     public static float round(float distance, float toValue, boolean floor) {
+        if (distance < 0) {
+            return distance;
+        }
         float add = 0;
         if (!floor) {
             add = toValue / 2;
         }
-        int m = (int) ((distance + add) / toValue);
-        float cur = (float) (m * toValue);
-        return cur;
+        double scale = 1 / toValue;
+        int m = (int) ((distance + add) * scale);
+        double ret = m / scale;
+        float retFloat = (float) ret;
+        return retFloat;
     }
 
     public static float[][] copyMatrix(float[][] matrix) {
