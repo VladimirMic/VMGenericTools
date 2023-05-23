@@ -1,9 +1,12 @@
 package vm.datatools;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 
 /**
  *
@@ -157,7 +161,13 @@ public class Tools {
         BufferedReader br = null;
         SortedMap<String, String[]> ret = new TreeMap<>();
         try {
-            br = new BufferedReader(new FileReader(path));
+            InputStreamReader inputStreamReader;
+            if (path.toLowerCase().endsWith("gz")) {
+                inputStreamReader = new InputStreamReader(new GZIPInputStream(new FileInputStream(path)));
+            } else {
+                inputStreamReader = new InputStreamReader(new FileInputStream(path));
+            }
+            br = new BufferedReader(inputStreamReader);
             try {
                 while (true) {
                     String line = br.readLine();
@@ -315,18 +325,18 @@ public class Tools {
         printArray(array, true);
     }
 
-    public static void printArray(float[] array, String separator, boolean newline) {
+    public static void printArray(float[] array, String separator, boolean newline, PrintStream ps) {
         for (int i = 0; i < array.length; i++) {
             float val = array[i];
-            System.err.print(val + separator);
+            ps.print(val + separator);
         }
         if (newline) {
-            System.err.println();
+            ps.println();
         }
     }
 
     public static void printArray(float[] array, boolean newline) {
-        Tools.printArray(array, ";", newline);
+        Tools.printArray(array, ";", newline, System.err);
     }
 
     public static void printArray(double[] array, boolean newline) {
@@ -340,15 +350,15 @@ public class Tools {
     }
 
     public static void printArray(Object[] array) {
-        printArray(array, true);
+        printArray(array, ";", true, System.err);
     }
 
-    public static void printArray(Object[] array, boolean newline) {
+    public static void printArray(Object[] array, String separator, boolean newline, PrintStream ps) {
         for (int i = 0; i < array.length; i++) {
-            System.err.print(array[i].toString() + ";");
+            ps.print(array[i].toString() + separator);
         }
         if (newline) {
-            System.err.println();
+            ps.println();
         }
     }
 
@@ -394,6 +404,14 @@ public class Tools {
     public static List<Float> arrayToList(float[] values) {
         List<Float> ret = new ArrayList<>();
         for (float i : values) {
+            ret.add(i);
+        }
+        return ret;
+    }
+
+    public static TreeSet<Object> arrayToSet(Object[] values) {
+        TreeSet<Object> ret = new TreeSet<>();
+        for (Object i : values) {
             ret.add(i);
         }
         return ret;
@@ -539,9 +557,45 @@ public class Tools {
         return ret;
     }
 
-    public static Float getRandom(Float[] array) {
+    public static Float random(Float[] array) {
         int rnd = RANDOM.nextInt(array.length);
         return array[rnd];
+    }
+
+    public static List<Object> randomUniformNonZeroDistance(Iterator<Object> it, int estimatedSizeOfIterator, int count) {
+        int batchSize = estimatedSizeOfIterator / count;
+        LOG.log(Level.INFO, "Batch size {0}", batchSize);
+        int idx = RANDOM.nextInt(batchSize);
+        List<Object> ret = new ArrayList<>();
+        for (int i = 0; it.hasNext(); i++) {
+            Object o = it.next();
+            if (i % batchSize == idx) {
+                ret.add(o);
+                LOG.log(Level.INFO, "Index {0}, selected {1}", new Object[]{i, ret.size()});
+                idx = RANDOM.nextInt(batchSize);
+            }
+        }
+        LOG.log(Level.INFO, "Selected {0} objects", ret.size());
+        return ret;
+    }
+
+    public static List<Object> randomUniform(Iterator<Object> it, int estimatedSizeOfIterator, int count) {
+        int batchSize = estimatedSizeOfIterator / count;
+        LOG.log(Level.INFO, "Batch size {0}", batchSize);
+        int idx = RANDOM.nextInt(batchSize);
+        List<Object> ret = new ArrayList<>();
+        int lastBatch = -1;
+        for (int i = 0; it.hasNext(); i++) {
+            Object o = it.next();
+            if (i % batchSize == idx && i / batchSize > lastBatch) {
+                lastBatch = i / batchSize;
+                ret.add(o);
+                LOG.log(Level.INFO, "Index {0}, selected {1}", new Object[]{i, ret.size()});
+                idx = RANDOM.nextInt(batchSize);
+            }
+        }
+        LOG.log(Level.INFO, "Selected {0} objects", ret.size());
+        return ret;
     }
 
     public static String removeQuotes(String string) {
