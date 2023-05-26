@@ -35,7 +35,6 @@ public class Tools {
 
     private static final Random RANDOM = new Random();
     private static final Logger LOG = Logger.getLogger(vm.math.Tools.class.getName());
-    public static final Integer PARALELISATION = 24;
 
     public static List<String>[] parseCsvKeysValues(String path) {
         return parseCsv(path, 2, true);
