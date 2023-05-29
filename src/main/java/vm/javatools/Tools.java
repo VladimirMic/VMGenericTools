@@ -3,6 +3,8 @@ package vm.javatools;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -10,7 +12,7 @@ import java.util.concurrent.Executors;
  */
 public class Tools {
 
-    public static final Integer PARALELISATION = 12;
+    public static final Integer PARALELISATION = 14;
 
     public static ExecutorService initExecutor(Integer paralelism) {
         if (paralelism == null || paralelism <= 0) {
@@ -21,6 +23,14 @@ public class Tools {
 
     public static ExecutorService initExecutor() {
         return Executors.newCachedThreadPool();
+    }
+
+    public static void sleep(long seconds) {
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static class MetricObjectArrayIterator implements Iterator<Object> {
