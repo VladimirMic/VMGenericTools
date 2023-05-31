@@ -435,6 +435,22 @@ public class Tools {
         }
     }
 
+    public static List<Object> filterMap(Map map, List keys) {
+        return filterMap(map, keys, false);
+    }
+
+    public static List<Object> filterMap(Map map, List keys, boolean addKey) {
+        List<Object> ret = new ArrayList<>();
+        for (Object candidatesID : keys) {
+            Object o = map.get(candidatesID);
+            if (addKey) {
+                o = new AbstractMap.SimpleEntry<>(candidatesID, o);
+            }
+            ret.add(o);
+        }
+        return ret;
+    }
+
     public static List filterList(List list, int[] indexes) {
         List<Object> ret = new ArrayList();
         for (int idx : indexes) {
