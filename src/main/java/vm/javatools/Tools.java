@@ -26,6 +26,7 @@ public class Tools {
     }
 
     public static void sleep(long seconds) {
+        System.out.println("Going to sleep for " + seconds + " seconds");
         try {
             Thread.sleep(seconds * 1000);
         } catch (InterruptedException ex) {

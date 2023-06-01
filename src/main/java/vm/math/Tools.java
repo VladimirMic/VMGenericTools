@@ -32,7 +32,8 @@ public class Tools {
         if (!floor) {
             add = toValue / 2;
         }
-        double scale = 1 / toValue;
+        double toValueD = toValue;
+        double scale = 1 / toValueD;
         int m = (int) ((distance + add) * scale);
         double ret = m / scale;
         float retFloat = (float) ret;
@@ -60,7 +61,7 @@ public class Tools {
     }
 
     /**
-     * To each value xi assing value max(y0, ..., yi)
+     * To each valueForX xi assing valueForX max(y0, ..., yi)
      *
      * @param plotXY
      * @return
@@ -217,10 +218,10 @@ public class Tools {
 
     /**
      *
-     * @param value value to round
+     * @param value valueForX to round
      * @param granularity granularity of rounding
-     * @return closest lower or equal number to @value which is equal the some
-     * integer multiplied by a @granularity
+     * @return closest lower or equal number to @valueForX which is equal the
+     * some integer multiplied by a @granularity
      */
     public static float floorToGranularity(double value, double granularity) {
         int m = (int) (value / granularity);
