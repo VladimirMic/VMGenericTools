@@ -64,7 +64,7 @@ public class Tools {
         try {
             br = new BufferedReader(new FileReader(path));
             try {
-                for (int counter = 0; counter < rowNumber; counter++) {
+                for (int counter = 1; counter < rowNumber; counter++) {
                     String line = br.readLine();
                     String[] split = line.split(delimiter);
                     if (ret == null) {
