@@ -534,7 +534,7 @@ public class Tools {
     public static float[] vectorPreffix(float[] vector, int pcaPreffixLength) {
         int length = Math.min(vector.length, pcaPreffixLength);
         float[] ret = new float[length];
-        System.arraycopy(vector, 0, ret, 0, length);;
+        System.arraycopy(vector, 0, ret, 0, length);
         return ret;
     }
 
@@ -542,6 +542,15 @@ public class Tools {
         List<Object> ret = new ArrayList<>();
         for (int i = 0; i < countToRemove; i++) {
             ret.add(list.remove(0));
+        }
+        return ret;
+    }
+
+    public static float[] splitStringFloatVector(String string, String separator) {
+        String[] array = string.split(separator);
+        float[] ret = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            ret[i] = Float.parseFloat(array[i]);
         }
         return ret;
     }
