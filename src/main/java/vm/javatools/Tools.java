@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  */
 public class Tools {
 
-    public static final Integer PARALELISATION = 12;
+    public static final Integer PARALELISATION = Runtime.getRuntime().availableProcessors() - 1;
 
     public static ExecutorService initExecutor(Integer paralelism) {
         if (paralelism == null || paralelism <= 0) {
