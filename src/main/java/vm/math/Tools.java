@@ -24,9 +24,9 @@ import org.apache.commons.math3.stat.descriptive.moment.Variance;
  */
 public class Tools {
 
-    public static float round(float distance, float toValue, boolean floor) {
-        if (distance < 0) {
-            return distance;
+    public static float round(float input, float toValue, boolean floor) {
+        if (input < 0) {
+            return input;
         }
         float add = 0;
         if (!floor) {
@@ -34,7 +34,7 @@ public class Tools {
         }
         double toValueD = toValue;
         double scale = 1 / toValueD;
-        int m = (int) ((distance + add) * scale);
+        int m = (int) ((input + add) * scale);
         double ret = m / scale;
         float retFloat = (float) ret;
         return retFloat;

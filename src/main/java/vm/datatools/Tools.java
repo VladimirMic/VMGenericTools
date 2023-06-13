@@ -694,6 +694,21 @@ public class Tools {
         }
     }
 
+    public static class MapByValueIntComparator<T extends Comparable> implements Comparator<Map.Entry<T, Integer>> {
+
+        @Override
+        public int compare(Map.Entry<T, Integer> o1, Map.Entry<T, Integer> o2) {
+            int val1 = o1.getValue();
+            int val2 = o2.getValue();
+            if (val1 != val2) {
+                return Integer.compare(val1, val2);
+            }
+            T key1 = o1.getKey();
+            T key2 = o2.getKey();
+            return key1.compareTo(key2);
+        }
+    }
+
     public static class MapByValueComparatorWithOwnValueComparator<T> implements Comparator<Map.Entry<Object, T>> {
 
         private final Comparator<T> comp;
