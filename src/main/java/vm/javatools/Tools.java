@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 public class Tools {
 
     public static final Integer PARALELISATION = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
+    public static final Logger LOG = Logger.getLogger(Tools.class.getName());
 
     public static ExecutorService initExecutor(Integer paralelism) {
         if (paralelism == null || paralelism <= 0) {
@@ -25,10 +26,10 @@ public class Tools {
         return Executors.newCachedThreadPool();
     }
 
-    public static void sleep(long seconds) {
-        System.out.println("Going to sleep for " + seconds + " seconds");
+    public static void sleep(long minutes) {
+        LOG.log(Level.INFO, "Going to sleep for {0} minutes", minutes);
         try {
-            Thread.sleep(seconds * 1000);
+            Thread.sleep(minutes * 1000 * 60);
         } catch (InterruptedException ex) {
             Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
         }
