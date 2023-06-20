@@ -250,6 +250,14 @@ public class Tools {
         }
     }
 
+    public static String mapAsCSVString(Map<String, Object> map, String pairDelimiter, String keyDelimiter) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            sb.append(entry.getKey()).append(keyDelimiter).append(entry.getValue().toString()).append(pairDelimiter);
+        }
+        return sb.toString();
+    }
+
     public static void printMapOfKeyFloatValues(Map<Object, float[]> map) {
         Iterator<Map.Entry<Object, float[]>> it = map.entrySet().iterator();
         while (it.hasNext()) {
