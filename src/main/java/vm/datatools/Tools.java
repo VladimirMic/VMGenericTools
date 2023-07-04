@@ -223,8 +223,8 @@ public class Tools {
         List<String>[] csv = parseCsvKeysValues(path);
         int count = csv[0].size();
         for (int i = 0; i < count; i++) {
-            Float col0 = Float.parseFloat(csv[0].get(i));
-            Float col1 = Float.parseFloat(csv[1].get(i));
+            Float col0 = Float.valueOf(csv[0].get(i));
+            Float col1 = Float.valueOf(csv[1].get(i));
             ret.put(col0, col1);
         }
         return ret;
