@@ -36,6 +36,15 @@ public class Tools {
         }
     }
 
+    public static void sleepSeconds(long sec) {
+        LOG.log(Level.INFO, "Going to sleep for {0} minutes", sec);
+        try {
+            Thread.sleep(sec * 1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public static class MetricObjectArrayIterator implements Iterator<Object> {
 
         private final Object[] array;
