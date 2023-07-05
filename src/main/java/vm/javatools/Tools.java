@@ -36,10 +36,10 @@ public class Tools {
         }
     }
 
-    public static void sleepSeconds(long sec) {
-        LOG.log(Level.INFO, "Going to sleep for {0} minutes", sec);
+    public static void sleepSeconds(long seconds) {
+        LOG.log(Level.INFO, "Going to sleep for {0} seconds", seconds);
         try {
-            Thread.sleep(sec * 1000);
+            Thread.sleep(seconds * 1000);
         } catch (InterruptedException ex) {
             Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
         }
