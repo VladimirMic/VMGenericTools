@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  */
 public class Tools {
 
-    public static final Integer PARALELISATION = Math.max(1, (int) (Runtime.getRuntime().availableProcessors() / 3f));
+    public static final Integer PARALELISATION = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
 //    public static final Integer PARALELISATION = 14;
     public static final Logger LOG = Logger.getLogger(Tools.class.getName());
 
