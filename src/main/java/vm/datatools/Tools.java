@@ -580,7 +580,7 @@ public class Tools {
 
     }
 
-    public static double[] getFirstValuesOfVector(double[] array, int finalDimensions) {
+    public static double[] getPrefixOfVector(double[] array, int finalDimensions) {
         if (finalDimensions > array.length) {
             throw new IllegalArgumentException("Cannot extend the vector");
         }
