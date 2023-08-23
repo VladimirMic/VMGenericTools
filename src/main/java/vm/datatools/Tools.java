@@ -199,9 +199,11 @@ public class Tools {
                     String[] split = line.split(";");
                     float[] floats = new float[split.length - 1];
                     for (int i = 1; i < split.length; i++) {
+                        split[i] = Tools.removeQuotes(split[i]);
                         floats[i - 1] = Float.parseFloat(split[i]);
                     }
-                    ret.put(split[0], floats);
+                    String key = Tools.removeQuotes(split[0]);
+                    ret.put(key, floats);
                 }
             } catch (NullPointerException e) {
                 // ignore
@@ -559,6 +561,19 @@ public class Tools {
         float[] ret = new float[array.length];
         for (int i = 0; i < array.length; i++) {
             ret[i] = Float.parseFloat(array[i]);
+        }
+        return ret;
+    }
+
+    public static List<Object> createAllPairs(List<Object> pivots) {
+        List<Object> ret = new ArrayList<>();
+        for (int i = 0; i < pivots.size() - 1; i++) {
+            Object p1 = pivots.get(i);
+            for (int j = i + 1; j < pivots.size(); j++) {
+                Object p2 = pivots.get(j);
+                ret.add(p1);
+                ret.add(p2);
+            }
         }
         return ret;
     }
