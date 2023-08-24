@@ -578,6 +578,23 @@ public class Tools {
         return ret;
     }
 
+    public static final float[] get8Angles(float[] sixDists, boolean inDegress) {
+        float[] ret = new float[8]; // beta1, delta2, gamma2, alphao, deltao, betaq, alphaq, gamma1
+        float[] angles = vm.math.Tools.evaluateAnglesOfTriangle(sixDists[0], sixDists[1], sixDists[4], inDegress); //a, b, e
+        ret[0] = angles[1]; // beta1
+        ret[3] = angles[0]; // delta2
+        angles = vm.math.Tools.evaluateAnglesOfTriangle(sixDists[1], sixDists[2], sixDists[5], inDegress); //b, c, f
+        ret[2] = angles[1]; // gamma2
+        ret[5] = angles[0]; // betaq
+        angles = vm.math.Tools.evaluateAnglesOfTriangle(sixDists[2], sixDists[3], sixDists[4], inDegress); //c, d, e
+        ret[4] = angles[1]; // deltao
+        ret[7] = angles[0]; // gamma1
+        angles = vm.math.Tools.evaluateAnglesOfTriangle(sixDists[3], sixDists[0], sixDists[5], inDegress); //d, a, f
+        ret[6] = angles[1]; // alphaq
+        ret[1] = angles[0]; // delta2
+        return ret;
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;
