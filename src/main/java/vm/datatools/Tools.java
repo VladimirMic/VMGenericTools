@@ -508,6 +508,13 @@ public class Tools {
         return ret;
     }
 
+    public static <T> T[] concatArrays(T[] array1, T obj) {
+        List<T> list = new ArrayList<>();
+        list.addAll(Arrays.asList(array1));
+        list.add(obj);
+        return list.toArray(array1);
+    }
+
     public static <T> T[] concatArrays(T[] array1, T[] array2) {
         T[] ret = Arrays.copyOf(array1, array1.length + array2.length);
         System.arraycopy(array2, 0, ret, array1.length, array2.length);
