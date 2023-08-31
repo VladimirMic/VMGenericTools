@@ -702,7 +702,7 @@ public class Tools {
         }
         for (counter = fromPosition; counter < toPosition && it.hasNext(); counter++) {
             ret.add(it.next());
-            if (ret.size() % 500000 == 0) {
+            if (ret.size() % 100000 == 0) {
                 LOG.log(Level.INFO, "Read {0} objects from iterator", ret.size());
             }
         }
