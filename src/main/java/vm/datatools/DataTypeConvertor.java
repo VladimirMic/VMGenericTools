@@ -140,6 +140,15 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static double[] intsToDoubles(int[] vec) {
+        double[] ret = new double[vec.length];
+        for (int i = 0; i < ret.length; i++) {
+            int number = vec[i];
+            ret[i] = number;
+        }
+        return ret;
+    }
+
     public static long[] stringToLongs(String string, String delimiter) {
         String[] split = string.split(delimiter);
         long[] ret = new long[split.length];
@@ -259,6 +268,14 @@ public class DataTypeConvertor {
         String[] ret = new String[objects.size()];
         for (int i = 0; i < objects.size(); i++) {
             ret[i] = objects.get(i).toString();
+        }
+        return ret;
+    }
+
+    public static double[] objectsToDoubleArray(Object[] values) {
+        double[] ret = new double[values.length];
+        for (int i = 0; i < values.length; i++) {
+            ret[i] = Double.parseDouble(values[i].toString());
         }
         return ret;
     }

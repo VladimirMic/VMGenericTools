@@ -676,13 +676,6 @@ public class Tools {
         return ret;
     }
 
-    public static String removeQuotes(String string) {
-        if (string.startsWith("\"") && string.endsWith("\"")) {
-            return string.substring(1, string.length() - 1);
-        }
-        return string;
-    }
-
     public static List<Object> getObjectsFromIterator(Iterator it) {
         return Tools.getObjectsFromIterator(0, Integer.MAX_VALUE, it);
     }
@@ -846,6 +839,25 @@ public class Tools {
             return 0;
         }
 
+    }
+
+    public static boolean isEmptyString(String string) {
+        return string == null || string.trim().equals("");
+    }
+
+    public static String removeQuotes(String string) {
+        string = string.trim();
+        if (string.startsWith("\"") && string.endsWith("\"")) {
+            return string.substring(1, string.length() - 1);
+        }
+        return string;
+    }
+
+    public static Float parseFloat(String string) {
+        if (string == null || string.isBlank() || string.toLowerCase().equals("nan")) {
+            return null;
+        }
+        return Float.valueOf(string);
     }
 
 }

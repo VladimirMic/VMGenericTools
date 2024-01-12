@@ -16,7 +16,13 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
+import org.apache.commons.math3.stat.descriptive.rank.Max;
+import org.apache.commons.math3.stat.descriptive.rank.Median;
+import org.apache.commons.math3.stat.descriptive.rank.Min;
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
+import vm.datatools.DataTypeConvertor;
 
 /**
  *
@@ -25,12 +31,13 @@ import org.apache.commons.math3.stat.descriptive.moment.Variance;
 public class Tools {
 
     public static float round(float input, float toValue, boolean floor) {
-        if (input < 0) {
-            return input;
-        }
         float add = 0;
         if (!floor) {
-            add = toValue / 2;
+            if (input > 0) {
+                add = toValue / 2;
+            } else {
+                add = -toValue / 2;
+            }
         }
         double toValueD = toValue;
         double scale = 1 / toValueD;
@@ -116,6 +123,74 @@ public class Tools {
 
     public static double getVariance(double[] values) {
         return new Variance().evaluate(values);
+    }
+
+    public static double getMedian(double[] values) {
+        return new Median().evaluate(values);
+    }
+
+    public static double getMean(int[] values) {
+        return new Mean().evaluate(DataTypeConvertor.intsToDoubles(values));
+    }
+
+    public static double getVariance(int[] values) {
+        return new Variance().evaluate(DataTypeConvertor.intsToDoubles(values));
+    }
+
+    public static double getMedian(int[] values) {
+        return new Median().evaluate(DataTypeConvertor.intsToDoubles(values));
+    }
+
+    public static double getMean(float[] values) {
+        return new Mean().evaluate(DataTypeConvertor.floatsToDoubles(values));
+    }
+
+    public static double getVariance(float[] values) {
+        return new Variance().evaluate(DataTypeConvertor.floatsToDoubles(values));
+    }
+
+    public static double getStandardDeviation(float[] values) {
+        return new StandardDeviation().evaluate(DataTypeConvertor.floatsToDoubles(values));
+    }
+
+    public static double getStandardDeviation(double[] values) {
+        return new StandardDeviation().evaluate(values);
+    }
+
+    public static double getMin(float[] values) {
+        return new Min().evaluate(DataTypeConvertor.floatsToDoubles(values));
+    }
+
+    public static double getMin(double[] values) {
+        return new Min().evaluate(values);
+    }
+
+    public static double getMax(float[] values) {
+        return new Max().evaluate(DataTypeConvertor.floatsToDoubles(values));
+    }
+
+    public static double getMax(double[] values) {
+        return new Max().evaluate(values);
+    }
+
+    public static double getQuartile1(float[] values) {
+        return new Percentile(25).evaluate(DataTypeConvertor.floatsToDoubles(values));
+    }
+
+    public static double getQuartile1(double[] values) {
+        return new Percentile(25).evaluate(values);
+    }
+
+    public static double getQuartile3(float[] values) {
+        return new Percentile(75).evaluate(DataTypeConvertor.floatsToDoubles(values));
+    }
+
+    public static double getQuartile3(double[] values) {
+        return new Percentile(75).evaluate(values);
+    }
+
+    public static double getMedian(float[] values) {
+        return new Median().evaluate(DataTypeConvertor.floatsToDoubles(values));
     }
 
     public static double getIDim(double[] valuesD, boolean print) {
