@@ -445,18 +445,18 @@ public class Tools {
         }
     }
 
-    public static List<Object> filterMap(Map map, List keys) {
-        return filterMap(map, keys, false);
+    public static List<Object> filterMapValues(Map map, Collection keys) {
+        return Tools.filterMapValues(map, keys, false);
     }
 
-    public static List<Object> filterMap(Map map, List keys, boolean addKey) {
+    public static List<Object> filterMapValues(Map map, Collection keys, boolean addKey) {
         List<Object> ret = new ArrayList<>();
-        for (Object candidatesID : keys) {
-            Object o = map.get(candidatesID);
+        for (Object key : keys) {
+            Object value = map.get(key);
             if (addKey) {
-                o = new AbstractMap.SimpleEntry<>(candidatesID, o);
+                value = new AbstractMap.SimpleEntry<>(key, value);
             }
-            ret.add(o);
+            ret.add(value);
         }
         return ret;
     }
