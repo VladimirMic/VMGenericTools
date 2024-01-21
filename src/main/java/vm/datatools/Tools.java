@@ -387,6 +387,12 @@ public class Tools {
     }
 
     public static Object[] randomUniqueObjects(List objects, int count) {
+        if (count < objects.size()) {
+            throw new IllegalArgumentException("List has just " + objects.size() + " objects. Cannot return " + count + " unique objects");
+        }
+        if (count == objects.size()) {
+            return objects.toArray();
+        }
         Set ret = new HashSet();
         while (ret.size() < count) {
             ret.add(randomObject(objects));
