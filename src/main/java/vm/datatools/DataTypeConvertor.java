@@ -188,7 +188,12 @@ public class DataTypeConvertor {
         String[] rows = csvFloats.split(delimiter);
         float[] ret = new float[rows.length];
         for (int i = 0; i < rows.length; i++) {
-            ret[i] = Float.parseFloat(rows[i]);
+            try {
+                ret[i] = Float.parseFloat(rows[i]);
+            } catch (NumberFormatException ex) {
+                Logger.getLogger(DataTypeConvertor.class.getName()).log(Level.SEVERE, "Expected delimiter: " + delimiter + ". Wrong string: {0}", rows[i]);
+                throw new IllegalArgumentException();
+            }
         }
         return ret;
     }
