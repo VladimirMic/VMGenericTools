@@ -24,7 +24,7 @@ public class Tools {
     }
 
     public static ExecutorService initExecutor() {
-        return Executors.newCachedThreadPool();
+        return initExecutor(PARALELISATION);
     }
 
     public static void sleep(long minutes) {
