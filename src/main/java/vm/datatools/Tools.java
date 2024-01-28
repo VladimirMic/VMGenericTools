@@ -8,11 +8,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -613,6 +616,16 @@ public class Tools {
         ret[6] = angles[1]; // alphaq
         ret[1] = angles[0]; // delta2
         return ret;
+    }
+
+    public static String getDateYYYYMMDD() {
+        DateFormat df = new SimpleDateFormat("yyyy_MM_dd");
+        return df.format(new Date());
+    }
+
+    public static String getDateYYYYMM() {
+        DateFormat df = new SimpleDateFormat("yyyy_MM");
+        return df.format(new Date());
     }
 
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
