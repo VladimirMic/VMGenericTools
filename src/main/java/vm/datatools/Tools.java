@@ -572,6 +572,9 @@ public class Tools {
     }
 
     public static List<Object> getAndRemoveFirst(List<Object> list, int countToRemove) {
+        if (list.size() < countToRemove) {
+            throw new IllegalArgumentException("The size of the list " + list.size() + " is smaller than the number of required objects" + countToRemove);
+        }
         List<Object> ret = new ArrayList<>();
         for (int i = 0; i < countToRemove; i++) {
             ret.add(list.remove(0));
