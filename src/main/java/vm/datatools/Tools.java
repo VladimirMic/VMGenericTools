@@ -552,7 +552,7 @@ public class Tools {
     }
 
     public static SortedSet<Map.Entry<Integer, Float>> evaluateSumsPerRow(float[][] matrix) {
-        SortedSet<Map.Entry<Integer, Float>> ret = new TreeSet<>(new Tools.MapByValueComparator());
+        SortedSet<Map.Entry<Integer, Float>> ret = new TreeSet<>(new Tools.MapByFloatValueComparator());
         for (Integer i = 0; i < matrix.length; i++) {
             float[] row = matrix[i];
             Float sum = 0f;
@@ -748,7 +748,7 @@ public class Tools {
         return (short) (value ? shortTrue : shortFalse);
     }
 
-    public static class MapByValueComparator<T extends Comparable> implements Comparator<Map.Entry<T, Float>> {
+    public static class MapByFloatValueComparator<T extends Comparable> implements Comparator<Map.Entry<T, Float>> {
 
         @Override
         public int compare(Map.Entry<T, Float> o1, Map.Entry<T, Float> o2) {

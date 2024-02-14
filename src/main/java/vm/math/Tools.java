@@ -223,7 +223,7 @@ public class Tools {
     }
 
     public static SortedSet<Map.Entry<Integer, Float>> evaluateSumsPerRow(float[][] matrix, boolean sortedList) {
-        SortedSet<Map.Entry<Integer, Float>> ret = new TreeSet<>(new vm.datatools.Tools.MapByValueComparator());
+        SortedSet<Map.Entry<Integer, Float>> ret = new TreeSet<>(new vm.datatools.Tools.MapByFloatValueComparator());
         for (Integer i = 0; i < matrix.length; i++) {
             float[] row = matrix[i];
             Float sum = 0.0F;

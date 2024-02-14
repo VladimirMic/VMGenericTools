@@ -9,4 +9,4 @@ vm\datatools\Tools$ObjectArrayIdentityComparator.class
 vm\datatools\Tools$IntArraySameLengthsComparator.class
 vm\javatools\Tools$MetricObjectArrayIterator.class
 vm\datatools\DataTypeConvertor.class
-vm\datatools\Tools$MapByValueComparator.class
+vm\datatools\Tools$MapByFloatValueComparator.class
