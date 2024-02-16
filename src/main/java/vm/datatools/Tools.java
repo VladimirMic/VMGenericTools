@@ -754,7 +754,7 @@ public class Tools {
         public int compare(Map.Entry<T, Float> o1, Map.Entry<T, Float> o2) {
             float val1 = o1.getValue();
             float val2 = o2.getValue();
-            if (val1 != val2 && (!Float.isNaN(val1) || !Float.isNaN(val2))) {
+            if (val1 != val2) {
                 return Float.compare(val1, val2);
             }
             T key1 = o1.getKey();
