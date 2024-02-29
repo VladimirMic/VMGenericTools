@@ -14,6 +14,8 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
@@ -108,6 +110,9 @@ public class Tools {
     }
 
     public static double pearsonCorrelationCoefficient(double[] a1, double[] a2) {
+        if (a1.length != a2.length) {
+            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, "The lengths of arrays are not the same: {0}, {1}", new Object[]{a1.length, a2.length});
+        }
         PearsonsCorrelation evaluator = new PearsonsCorrelation();
         return evaluator.correlation(a1, a2);
     }
@@ -310,6 +315,14 @@ public class Tools {
             sum += vector[i] * vector[i];
         }
         return Math.sqrt(sum);
+    }
+
+    public static double[] listToPrimitiveArray(List<Double> list) {
+        double[] ret = new double[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            ret[i] = list.get(i);
+        }
+        return ret;
     }
 
 }
