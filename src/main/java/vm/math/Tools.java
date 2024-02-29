@@ -317,12 +317,4 @@ public class Tools {
         return Math.sqrt(sum);
     }
 
-    public static double[] listToPrimitiveArray(List<Double> list) {
-        double[] ret = new double[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            ret[i] = list.get(i);
-        }
-        return ret;
-    }
-
 }

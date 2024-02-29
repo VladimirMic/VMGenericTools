@@ -210,7 +210,7 @@ public class DataTypeConvertor {
         if (array == null || array.length == 0) {
             return "";
         }
-        StringBuffer ret = new StringBuffer(array.length * array[0].length * 4);
+        StringBuilder ret = new StringBuilder(array.length * array[0].length * 4);
         try {
             ret.append(DataTypeConvertor.floatsToString(array[0], columnDelimiter));
             for (int i = 1; i < array.length; i++) {
@@ -281,6 +281,22 @@ public class DataTypeConvertor {
         double[] ret = new double[values.length];
         for (int i = 0; i < values.length; i++) {
             ret[i] = Double.parseDouble(values[i].toString());
+        }
+        return ret;
+    }
+
+    public static double[] doublesToPrimitiveArray(List<Double> list) {
+        double[] ret = new double[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            ret[i] = list.get(i);
+        }
+        return ret;
+    }
+
+    public static float[] floatToPrimitiveArray(List<Float> list) {
+        float[] ret = new float[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            ret[i] = list.get(i);
         }
         return ret;
     }
