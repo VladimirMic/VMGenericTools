@@ -72,7 +72,7 @@ public class Tools {
                     String[] split = line.split(delimiter);
                     if (ret == null) {
                         if (columnNumber == Integer.MAX_VALUE) {
-                            columnNumber = Math.min(split.length, columnNumber);
+                            columnNumber = split.length;
                         }
                         ret = new List[columnNumber];
                         for (int i = 0; i < columnNumber; i++) {
@@ -174,7 +174,9 @@ public class Tools {
                 while (true) {
                     String line = br.readLine();
                     String[] split = line.split(";");
-                    ret.put(split[0], split);
+                    if (split.length > 0) {
+                        ret.put(Tools.removeQuotes(split[0]), split);
+                    }
                 }
             } catch (NullPointerException e) {
                 // ignore

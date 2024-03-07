@@ -301,4 +301,23 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static float[][] listOfFloatsToMatrix(List<float[]> list) {
+        if (list.isEmpty() || list.get(0).length == 0) {
+            return null;
+        }
+        float[][] ret = new float[list.size()][list.get(0).length];
+        for (int i = 0; i < list.size(); i++) {
+            ret[i] = list.get(i);
+        }
+        return ret;
+    }
+
+    public static float[] stringArrayToFloats(String[] array) {
+        float[] ret = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            ret[i] = Float.parseFloat(array[i]);
+        }
+        return ret;
+    }
+
 }
