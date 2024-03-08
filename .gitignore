@@ -1,3 +1,7 @@
 /target/
 target/
 target
+target/classes/vm/datatools/DataTypeConvertor.class
+target/classes/vm/datatools/Tools$IntArraySameLengthsComparator.class
+target/classes/vm/datatools/Tools.class
+target/classes/vm/math/Tools.class
