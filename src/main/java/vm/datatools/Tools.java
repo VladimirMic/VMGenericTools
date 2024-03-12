@@ -416,6 +416,9 @@ public class Tools {
     public static List<Object> arrayToList(Object[] values) {
         List<Object> ret = new ArrayList<>();
         for (Object i : values) {
+            if (i == null) {
+                String dsf = "";
+            }
             ret.add(i);
         }
         return ret;
