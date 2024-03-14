@@ -636,6 +636,15 @@ public class Tools {
         return df.format(new Date());
     }
 
+    public static List truncateList(List list, long finalSize) {
+        int size = list.size();
+        while (size > finalSize) {
+            size--;
+            list.remove(size);
+        }
+        return list;
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;
@@ -712,6 +721,9 @@ public class Tools {
     }
 
     public static List<Object> getObjectsFromIterator(int fromPosition, int toPosition, Iterator it) {
+        if (it == null) {
+            return null;
+        }
         List<Object> ret = new ArrayList<>();
         int counter;
         for (counter = 0; counter < fromPosition && it.hasNext(); counter++) {
