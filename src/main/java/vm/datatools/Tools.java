@@ -114,6 +114,9 @@ public class Tools {
                 while (line != null) {
                     line = br.readLine();
                     String[] split = line.split(delimiter);
+                    for (int i = 0; i < split.length; i++) {
+                        split[i] = removeQuotes(split[i]);                        
+                    }
                     ret.add(split);
                 }
             } catch (NullPointerException e) {
