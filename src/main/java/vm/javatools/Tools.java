@@ -45,6 +45,7 @@ public class Tools {
         }
     }
 
+
     public static class MetricObjectArrayIterator implements Iterator<Object> {
 
         private final Object[] array;

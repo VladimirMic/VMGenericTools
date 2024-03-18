@@ -320,4 +320,20 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static float[] objectsToPrimitiveFloats(Object[] groupsNames) {
+        float[] ret = new float[groupsNames.length];
+        for (int i = 0; i < groupsNames.length; i++) {
+            ret[i] = Float.parseFloat(groupsNames[i].toString());
+        }
+        return ret;
+    }
+
+    public static Float[] objectsToObjectFloats(Object[] groupsNames) {
+        Float[] ret = new Float[groupsNames.length];
+        for (int i = 0; i < groupsNames.length; i++) {
+            ret[i] = Float.valueOf(groupsNames[i].toString());
+        }
+        return ret;
+    }
+
 }

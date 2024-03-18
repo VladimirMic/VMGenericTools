@@ -317,29 +317,33 @@ public class Tools {
         return Math.sqrt(sum);
     }
 
-    private static long gcd(long a, long b) {
-        while (b > 0) {
-            long temp = b;
-            b = a % b; 
-            a = temp;
+    private static double gcd(Number a, Number b) {
+        double ad = a.doubleValue();
+        double bd = b.doubleValue();
+        while (bd > 0) {
+            double temp = bd;
+            bd = ad % bd; 
+            ad = temp;
         }
-        return a;
+        return ad;
     }
 
-    public static long gcd(long... input) {
-        long result = input[0];
+    public static double gcd(Number... input) {
+        double result = input[0].doubleValue();
         for (int i = 1; i < input.length; i++) {
             result = gcd(result, input[i]);
         }
         return result;
     }
 
-    public static long lcm(long a, long b) {
-        return a * (b / gcd(a, b));
+    public static double lcm(Number a, Number b) {
+        double ad = a.doubleValue();
+        double bd = b.doubleValue();
+        return ad * (bd / gcd(ad, bd));
     }
 
-    public static long lcm(long... input) {
-        long result = input[0];
+    public static double lcm(Number... input) {
+        double result = input[0].doubleValue();
         for (int i = 1; i < input.length; i++) {
             result = lcm(result, input[i]);
         }

@@ -115,7 +115,7 @@ public class Tools {
                     line = br.readLine();
                     String[] split = line.split(delimiter);
                     for (int i = 0; i < split.length; i++) {
-                        split[i] = removeQuotes(split[i]);                        
+                        split[i] = removeQuotes(split[i]);
                     }
                     ret.add(split);
                 }
@@ -648,6 +648,20 @@ public class Tools {
         return list;
     }
 
+    public static Integer parseInteger(Object object) {
+        try {
+            float f = parseFloat(object);
+            String s = Float.toString(f);
+            s = s.substring(0, s.indexOf("."));
+            int i = Integer.valueOf(s);
+            if (f == i) {
+                return i;
+            }
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;
@@ -888,6 +902,9 @@ public class Tools {
     }
 
     public static String removeQuotes(String string) {
+        if (string == null) {
+            return null;
+        }
         string = string.trim();
         if (string.startsWith("\"") && string.endsWith("\"")) {
             return string.substring(1, string.length() - 1);
@@ -896,10 +913,39 @@ public class Tools {
     }
 
     public static Float parseFloat(String string) {
-        if (string == null || string.isBlank() || string.toLowerCase().equals("nan")) {
-            return null;
+        try {
+            string = Tools.removeQuotes(string);
+            if (string == null || string.isBlank() || string.toLowerCase().equals("nan")) {
+                return null;
+            }
+            return Float.valueOf(string);
+        } catch (Exception e) {
         }
-        return Float.valueOf(string);
+        return null;
+    }
+
+    public static boolean isParseableToFloats(Object[] array) {
+        for (Object o : array) {
+            Float floatValue = parseFloat(o);
+            if (floatValue == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isParseableToIntegers(Object[] array) {
+        for (Object o : array) {
+            Integer iValue = parseInteger(o);
+            if (iValue == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static Float parseFloat(Object object) {
+        return parseFloat(object.toString());
     }
 
 }
