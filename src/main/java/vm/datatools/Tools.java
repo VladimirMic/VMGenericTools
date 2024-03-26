@@ -228,8 +228,8 @@ public class Tools {
         return ret;
     }
 
-    public static SortedMap<Float, Float> parseCsvMapFloats(String path) {
-        SortedMap<Float, Float> ret = new TreeMap<>();
+    public static TreeMap<Float, Float> parseCsvMapFloats(String path) {
+        TreeMap<Float, Float> ret = new TreeMap<>();
         List<String>[] csv = parseCsvKeysValues(path);
         int count = csv[0].size();
         for (int i = 0; i < count; i++) {
