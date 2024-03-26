@@ -233,9 +233,13 @@ public class Tools {
         List<String>[] csv = parseCsvKeysValues(path);
         int count = csv[0].size();
         for (int i = 0; i < count; i++) {
-            Float col0 = Float.valueOf(csv[0].get(i));
-            Float col1 = Float.valueOf(csv[1].get(i));
-            ret.put(col0, col1);
+            try {
+                Float col0 = Float.valueOf(csv[0].get(i));
+                Float col1 = Float.valueOf(csv[1].get(i));
+                ret.put(col0, col1);
+            } catch (NumberFormatException e) {
+                LOG.log(Level.WARNING, "Number format exception for index {2} and values {0}, {1}", new Object[]{csv[0].get(i), csv[1].get(i), i});
+            }
         }
         return ret;
     }
@@ -660,6 +664,7 @@ public class Tools {
         } catch (Exception e) {
         }
         return null;
+
     }
 
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
@@ -780,6 +785,7 @@ public class Tools {
 
     public static short booleanToShort(boolean value, int shortTrue, int shortFalse) {
         return (short) (value ? shortTrue : shortFalse);
+
     }
 
     public static class MapByFloatValueComparator<T extends Comparable> implements Comparator<Map.Entry<T, Float>> {
