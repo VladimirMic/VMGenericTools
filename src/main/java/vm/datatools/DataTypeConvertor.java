@@ -210,7 +210,9 @@ public class DataTypeConvertor {
         if (array == null || array.length == 0) {
             return "";
         }
-        StringBuilder ret = new StringBuilder(array.length * array[0].length * 4);
+        int size = array.length * array[0].length * 4;
+        size = Math.max(size, 0);
+        StringBuilder ret = new StringBuilder(size);
         try {
             ret.append(DataTypeConvertor.floatsToString(array[0], columnDelimiter));
             for (int i = 1; i < array.length; i++) {
