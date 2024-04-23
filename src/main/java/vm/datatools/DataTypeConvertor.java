@@ -51,7 +51,9 @@ public class DataTypeConvertor {
         String ret = array[0].toString();
         if (array.length > 1) {
             for (int i = 1; i < array.length; i++) {
-                ret += delimiter + array[i].toString();
+                if (array[i] != null) {
+                    ret += delimiter + array[i].toString();
+                }
             }
         }
         return ret;

@@ -24,7 +24,7 @@ public class SVGtoPDF {
 
     public static final Transcoder transcoder = new PDFTranscoder();
 
-    public static void transformToPdf(File f) {
+    public static boolean transformToPdf(File f) {
         try {
             TranscoderInput transcoderInput = new TranscoderInput(new FileInputStream(f));
             String path = f.getAbsolutePath();
@@ -34,8 +34,10 @@ public class SVGtoPDF {
             path += ".pdf";
             TranscoderOutput transcoderOutput = new TranscoderOutput(new FileOutputStream(new File(path)));
             transcoder.transcode(transcoderInput, transcoderOutput);
+            return true;
         } catch (FileNotFoundException | TranscoderException ex) {
             Logger.getLogger(SVGtoPDF.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 }

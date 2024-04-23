@@ -921,7 +921,7 @@ public class Tools {
     public static Float parseFloat(String string) {
         try {
             string = Tools.removeQuotes(string);
-            if (string == null || string.isBlank() || string.toLowerCase().equals("nan")) {
+            if (string == null || string.isBlank() || string.toLowerCase().equals("nan") || string.endsWith("D")) {
                 return null;
             }
             return Float.valueOf(string);
