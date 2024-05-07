@@ -1,5 +1,6 @@
 package vm.javatools;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,6 +46,15 @@ public class Tools {
         }
     }
 
+    public static void clearDiskCache() {
+        try {
+            Runtime run = Runtime.getRuntime(); // get OS Runtime
+            Process pr = run.exec("free -m"); // execute a system command and give back the process
+            pr.waitFor(); // wait for the process to complete
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public static class MetricObjectArrayIterator implements Iterator<Object> {
 
