@@ -46,10 +46,11 @@ public class Tools {
         }
     }
 
-    public static void clearDiskCache() {
+    public static void clearJavaCache() {
         try {
-            Runtime run = Runtime.getRuntime(); // get OS Runtime
-            Process pr = run.exec("free -m"); // execute a system command and give back the process
+            Runtime run = Runtime.getRuntime();
+            Process pr = run.exec("javaws -Xclearcache -silent -Xnosplash"); 
+           
             pr.waitFor(); // wait for the process to complete
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
@@ -77,6 +78,6 @@ public class Tools {
             return array[currPos - 1];
         }
 
-    }
-
+    }    
+    
 }

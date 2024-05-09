@@ -5,6 +5,7 @@ vm\javatools\SVGtoPDF.class
 vm\datatools\Tools.class
 vm\javatools\Tools.class
 vm\datatools\Tools$ObjectArrayIdentityComparator.class
+vm\javatools\SymbolicLinkCreator.class
 vm\javatools\Tools$MetricObjectArrayIterator.class
 vm\datatools\Tools$MapByValueComparatorWithOwnValueComparator.class
 vm\math\Tools.class
