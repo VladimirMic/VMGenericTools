@@ -7,6 +7,7 @@ package vm.javatools;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.swing.JOptionPane;
 
 /**
@@ -16,14 +17,17 @@ import javax.swing.JOptionPane;
 public class SymbolicLinkCreator {
 
     public static void main(String[] args) throws IOException {
-        /* JOptionPane Java user input example */
-        String source = JOptionPane.showInputDialog("Full path of the source file?");
-        File sourceF = new File(source);
-        if (!sourceF.exists()) {
-            throw new IllegalArgumentException("File " + source + " does not exist");
+        while (true) {
+            String source = JOptionPane.showInputDialog("Full path of the source file?");
+            File sourceF = new File(source);
+            if (!sourceF.exists()) {
+                throw new IllegalArgumentException("File " + source + " does not exist");
+            }
+            System.err.println(source);
+            String link = JOptionPane.showInputDialog("Full path to new symbolic link?");
+            File linkF = new File(link);
+            System.err.println(link);
+            Path linkRes = Files.createSymbolicLink(linkF.toPath(), sourceF.toPath());
         }
-        String link = JOptionPane.showInputDialog("Full path to new symbolic link?");
-        File linkF = new File(link);
-        Files.createSymbolicLink(sourceF.toPath(), linkF.toPath());
     }
 }

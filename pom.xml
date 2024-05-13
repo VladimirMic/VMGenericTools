@@ -26,7 +26,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>vm.javatools.Tools</mainClass>
+                            <mainClass>vm.javatools.SymbolicLinkCreator</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
