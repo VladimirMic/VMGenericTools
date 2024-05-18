@@ -1,6 +1,7 @@
 package vm.datatools;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -56,6 +57,9 @@ public class Tools {
     }
 
     public static List<String>[] parseCsv(String path, int columnNumber, int rowNumber, String delimiter, boolean filterOnlyNumberOfColumns) {
+        if (!new File(path).exists()) {
+            throw new IllegalArgumentException("File  " + path + " does not exist");
+        }
         if (rowNumber < 0) {
             rowNumber = Integer.MAX_VALUE;
         }
