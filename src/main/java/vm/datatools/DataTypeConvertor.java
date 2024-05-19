@@ -324,10 +324,10 @@ public class DataTypeConvertor {
         return ret;
     }
 
-    public static float[] objectsToPrimitiveFloats(Object[] groupsNames) {
-        float[] ret = new float[groupsNames.length];
-        for (int i = 0; i < groupsNames.length; i++) {
-            ret[i] = Float.parseFloat(groupsNames[i].toString());
+    public static float[] objectsToPrimitiveFloats(Object[] array) {
+        float[] ret = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            ret[i] = Float.parseFloat(array[i].toString());
         }
         return ret;
     }
