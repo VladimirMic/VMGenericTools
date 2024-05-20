@@ -322,7 +322,7 @@ public class Tools {
         double bd = b.doubleValue();
         while (bd > 0) {
             double temp = bd;
-            bd = ad % bd; 
+            bd = ad % bd;
             ad = temp;
         }
         return ad;
@@ -348,6 +348,20 @@ public class Tools {
             result = lcm(result, input[i]);
         }
         return result;
+    }
+
+    public static float ifSmallerThanOneRoundToFirstNonzeroFloatingNumber(float f) {
+        if (f >= 1) {
+            return f;
+        }
+        float bigN = f;
+        int exp = 0;
+        while (bigN < 1) {
+            bigN *= 10;
+            exp++;
+        }
+        int num = (int) bigN;
+        return (float) ((float) num * Math.pow(10, -exp));
     }
 
 }

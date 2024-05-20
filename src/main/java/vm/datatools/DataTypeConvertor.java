@@ -5,6 +5,7 @@
  */
 package vm.datatools;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -337,6 +338,13 @@ public class DataTypeConvertor {
         for (int i = 0; i < groupsNames.length; i++) {
             ret[i] = Float.valueOf(groupsNames[i].toString());
         }
+        return ret;
+    }
+
+    public static Object objectToSingularArray(Object object) {
+        Class<? extends Object> aClass = object.getClass();
+        Object ret = Array.newInstance(aClass, 1);
+        Array.set(ret, 0, object);
         return ret;
     }
 
