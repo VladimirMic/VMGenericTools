@@ -33,7 +33,7 @@ public class Tools {
         try {
             Thread.sleep(minutes * 1000 * 60);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -42,19 +42,26 @@ public class Tools {
         try {
             Thread.sleep(seconds * 1000);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
     public static void clearJavaCache() {
         try {
             Runtime run = Runtime.getRuntime();
-            Process pr = run.exec("javaws -Xclearcache -silent -Xnosplash"); 
-           
+            Process pr = run.exec("javaws -Xclearcache -silent -Xnosplash");
             pr.waitFor(); // wait for the process to complete
         } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static float getRatioOfConsumedRam() {
+        Runtime r = Runtime.getRuntime();
+        long maxMemory = r.maxMemory();
+        long totalMemory = r.totalMemory();
+        LOG.log(Level.INFO, "Max memory: {0} MB. Total occupied memory: {1} MB.", new Object[]{maxMemory / 1024 / 1024, totalMemory / 1024 / 1024});
+        return ((float) totalMemory) / maxMemory;
     }
 
     public static class MetricObjectArrayIterator implements Iterator<Object> {
@@ -78,6 +85,6 @@ public class Tools {
             return array[currPos - 1];
         }
 
-    }    
-    
+    }
+
 }

@@ -739,32 +739,37 @@ public class Tools {
     }
 
     public static List<Object> getObjectsFromIterator(Iterator it) {
-        return Tools.getObjectsFromIterator(0, Integer.MAX_VALUE, it);
+        return Tools.getObjectsFromIterator(it, Integer.MAX_VALUE);
     }
 
     public static List<Object> getObjectsFromIterator(Iterator it, int maxCount) {
-        return Tools.getObjectsFromIterator(0, maxCount, it);
-    }
-
-    public static List<Object> getObjectsFromIterator(int fromPosition, int toPosition, Iterator it) {
         if (it == null) {
             return null;
         }
         List<Object> ret = new ArrayList<>();
-        int counter;
-        for (counter = 0; counter < fromPosition && it.hasNext(); counter++) {
-            it.next();
-        }
-        if (counter != fromPosition) {
+        if (maxCount == 0) {
             return ret;
         }
-        for (counter = fromPosition; counter < toPosition && it.hasNext(); counter++) {
+        for (int counter = 0; counter < maxCount && it.hasNext(); counter++) {
             ret.add(it.next());
-            if (ret.size() % 100000 == 0) {
-                LOG.log(Level.INFO, "Read {0} objects from iterator", ret.size());
+            if (ret.size() % 500000 == 0) {
+                System.gc();
+                float ram = vm.javatools.Tools.getRatioOfConsumedRam() * 100;
+                if (ram > 90) {
+                    String message = "Loaded " + ret.size() + " objects from iterator. Terminaning batch reading due to occupied ram RAM: (" + ram + " %)";
+                    if (maxCount == Integer.MAX_VALUE) {
+                        LOG.log(Level.INFO, message);
+                    } else {
+                        LOG.log(Level.WARNING, message);
+                    }
+                    return ret;
+                } else {
+                    LOG.log(Level.INFO, "Read {0} objects from iterator. RAM occupation: {1} %", new Object[]{ret.size(), ram});
+                }
             }
         }
-        LOG.log(Level.INFO, "Returning {0} objects from iterator", ret.size());
+        float ram = vm.javatools.Tools.getRatioOfConsumedRam();
+        LOG.log(Level.INFO, "Returning {0} objects from iterator. RAM occupation:", new Object[]{ret.size(), ram});
         return ret;
     }
 
