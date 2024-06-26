@@ -755,7 +755,7 @@ public class Tools {
             if (ret.size() % 500000 == 0) {
                 System.gc();
                 float ram = vm.javatools.Tools.getRatioOfConsumedRam() * 100;
-                if (ram > 90) {
+                if (ram > 80) {
                     String message = "Loaded " + ret.size() + " objects from iterator. Terminaning batch reading due to occupied ram RAM: (" + ram + " %)";
                     if (maxCount == Integer.MAX_VALUE) {
                         LOG.log(Level.INFO, message);
