@@ -274,7 +274,7 @@ public class DataTypeConvertor {
         return ret;
     }
 
-    public static String[] objectsToStrings(List<Object> objects) {
+    public static String[] objectsToStrings(List objects) {
         String[] ret = new String[objects.size()];
         for (int i = 0; i < objects.size(); i++) {
             ret[i] = objects.get(i).toString();
