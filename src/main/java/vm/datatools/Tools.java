@@ -39,6 +39,7 @@ public class Tools {
 
     private static final Random RANDOM = new Random();
     private static final Logger LOG = Logger.getLogger(vm.math.Tools.class.getName());
+    private static final Float IMPLICIT_MAX_MEMORY_OCCUPATION_FOR_DATA_READING = 80F;
 
     public static List<String>[] parseCsvKeysValues(String path) {
         return parseCsv(path, 2, true);
@@ -742,7 +743,16 @@ public class Tools {
         return Tools.getObjectsFromIterator(it, Integer.MAX_VALUE);
     }
 
+    public static List<Object> getObjectsFromIterator(float memoryLimitInPercentages, Iterator it) {
+        return Tools.getObjectsFromIterator(it, Integer.MAX_VALUE, memoryLimitInPercentages);
+    }
+
     public static List<Object> getObjectsFromIterator(Iterator it, int maxCount) {
+        return Tools.getObjectsFromIterator(it, maxCount, IMPLICIT_MAX_MEMORY_OCCUPATION_FOR_DATA_READING);
+
+    }
+
+    public static List<Object> getObjectsFromIterator(Iterator it, int maxCount, float memoryLimitInPercentages) {
         if (it == null) {
             return null;
         }
@@ -755,12 +765,11 @@ public class Tools {
             if (ret.size() % 500000 == 0) {
                 System.gc();
                 float ram = vm.javatools.Tools.getRatioOfConsumedRam() * 100;
-                if (ram > 80) {
-                    String message = "Loaded " + ret.size() + " objects from iterator. Terminaning batch reading due to occupied ram RAM: (" + ram + " %)";
+                if (ram > memoryLimitInPercentages) {
                     if (maxCount == Integer.MAX_VALUE) {
-                        LOG.log(Level.INFO, message);
+                        LOG.log(Level.INFO, "Loaded {0} objects from iterator. Terminaning batch reading due to occupied ram RAM: ({1} %)", new Object[]{ret.size(), ram});
                     } else {
-                        LOG.log(Level.WARNING, message);
+                        LOG.log(Level.WARNING, "Loaded {0} objects from iterator. Terminaning batch reading due to occupied ram RAM: ({1} %)", new Object[]{ret.size(), ram});
                     }
                     return ret;
                 } else {
