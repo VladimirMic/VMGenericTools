@@ -767,13 +767,13 @@ public class Tools {
                 float ram = vm.javatools.Tools.getRatioOfConsumedRam() * 100;
                 if (ram > memoryLimitInPercentages) {
                     if (maxCount == Integer.MAX_VALUE) {
-                        LOG.log(Level.INFO, "Loaded {0} objects from iterator. Terminaning batch reading due to occupied ram RAM: ({1} %)", new Object[]{ret.size(), ram});
+                        LOG.log(Level.INFO, "Loaded {0} objects from iterator. Terminaning batch reading due to occupied ram RAM: ({1} %, limit is {2})", new Object[]{ret.size(), ram, memoryLimitInPercentages});
                     } else {
-                        LOG.log(Level.WARNING, "Loaded {0} objects from iterator. Terminaning batch reading due to occupied ram RAM: ({1} %)", new Object[]{ret.size(), ram});
+                        LOG.log(Level.WARNING, "Loaded {0} objects from iterator. Terminaning batch reading due to occupied ram RAM: ({1} %, limit is {2})", new Object[]{ret.size(), ram, memoryLimitInPercentages});
                     }
                     return ret;
                 } else {
-                    LOG.log(Level.INFO, "Read {0} objects from iterator. RAM occupation: {1} %", new Object[]{ret.size(), ram});
+                    LOG.log(Level.INFO, "Read {0} objects from iterator. RAM occupation: {1} % out of {2} % permited", new Object[]{ret.size(), ram, memoryLimitInPercentages});
                 }
             }
         }
