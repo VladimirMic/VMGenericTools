@@ -60,8 +60,9 @@ public class Tools {
         Runtime r = Runtime.getRuntime();
         long maxMemory = r.maxMemory();
         long totalMemory = r.totalMemory();
-        LOG.log(Level.INFO, "Max memory: {0} MB. Total occupied memory: {1} MB.", new Object[]{maxMemory / 1024 / 1024, totalMemory / 1024 / 1024});
-        return ((float) totalMemory) / maxMemory;
+        float ret = ((float) totalMemory) / maxMemory;
+        LOG.log(Level.INFO, "Max memory: {0} MB. Total occupied memory: {1} MB. Ratio: {2}", new Object[]{maxMemory / 1024 / 1024, totalMemory / 1024 / 1024, ret});
+        return ret;
     }
 
     public static class MetricObjectArrayIterator implements Iterator<Object> {
