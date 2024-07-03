@@ -56,12 +56,14 @@ public class Tools {
         }
     }
 
-    public static float getRatioOfConsumedRam() {
+    public static float getRatioOfConsumedRam(boolean print) {
         Runtime r = Runtime.getRuntime();
         long maxMemory = r.maxMemory();
         long totalMemory = r.totalMemory();
         float ret = ((float) totalMemory) / maxMemory;
-        LOG.log(Level.INFO, "Max memory: {0} MB. Total occupied memory: {1} MB. Ratio: {2}", new Object[]{maxMemory / 1024 / 1024, totalMemory / 1024 / 1024, ret});
+        if (print) {
+            LOG.log(Level.INFO, "Max memory: {0} MB. Total occupied memory: {1} MB. Ratio: {2}", new Object[]{maxMemory / 1024 / 1024, totalMemory / 1024 / 1024, ret});
+        }
         return ret;
     }
 

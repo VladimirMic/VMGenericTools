@@ -764,7 +764,7 @@ public class Tools {
             ret.add(it.next());
             if (ret.size() % 500000 == 0) {
                 System.gc();
-                float ram = vm.javatools.Tools.getRatioOfConsumedRam() * 100;
+                float ram = vm.javatools.Tools.getRatioOfConsumedRam(true) * 100;
                 if (ram > memoryLimitInPercentages) {
                     if (maxCount == Integer.MAX_VALUE) {
                         LOG.log(Level.INFO, "Loaded {0} objects from iterator. Terminaning batch reading due to occupied ram RAM: ({1} %, limit is {2})", new Object[]{ret.size(), ram, memoryLimitInPercentages});
@@ -777,7 +777,7 @@ public class Tools {
                 }
             }
         }
-        float ram = vm.javatools.Tools.getRatioOfConsumedRam();
+        float ram = vm.javatools.Tools.getRatioOfConsumedRam(false);
         LOG.log(Level.INFO, "Returning {0} objects from iterator. RAM occupation:", new Object[]{ret.size(), ram});
         return ret;
     }
