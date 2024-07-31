@@ -756,6 +756,9 @@ public class Tools {
         if (it == null) {
             return null;
         }
+        if (memoryLimitInPercentages < 0) {
+            memoryLimitInPercentages = 1000;
+        }
         List<Object> ret = new ArrayList<>();
         if (maxCount == 0) {
             return ret;

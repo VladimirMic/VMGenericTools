@@ -67,12 +67,12 @@ public class Tools {
         return ret;
     }
 
-    public static class MetricObjectArrayIterator implements Iterator<Object> {
+    public static class ArrayIterator<T> implements Iterator<T> {
 
-        private final Object[] array;
+        private final T[] array;
         private int currPos;
 
-        public MetricObjectArrayIterator(Object[] array) {
+        public ArrayIterator(T[] array) {
             this.array = array;
             currPos = 0;
         }
@@ -83,7 +83,7 @@ public class Tools {
         }
 
         @Override
-        public Object next() {
+        public T next() {
             currPos++;
             return array[currPos - 1];
         }
