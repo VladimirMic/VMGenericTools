@@ -41,9 +41,9 @@ public class Tools {
                 add = -toValue / 2;
             }
         }
-        double toValueD = toValue;
-        double scale = 1 / toValueD;
-        int m = (int) ((input + add) * scale);
+        double scale = 1 / toValue;
+        float f = (float) ((input + add) * scale);
+        int m = (int) f;
         double ret = m / scale;
         float retFloat = (float) ret;
         return retFloat;
