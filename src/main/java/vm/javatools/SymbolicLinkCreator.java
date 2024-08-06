@@ -17,6 +17,10 @@ import javax.swing.JOptionPane;
 public class SymbolicLinkCreator {
 
     public static void main(String[] args) throws IOException {
+        gui();
+    }
+
+    private static void gui() throws IOException {
         while (true) {
             String source = JOptionPane.showInputDialog("Full path of the source file?");
             File sourceF = new File(source);
@@ -24,10 +28,10 @@ public class SymbolicLinkCreator {
                 throw new IllegalArgumentException("File " + source + " does not exist");
             }
             System.err.println(source);
-            String link = JOptionPane.showInputDialog("Full path to new symbolic link?");
-            File linkF = new File(link);
+            String link = JOptionPane.showInputDialog("Folder name to new symbolic link?");
             System.err.println(link);
-            Path linkRes = Files.createSymbolicLink(linkF.toPath(), sourceF.toPath());
+            File linkF = new File(link, sourceF.getName());
+            Files.createSymbolicLink(linkF.toPath(), sourceF.toPath());
         }
     }
 }
