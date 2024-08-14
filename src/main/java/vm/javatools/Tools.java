@@ -71,15 +71,21 @@ public class Tools {
 
         private final T[] array;
         private int currPos;
+        private final int maxCount;
 
         public ArrayIterator(T[] array) {
+            this(array, Integer.MAX_VALUE);
+        }
+
+        public ArrayIterator(T[] array, int maxCount) {
             this.array = array;
             currPos = 0;
+            this.maxCount = Math.min(maxCount, array.length);
         }
 
         @Override
         public boolean hasNext() {
-            return currPos < array.length;
+            return currPos < maxCount;
         }
 
         @Override
