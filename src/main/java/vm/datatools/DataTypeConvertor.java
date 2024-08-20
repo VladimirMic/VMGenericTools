@@ -348,4 +348,12 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static Integer[] intsToIntegers(int[] ints) {
+        Integer[] ret = new Integer[ints.length];
+        for (int i = 0; i < ints.length; i++) {
+            ret[i] = ints[i];
+        }
+        return ret;
+    }
+
 }

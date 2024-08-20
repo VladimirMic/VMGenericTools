@@ -347,6 +347,17 @@ public class Tools {
         }
     }
 
+    public static void printMatrixWithRowHeaders(String[] rowHeaders, float[][] m) {
+        for (int i = 0; i < m.length; i++) {
+            System.err.print(rowHeaders[i] + ";");
+            float[] column = m[i];
+            for (int j = 0; j < column.length; j++) {
+                System.err.print(column[j] + ";");
+            }
+            System.err.println();
+        }
+    }
+
     public static void printArray(float[] array) {
         printArray(array, true);
     }
