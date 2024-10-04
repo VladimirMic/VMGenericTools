@@ -8,6 +8,7 @@ package vm.math;
 import java.awt.geom.Point2D;
 import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -362,6 +363,108 @@ public class Tools {
         }
         int num = (int) bigN;
         return (float) ((float) num * Math.pow(10, -exp));
+    }
+
+    public static SortedMap<Float, Float> createHistogramOfValues(float[] values) {
+        return createHistogramOfValues(values, false);
+    }
+
+    public static SortedMap<Float, Float> createHistogramOfValues(float[] values, boolean absoluteValues) {
+        float max = (float) Tools.getMax(values);
+        float min = (float) Tools.getMin(values);
+        float basicInterval = computeBasicXIntervalForHistogram(min, max);
+        return createHistogramOfValues(values, basicInterval, absoluteValues);
+    }
+
+    /**
+     *
+     * @param values
+     * @param step on the x axis
+     * @param absoluteValues if false, then histogram. Otherwise absolute values
+     * @return
+     */
+    public static SortedMap<Float, Float> createHistogramOfValues(float[] values, float step, boolean absoluteValues) {
+        SortedMap<Float, Float> ret = new TreeMap<>();
+        for (Float value : values) {
+            Float key = Tools.round(value, step, false);
+            if (!ret.containsKey(key)) {
+                ret.put(key, 1.0F);
+            } else {
+                float count = ret.get(key);
+                ret.put(key, count + 1.0F);
+            }
+        }
+        Float lastKey = ret.lastKey();
+        while (lastKey >= ret.firstKey()) {
+            if (!ret.containsKey(lastKey)) {
+                ret.put(lastKey, 0.0F);
+            } else if (!absoluteValues) {
+                ret.put(lastKey, ret.get(lastKey) / values.length);
+            }
+            lastKey -= step;
+        }
+        return ret;
+    }
+
+    public static SortedMap<Float, Float> createHistogramOfValues(List<Float> values, float step, boolean absoluteValues) {
+        float[] floatToPrimitiveArray = DataTypeConvertor.floatToPrimitiveArray(values);
+        return createHistogramOfValues(floatToPrimitiveArray, step, absoluteValues);
+    }
+
+    public static SortedMap<Float, Float> createHistogramOfValues(List<Float> values, boolean absoluteValues) {
+        float[] floatToPrimitiveArray = DataTypeConvertor.floatToPrimitiveArray(values);
+        return createHistogramOfValues(floatToPrimitiveArray, absoluteValues);
+    }
+
+    public static SortedMap<Float, Float> createHistogramOfValues(List<Float> values) {
+        float[] floatToPrimitiveArray = DataTypeConvertor.floatToPrimitiveArray(values);
+        return createHistogramOfValues(floatToPrimitiveArray);
+    }
+
+    public static float computeBasicXIntervalForHistogram(float[] values) {
+        float max = (float) Tools.getMax(values);
+        float min = (float) Tools.getMin(values);
+        return computeBasicXIntervalForHistogram(min, max);
+    }
+
+    public static float computeBasicXIntervalForHistogram(float min, float max) {
+        int exp = 0;
+        float diff = max - min;
+        while (diff < 1) {
+            diff *= 10;
+            exp++;
+        }
+        float maxCopy = max - min;
+        int untilZero = (int) maxCopy;
+        float prev;
+        int counter = 0;
+        if (untilZero < 0) {
+            while (untilZero != maxCopy) {
+                untilZero = (int) (maxCopy * 10);
+                maxCopy *= 10;
+                counter--;
+            }
+        }
+        prev = (int) maxCopy;
+        untilZero = (int) (maxCopy / 10);
+        while (untilZero != 0) {
+            prev = untilZero;
+            untilZero = (int) (maxCopy / 10);
+            maxCopy /= 10;
+            counter++;
+        }
+        counter -= 3;
+        float ret = (float) (prev * Math.pow(10, counter));
+        while (80 * ret > max - min) {
+            ret /= 1.2;
+        }
+        while (200 * ret < max - min) {
+            ret *= 1.2;
+        }
+        ret = (float) (ret / Math.pow(10, exp));
+        ret = Tools.ifSmallerThanOneRoundToFirstNonzeroFloatingNumber(ret);
+        Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Step for the plot with min and max values on x axis {0}, {1} is decided to be {2}", new Object[]{min, max, ret});
+        return ret;
     }
 
 }

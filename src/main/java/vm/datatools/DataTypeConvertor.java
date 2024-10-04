@@ -341,9 +341,12 @@ public class DataTypeConvertor {
         return ret;
     }
 
-    public static Object objectToSingularArray(Object object) {
-        Class<? extends Object> aClass = object.getClass();
-        Object ret = Array.newInstance(aClass, 1);
+    public static <T> T[] objectToSingularArray(T object) {
+        if (object == null) {
+            return null;
+        }
+        Class aClass = object.getClass();
+        T[] ret = (T[]) Array.newInstance(aClass, 1);
         Array.set(ret, 0, object);
         return ret;
     }
