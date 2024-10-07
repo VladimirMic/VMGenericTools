@@ -8,7 +8,7 @@ package vm.math;
 import java.awt.geom.Point2D;
 import java.util.AbstractMap;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -352,9 +352,11 @@ public class Tools {
     }
 
     public static float ifSmallerThanOneRoundToFirstNonzeroFloatingNumber(float f) {
-        if (f >= 1) {
+        if (f >= 1 || f <= -1) {
             return f;
         }
+        int sig = f < 0 ? -1 : 1;
+        f = f * sig;
         float bigN = f;
         int exp = 0;
         while (bigN < 1) {
@@ -362,7 +364,7 @@ public class Tools {
             exp++;
         }
         int num = (int) bigN;
-        return (float) ((float) num * Math.pow(10, -exp));
+        return (float) ((float) num * Math.pow(10, -exp)) * sig;
     }
 
     public static SortedMap<Float, Float> createHistogramOfValues(float[] values) {
@@ -464,6 +466,24 @@ public class Tools {
         ret = (float) (ret / Math.pow(10, exp));
         ret = Tools.ifSmallerThanOneRoundToFirstNonzeroFloatingNumber(ret);
         Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Step for the plot with min and max values on x axis {0}, {1} is decided to be {2}", new Object[]{min, max, ret});
+        return ret;
+    }
+
+    public static float getStepOfHistogram(SortedMap<Float, Float> histogram) {
+        if (histogram == null || histogram.size() < 2) {
+            throw new IllegalArgumentException();
+        }
+        float sum = 0;
+        int count = histogram.size() - 1;
+        Iterator<Float> it = histogram.keySet().iterator();
+        Float prev = it.next();
+        while (it.hasNext()) {
+            float curr = it.next();
+            sum += curr - prev;
+            prev = curr;
+        }
+        float ret = sum / count;
+        ret = Tools.ifSmallerThanOneRoundToFirstNonzeroFloatingNumber(ret);
         return ret;
     }
 
