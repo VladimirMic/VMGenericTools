@@ -469,8 +469,8 @@ public class Tools {
                 counter--;
             }
         }
-        prev = (int) maxCopy;
-        untilZero = (int) (maxCopy / 10);
+        prev = (int) diff;
+        untilZero = (int) (prev / 10);
         while (untilZero != 0) {
             prev = untilZero;
             untilZero = (int) (maxCopy / 10);
@@ -479,13 +479,13 @@ public class Tools {
         }
         counter -= 3;
         float ret = (float) (prev * Math.pow(10, counter));
+        ret = (float) (ret / Math.pow(10, exp));
         while (80 * ret > max - min) {
             ret /= 1.25;
         }
         while (160 * ret < max - min) {
             ret *= 1.25;
         }
-        ret = (float) (ret / Math.pow(10, exp));
         ret = Tools.ifSmallerThanOneStepForHistogram(ret);
         Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Step for the plot with min and max values on x axis {0}, {1} is decided to be {2}", new Object[]{min, max, ret});
         return ret;
