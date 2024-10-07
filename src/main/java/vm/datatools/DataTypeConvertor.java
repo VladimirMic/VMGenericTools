@@ -359,4 +359,12 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static double floatToPreciseDouble(float f) {
+        return Double.parseDouble(Float.toString(f));
+    }
+
+    public static float doubleToPreciseFloat(double d) {
+        return Float.parseFloat(Double.toString(d));
+    }
+
 }

@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -34,7 +35,17 @@ import vm.datatools.DataTypeConvertor;
 public class Tools {
 
     public static float round(float input, float toValue, boolean floor) {
-        float add = 0;
+        double tValueD = DataTypeConvertor.floatToPreciseDouble(toValue);
+        double inputD = DataTypeConvertor.floatToPreciseDouble(input);
+        if (toValue < 1) {
+            return roundInternal(inputD, tValueD, floor, true);
+        } else {
+            return roundInternal(inputD, tValueD, floor, false);
+        }
+    }
+
+    private static float roundInternal(double input, double toValue, boolean floor, boolean multiplication) {
+        double add = 0;
         if (!floor) {
             if (input > 0) {
                 add = toValue / 2;
@@ -42,12 +53,11 @@ public class Tools {
                 add = -toValue / 2;
             }
         }
-        double scale = 1 / toValue;
-        float f = (float) ((input + add) * scale);
+        double scale = multiplication ? toValue : 1 / toValue;
+        double f = multiplication ? ((input + add) / scale) : ((input + add) * scale);
         int m = (int) f;
-        double ret = m / scale;
-        float retFloat = (float) ret;
-        return retFloat;
+        double ret = multiplication ? m * scale : m / scale;
+        return DataTypeConvertor.doubleToPreciseFloat(ret);
     }
 
     public static float[][] copyMatrix(float[][] matrix) {
@@ -351,7 +361,7 @@ public class Tools {
         return result;
     }
 
-    public static float ifSmallerThanOneRoundToFirstNonzeroFloatingNumber(float f) {
+    private static float ifSmallerThanOneStepForHistogram(float f) {
         if (f >= 1 || f <= -1) {
             return f;
         }
@@ -364,7 +374,11 @@ public class Tools {
             exp++;
         }
         int num = (int) bigN;
-        return (float) ((float) num * Math.pow(10, -exp)) * sig;
+        float ret =  (float) ((float) num * Math.pow(10, -exp)) * sig;
+        if(ret == 0.1f && f >= 0.12f){
+            return 0.15f;
+        }
+        return ret;
     }
 
     public static SortedMap<Float, Float> createHistogramOfValues(float[] values) {
@@ -397,13 +411,21 @@ public class Tools {
             }
         }
         Float lastKey = ret.lastKey();
+        double stepd = DataTypeConvertor.floatToPreciseDouble(step);
         while (lastKey >= ret.firstKey()) {
+            double lastKeyD = DataTypeConvertor.floatToPreciseDouble(lastKey);
             if (!ret.containsKey(lastKey)) {
-                ret.put(lastKey, 0.0F);
+                Float nextKey = ret.tailMap(lastKey).firstKey();
+                float dif = Math.abs(nextKey - lastKey);
+                dif = Tools.ifSmallerThanOneStepForHistogram(dif);
+                if (dif != 0) {
+                    ret.put(lastKey, 0.0F);
+                }
             } else if (!absoluteValues) {
                 ret.put(lastKey, ret.get(lastKey) / values.length);
             }
-            lastKey -= step;
+            lastKeyD -= stepd;
+            lastKey = (float) lastKeyD;
         }
         return ret;
     }
@@ -458,32 +480,30 @@ public class Tools {
         counter -= 3;
         float ret = (float) (prev * Math.pow(10, counter));
         while (80 * ret > max - min) {
-            ret /= 1.2;
+            ret /= 1.25;
         }
-        while (200 * ret < max - min) {
-            ret *= 1.2;
+        while (160 * ret < max - min) {
+            ret *= 1.25;
         }
         ret = (float) (ret / Math.pow(10, exp));
-        ret = Tools.ifSmallerThanOneRoundToFirstNonzeroFloatingNumber(ret);
+        ret = Tools.ifSmallerThanOneStepForHistogram(ret);
         Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Step for the plot with min and max values on x axis {0}, {1} is decided to be {2}", new Object[]{min, max, ret});
         return ret;
     }
 
-    public static float getStepOfHistogram(SortedMap<Float, Float> histogram) {
+    public static float getStepOfAlreadyMadeHistogram(SortedMap<Float, Float> histogram) {
         if (histogram == null || histogram.size() < 2) {
             throw new IllegalArgumentException();
         }
-        float sum = 0;
-        int count = histogram.size() - 1;
         Iterator<Float> it = histogram.keySet().iterator();
         Float prev = it.next();
-        while (it.hasNext()) {
-            float curr = it.next();
-            sum += curr - prev;
-            prev = curr;
-        }
-        float ret = sum / count;
-        ret = Tools.ifSmallerThanOneRoundToFirstNonzeroFloatingNumber(ret);
+        Float curr = it.next();
+        double prevD = DataTypeConvertor.floatToPreciseDouble(prev);
+        double currD = DataTypeConvertor.floatToPreciseDouble(curr);
+        double retD = currD - prevD;
+        float ret = Tools.ifSmallerThanOneStepForHistogram((float) retD);
+        ret = Tools.ifSmallerThanOneStepForHistogram(ret);
+        Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Histogram bar width identified as {0}. This has to be the same value as above.", ret);
         return ret;
     }
 
