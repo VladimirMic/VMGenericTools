@@ -301,7 +301,8 @@ public class DataTypeConvertor {
     public static float[] floatToPrimitiveArray(List<Float> list) {
         float[] ret = new float[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            ret[i] = list.get(i);
+            Number n = list.get(i);
+            ret[i] = n.floatValue();
         }
         return ret;
     }
