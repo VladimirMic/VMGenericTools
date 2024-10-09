@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -374,8 +373,8 @@ public class Tools {
             exp++;
         }
         int num = (int) bigN;
-        float ret =  (float) ((float) num * Math.pow(10, -exp)) * sig;
-        if(ret == 0.1f && f >= 0.12f){
+        float ret = (float) ((float) num * Math.pow(10, -exp)) * sig;
+        if (ret == 0.1f && f >= 0.12f) {
             return 0.15f;
         }
         return ret;
@@ -454,6 +453,9 @@ public class Tools {
     public static float computeBasicXIntervalForHistogram(float min, float max) {
         int exp = 0;
         float diff = max - min;
+        if (diff == 0) {
+            return 0.1f;
+        }
         while (diff < 1) {
             diff *= 10;
             exp++;
