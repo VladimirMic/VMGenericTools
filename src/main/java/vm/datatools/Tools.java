@@ -683,6 +683,18 @@ public class Tools {
 
     }
 
+    public static boolean isInArray(Object[] array, Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        for (Object objInArray : array) {
+            if (obj.equals(objInArray)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;

@@ -43,6 +43,14 @@ public class Tools {
         }
     }
 
+    public static long roundLong(long input, long toValue, boolean floor) {
+        if (!floor) {
+            input += toValue / 2;
+        }
+        long part = input / toValue;
+        return part * toValue;
+    }
+
     private static float roundInternal(double input, double toValue, boolean floor, boolean multiplication) {
         double add = 0;
         if (!floor) {
