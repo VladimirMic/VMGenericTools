@@ -494,8 +494,11 @@ public class Tools {
     }
 
     public static float getStepOfAlreadyMadeHistogram(SortedMap<Float, Float> histogram) {
-        if (histogram == null || histogram.size() < 2) {
+        if (histogram == null || histogram.isEmpty()) {
             throw new IllegalArgumentException();
+        }
+        if (histogram.size() == 1) {
+            return 0.1f;
         }
         Iterator<Float> it = histogram.keySet().iterator();
         Float prev = it.next();
