@@ -389,14 +389,14 @@ public class Tools {
     }
 
     public static SortedMap<Float, Float> createHistogramOfValues(float[] values) {
-        return createHistogramOfValues(values, false);
+        return createHistogramOfValues(values, false, false);
     }
 
-    public static SortedMap<Float, Float> createHistogramOfValues(float[] values, boolean absoluteValues) {
+    public static SortedMap<Float, Float> createHistogramOfValues(float[] values, boolean absoluteValues, boolean printLog) {
         float max = (float) Tools.getMax(values);
         float min = (float) Tools.getMin(values);
         float basicInterval = computeBasicXIntervalForHistogram(min, max);
-        return createHistogramOfValues(values, basicInterval, absoluteValues);
+        return createHistogramOfValues(values, basicInterval, absoluteValues, printLog);
     }
 
     /**
@@ -404,9 +404,10 @@ public class Tools {
      * @param values
      * @param step on the x axis
      * @param absoluteValues if false, then histogram. Otherwise absolute values
+     * @param printLogMinMax
      * @return
      */
-    public static SortedMap<Float, Float> createHistogramOfValues(float[] values, float step, boolean absoluteValues) {
+    public static SortedMap<Float, Float> createHistogramOfValues(float[] values, float step, boolean absoluteValues, boolean printLogMinMax) {
         SortedMap<Float, Float> ret = new TreeMap<>();
         for (Float value : values) {
             Float key = Tools.round(value, step, false);
@@ -434,17 +435,22 @@ public class Tools {
             lastKeyD -= stepd;
             lastKey = (float) lastKeyD;
         }
+        if (printLogMinMax) {
+            Float firstKey = ret.firstKey();
+            lastKey = ret.lastKey();
+            System.err.println(firstKey + ";" + ret.get(firstKey) + ";" + lastKey + ";" + ret.get(lastKey));
+        }
         return ret;
     }
 
-    public static SortedMap<Float, Float> createHistogramOfValues(List<Float> values, float step, boolean absoluteValues) {
+    public static SortedMap<Float, Float> createHistogramOfValues(List<Float> values, float step, boolean absoluteValues, boolean printLog) {
         float[] floatToPrimitiveArray = DataTypeConvertor.floatToPrimitiveArray(values);
-        return createHistogramOfValues(floatToPrimitiveArray, step, absoluteValues);
+        return createHistogramOfValues(floatToPrimitiveArray, step, absoluteValues, printLog);
     }
 
-    public static SortedMap<Float, Float> createHistogramOfValues(List<Float> values, boolean absoluteValues) {
+    public static SortedMap<Float, Float> createHistogramOfValues(List<Float> values, boolean absoluteValues, boolean printLog) {
         float[] floatToPrimitiveArray = DataTypeConvertor.floatToPrimitiveArray(values);
-        return createHistogramOfValues(floatToPrimitiveArray, absoluteValues);
+        return createHistogramOfValues(floatToPrimitiveArray, absoluteValues, printLog);
     }
 
     public static SortedMap<Float, Float> createHistogramOfValues(List<Float> values) {
