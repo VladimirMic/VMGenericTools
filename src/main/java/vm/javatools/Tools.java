@@ -1,6 +1,9 @@
 package vm.javatools;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,6 +19,7 @@ public class Tools {
 //    public static final Integer PARALELISATION = 1;
     public static final Integer PARALELISATION = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
     public static final Logger LOG = Logger.getLogger(Tools.class.getName());
+    public static final DateFormat DF_DDMMYYYY_HHMM = new SimpleDateFormat("dd.MM.YYYY HH:mm");
 
     public static ExecutorService initExecutor(Integer paralelism) {
         if (paralelism == null || paralelism <= 0) {
@@ -65,6 +69,10 @@ public class Tools {
             LOG.log(Level.INFO, "Max memory: {0} MB. Total occupied memory: {1} MB. Ratio: {2}", new Object[]{maxMemory / 1024 / 1024, totalMemory / 1024 / 1024, ret});
         }
         return ret;
+    }
+
+    public static String getCurrDateAndTime() {
+        return DF_DDMMYYYY_HHMM.format(new Date());
     }
 
     public static class ArrayIterator<T> implements Iterator<T> {

@@ -788,7 +788,7 @@ public class Tools {
         }
         for (int counter = 0; counter < maxCount && it.hasNext(); counter++) {
             ret.add(it.next());
-            if (ret.size() % 500000 == 0) {
+            if (ret.size() % 100000 == 0) {
                 System.gc();
                 float ram = vm.javatools.Tools.getRatioOfConsumedRam(true) * 100;
                 if (ram > memoryLimitInPercentages) {
