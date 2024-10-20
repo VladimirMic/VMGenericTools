@@ -352,6 +352,18 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static <T> T[] arrayToTArray(Object[] array) {
+        if (array == null) {
+            return null;
+        }
+        Class aClass = array[0].getClass();
+        T[] ret = (T[]) Array.newInstance(aClass, 1);
+        for (int i = 0; i < array.length; i++) {
+            ret[i] = (T) array[i];
+        }
+        return ret;
+    }
+
     public static Integer[] intsToIntegers(int[] ints) {
         Integer[] ret = new Integer[ints.length];
         for (int i = 0; i < ints.length; i++) {
