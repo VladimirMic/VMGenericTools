@@ -7,7 +7,10 @@ package vm.datatools;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -378,6 +381,17 @@ public class DataTypeConvertor {
 
     public static float doubleToPreciseFloat(double d) {
         return Float.parseFloat(Double.toString(d));
+    }
+
+    public static TreeSet<Comparable> castCell(Collection<Comparable> cell) {
+        TreeSet<Comparable> ret;
+        if (cell instanceof Set) {
+            ret = (TreeSet<Comparable>) cell;
+        } else {
+            ret = new TreeSet<>();
+            ret.addAll(cell);
+        }
+        return ret;
     }
 
 }
