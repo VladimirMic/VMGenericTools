@@ -526,4 +526,13 @@ public class Tools {
         return ret;
     }
 
+    public static String formatFirstZeros(int decimal, int digits) {
+        String ret = "";
+        String decimalS = Integer.toString(decimal);
+        while (ret.length() + decimalS.length() < digits) {
+            ret += "0";
+        }
+        return ret + decimalS;
+    }
+
 }
