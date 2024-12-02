@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package vm.math;
+package vm.mathtools;
 
 import java.awt.geom.Point2D;
 import java.util.AbstractMap;
@@ -533,6 +533,58 @@ public class Tools {
             ret += "0";
         }
         return ret + decimalS;
+    }
+
+    public static Float getTangent(Float y1, Float y0, Float x1, Float x0) {
+        if (y1 == null || y0 == null || x1 == null || x0 == null) {
+            return null;
+        }
+        if (y1 == Float.NaN || y0 == Float.NaN || x1 == Float.NaN || x0 == Float.NaN) {
+            return Float.NaN;
+        }
+        return (y1 - y0) / (x1 - x0);
+    }
+
+    public static Float getTangent(Float y1, Float y0, Long x1, Long x0) {
+        if (y1 == null || y0 == null || x1 == null || x0 == null) {
+            return null;
+        }
+        if (y1 == Float.NaN || y0 == Float.NaN) {
+            return Float.NaN;
+        }
+        return (y1 - y0) / (x1 - x0);
+    }
+
+    public static int compareNumbers(Number n1, Number n2) {
+        if (n1 == null && n2 != null) {
+            return 1;
+        }
+        if (n2 == null && n1 != null) {
+            return -1;
+        }
+        if (n1 == null && n2 == null) {
+            return 0;
+        }
+        return Float.compare(n1.floatValue(), n2.floatValue());
+    }
+
+    public static Double computeDistanceFromGPS(Float lat1, Float lon1, Float lat2, Float lon2, boolean inMeters) {
+        if (lat1 == null || lat2 == null | lon1 == null || lon2 == null) {
+            return null;
+        }
+        float R = inMeters ? 6371000 : 6371; // metres
+        double lat1Rad = Tools.degToRad(lat1);
+        double lat2Rad = Tools.degToRad(lat2);
+        double lon1Rad = Tools.degToRad(lon1);
+        double lon2Rad = Tools.degToRad(lon2);
+        double deltaLat = (lat2Rad - lat1Rad);
+        double deltaLon = (lon2Rad - lon1Rad);
+        double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2)
+                + Math.cos(lat1Rad) * Math.cos(lat2Rad)
+                * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double d = R * c; // in metres
+        return d;
     }
 
 }
