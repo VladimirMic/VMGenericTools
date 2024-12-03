@@ -545,14 +545,14 @@ public class Tools {
         return ret;
     }
 
-    public static Object[] concatArrays(Object[] array1, Object obj) {
+    public static <T> T[] concatArrays(T[] array1, T obj) {
         List<Object> list = new ArrayList<>();
         list.addAll(Arrays.asList(array1));
         list.add(obj);
         return list.toArray(array1);
     }
 
-    public static Object[] concatArrays(Object obj, Object[] array1) {
+    public static <T> T[] concatArrays(T obj, T[] array1) {
         List<Object> list = new ArrayList<>();
         list.add(obj);
         list.addAll(Arrays.asList(array1));
@@ -693,6 +693,32 @@ public class Tools {
             }
         }
         return false;
+    }
+
+    public static <T> SortedSet<T> mergeMaps(String key, SortedMap<String, SortedSet<T>>... maps) {
+        SortedSet<T> ret = new TreeSet<>();
+        for (SortedMap<String, SortedSet<T>> map : maps) {
+            if (map.containsKey(key)) {
+                ret.addAll(map.get(key));
+            }
+        }
+        return ret;
+    }
+
+    public static <T> int getOccurencesOfKeyInMaps(String key, SortedMap<String, SortedSet<T>>... maps) {
+        int ret = 0;
+        for (SortedMap<String, SortedSet<T>> map : maps) {
+            if (map.containsKey(key)) {
+                ret++;
+            }
+        }
+        return ret;
+    }
+
+    public static <T1, T2> SortedMap<T1, T2> createSingletonMap(T1 key, T2 value) {
+        SortedMap<T1, T2> ret = new TreeMap<>();
+        ret.put(key, value);
+        return ret;
     }
 
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {

@@ -43,6 +43,11 @@ public class Tools {
         }
     }
 
+    public static double roundDouble(double input, float toValue, boolean floor) {
+        float ret = round((float) input, toValue, floor);
+        return vm.datatools.DataTypeConvertor.floatToPreciseDouble(ret);
+    }
+
     public static long roundLong(long input, long toValue, boolean floor) {
         if (!floor) {
             input += toValue / 2;
