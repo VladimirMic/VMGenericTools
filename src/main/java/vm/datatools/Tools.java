@@ -455,9 +455,9 @@ public class Tools {
         return ret;
     }
 
-    public static TreeSet<Object> arrayToSet(Object[] values) {
-        TreeSet<Object> ret = new TreeSet<>();
-        for (Object i : values) {
+    public static <T> TreeSet<T> arrayToSet(T[] values) {
+        TreeSet<T> ret = new TreeSet<>();
+        for (T i : values) {
             ret.add(i);
         }
         return ret;
