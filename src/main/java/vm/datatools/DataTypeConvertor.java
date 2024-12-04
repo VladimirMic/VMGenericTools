@@ -7,7 +7,9 @@ package vm.datatools;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -391,6 +393,12 @@ public class DataTypeConvertor {
             ret = new TreeSet<>();
             ret.addAll(cell);
         }
+        return ret;
+    }
+
+    public static <T> Set<T> arrayToSet(T[] array) {
+        Set<T> ret = new HashSet<>();
+        ret.addAll(Arrays.asList(array));
         return ret;
     }
 
