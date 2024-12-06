@@ -9,6 +9,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -306,7 +307,7 @@ public class DataTypeConvertor {
     public static float[] floatToPrimitiveArray(List<Float> list) {
         float[] ret = new float[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            Number n = list.get(i);
+            Number n = list.get(i);            
             ret[i] = n.floatValue();
         }
         return ret;
@@ -327,6 +328,23 @@ public class DataTypeConvertor {
         float[] ret = new float[array.length];
         for (int i = 0; i < array.length; i++) {
             ret[i] = Float.parseFloat(array[i]);
+        }
+        return ret;
+    }
+
+    public static float[][] longsArrayToFloats(long[][] array) {
+        float[][] ret = new float[array.length][];
+        for (int i = 0; i < array.length; i++) {
+            long[] row = array[i];
+            ret[i] = longsArrayToFloats(row);
+        }
+        return ret;
+    }
+
+    public static float[] longsArrayToFloats(long[] array) {
+        float[] ret = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            ret[i] = Float.parseFloat(Long.toString(array[i]));
         }
         return ret;
     }
@@ -399,6 +417,25 @@ public class DataTypeConvertor {
     public static <T> Set<T> arrayToSet(T[] array) {
         Set<T> ret = new HashSet<>();
         ret.addAll(Arrays.asList(array));
+        return ret;
+    }
+
+    public static long[][] datesArrayToLongs(Date[][] datesArray) {
+        long[][] ret = new long[datesArray.length][];
+        for (int rowID = 0; rowID < datesArray.length; rowID++) {
+            Date[] row = datesArray[rowID];
+            ret[rowID] = DataTypeConvertor.datesArrayToLongs(row);
+        }
+        return ret;
+    }
+
+    public static long[] datesArrayToLongs(Date[] row) {
+        long[] ret = new long[row.length];
+        for (int i = 0; i < row.length; i++) {
+            if (row[i] != null) {
+                ret[i] = row[i].getTime();
+            }
+        }
         return ret;
     }
 
