@@ -1024,4 +1024,16 @@ public class Tools {
         return parseFloat(object.toString());
     }
 
+    public static <T> String arrayToString(T[] array) {
+        String s = "";
+        for (T field : array) {
+            if (field != null) {
+                s += field.toString();
+            } else {
+                String tmp = "";
+            }
+        }
+        return s;
+    }
+
 }
