@@ -428,45 +428,6 @@ public class Tools {
         return ret.toArray();
     }
 
-    public static List<Integer> arrayToList(int[] values) {
-        List<Integer> ret = new ArrayList<>();
-        for (int i : values) {
-            ret.add(i);
-        }
-        return ret;
-    }
-
-    public static <T> List<T> arrayToList(T[] values) {
-        List<T> ret = new ArrayList<>();
-        for (T i : values) {
-            ret.add(i);
-        }
-        return ret;
-    }
-
-    public static List<Float> arrayToList(float[] values) {
-        List<Float> ret = new ArrayList<>();
-        for (float i : values) {
-            ret.add(i);
-        }
-        return ret;
-    }
-
-    public static <T> TreeSet<T> arrayToSet(T[] values) {
-        TreeSet<T> ret = new TreeSet<>();
-        for (T i : values) {
-            ret.add(i);
-        }
-        return ret;
-    }
-
-    public static List<String> arrayToList(String[] values) {
-        List<String> ret = new ArrayList<>();
-        for (String i : values) {
-            ret.add(i);
-        }
-        return ret;
-    }
 
     public static void printMapValues(Map<Float, Integer> counts, boolean newLines) {
         for (Map.Entry<Float, Integer> entry : counts.entrySet()) {
@@ -1021,16 +982,5 @@ public class Tools {
         return parseFloat(object.toString());
     }
 
-    public static <T> String arrayToString(T[] array) {
-        String s = "";
-        for (T field : array) {
-            if (field != null) {
-                s += field.toString();
-            } else {
-                String tmp = "";
-            }
-        }
-        return s;
-    }
 
 }

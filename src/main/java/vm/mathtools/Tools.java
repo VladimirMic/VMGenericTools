@@ -193,12 +193,24 @@ public class Tools {
         return new Min().evaluate(values);
     }
 
+    public static double getMin(Collection<Float> values) {
+        Float[] array = values.toArray(Float[]::new);
+        double[] primitive = vm.datatools.DataTypeConvertor.floatsToDoubles(array);
+        return new Min().evaluate(primitive);
+    }
+
     public static double getMax(float[] values) {
         return new Max().evaluate(DataTypeConvertor.floatsToDoubles(values));
     }
 
     public static double getMax(double[] values) {
         return new Max().evaluate(values);
+    }
+
+    public static double getMax(Collection<Float> values) {
+        Float[] array = values.toArray(Float[]::new);
+        double[] primitive = vm.datatools.DataTypeConvertor.floatsToDoubles(array);
+        return new Max().evaluate(primitive);
     }
 
     public static double getQuartile1(float[] values) {

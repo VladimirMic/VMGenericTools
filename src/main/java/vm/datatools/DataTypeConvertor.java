@@ -149,6 +149,15 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static double[] floatsToDoubles(Float[] vec) {
+        double[] ret = new double[vec.length];
+        for (int i = 0; i < ret.length; i++) {
+            Float f = vec[i];
+            ret[i] = f;
+        }
+        return ret;
+    }
+
     public static double[] intsToDoubles(int[] vec) {
         double[] ret = new double[vec.length];
         for (int i = 0; i < ret.length; i++) {
@@ -307,7 +316,7 @@ public class DataTypeConvertor {
     public static float[] floatToPrimitiveArray(List<Float> list) {
         float[] ret = new float[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            Number n = list.get(i);            
+            Number n = list.get(i);
             ret[i] = n.floatValue();
         }
         return ret;
@@ -435,6 +444,58 @@ public class DataTypeConvertor {
             if (row[i] != null) {
                 ret[i] = row[i].getTime();
             }
+        }
+        return ret;
+    }
+
+    public static <T> String arrayToString(T[] array) {
+        String s = "";
+        for (T field : array) {
+            if (field != null) {
+                s += field.toString();
+            } else {
+                String tmp = "";
+            }
+        }
+        return s;
+    }
+
+    public static List<Integer> arrayToList(int[] values) {
+        List<Integer> ret = new ArrayList<>();
+        for (int i : values) {
+            ret.add(i);
+        }
+        return ret;
+    }
+
+    public static <T> List<T> arrayToList(T[] values) {
+        List<T> ret = new ArrayList<>();
+        for (T i : values) {
+            ret.add(i);
+        }
+        return ret;
+    }
+
+    public static List<Float> arrayToList(float[] values) {
+        List<Float> ret = new ArrayList<>();
+        for (float i : values) {
+            ret.add(i);
+        }
+        return ret;
+    }
+
+    public static List<String> arrayToList(String[] values) {
+        List<String> ret = new ArrayList<>();
+        for (String i : values) {
+            ret.add(i);
+        }
+        return ret;
+    }
+
+    public static <T> TreeSet<T> arrayToSortedSet(T[] values) {
+        TreeSet<T> ret = new TreeSet<>();
+        for (T i : values) {
+            ret.add(i);
         }
         return ret;
     }
