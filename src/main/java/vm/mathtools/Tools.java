@@ -80,6 +80,32 @@ public class Tools {
         return ret;
     }
 
+    public static int[] maxValueWithIdxAndCount(int[] array) {
+        int ret = -Integer.MAX_VALUE;
+        int retIdx = -1;
+        int count = 0;
+        for (int idx = 0; idx < array.length; idx++) {
+            int i = array[idx];
+            if (i > ret) {
+                ret = i;
+                retIdx = idx;
+                count = 1;
+            } else if (i == ret) {
+                count++;
+            }
+        }
+        return new int[]{ret, retIdx, count};
+
+    }
+
+    public static int maxValue(int[] array) {
+        int ret = -Integer.MAX_VALUE;
+        for (int i : array) {
+            ret = Math.max(ret, i);
+        }
+        return ret;
+    }
+
     public static float maxValue(Collection<float[]> floats) {
         float ret = Float.MIN_VALUE;
         for (float[] fArray : floats) {
