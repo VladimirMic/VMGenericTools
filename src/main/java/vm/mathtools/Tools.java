@@ -384,15 +384,19 @@ public class Tools {
         }
         b = Math.abs(b);
         a = Math.abs(a);
-        double ad = DataTypeConvertor.floatToPreciseDouble(a);
-        double bd = DataTypeConvertor.floatToPreciseDouble(b);
+        Double ad = DataTypeConvertor.floatToPreciseDouble(a);
+        Double bd = DataTypeConvertor.floatToPreciseDouble(b);
         while (bd > 0) {
             double temp = bd;
             bd = ad % bd;
             ad = temp;
+            a = null;
             a = DataTypeConvertor.doubleToPreciseFloat(ad);
+            b = null;
             b = DataTypeConvertor.doubleToPreciseFloat(bd);
+            ad = null;
             ad = DataTypeConvertor.floatToPreciseDouble(a);
+            bd = null;
             bd = DataTypeConvertor.floatToPreciseDouble(b);
         }
         return DataTypeConvertor.doubleToPreciseFloat(ad);
