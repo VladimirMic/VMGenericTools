@@ -382,24 +382,26 @@ public class Tools {
         if (a == null || b == null) {
             return Float.NaN;
         }
-        b = Math.abs(b);
-        a = Math.abs(a);
-        Double ad = DataTypeConvertor.floatToPreciseDouble(a);
-        Double bd = DataTypeConvertor.floatToPreciseDouble(b);
-        while (bd > 0) {
-            double temp = bd;
-            bd = ad % bd;
-            ad = temp;
-            a = null;
-            a = DataTypeConvertor.doubleToPreciseFloat(ad);
-            b = null;
-            b = DataTypeConvertor.doubleToPreciseFloat(bd);
-            ad = null;
-            ad = DataTypeConvertor.floatToPreciseDouble(a);
-            bd = null;
-            bd = DataTypeConvertor.floatToPreciseDouble(b);
+        float af = Math.abs(a);
+        float bf = Math.abs(b);
+        int order = 0;
+        long aL = (long) Math.round(af);
+        long bL = (long) Math.round(bf);
+        while (af != aL || bf != bL) {
+            aL = (long) Math.round(af * 10);
+            bL = (long) Math.round(bf * 10);
+            af *= 10;
+            bf *= 10;
+            order++;
         }
-        return DataTypeConvertor.doubleToPreciseFloat(ad);
+        while (bL > 0) {
+            long temp = bL;
+            bL = aL % bL;
+            aL = temp;
+        }
+        float ret = aL;
+        ret = (float) (ret * Math.pow(10, -order));
+        return ret;
     }
 
     public static float gcd(Float... input) {
@@ -576,7 +578,11 @@ public class Tools {
             ret *= 1.25;
         }
         ret = Tools.ifSmallerThanOneStepForHistogram(ret);
-        Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Step for the plot with min and max values on x axis {0}, {1} is decided to be {2}", new Object[]{min, max, ret});
+        Logger
+                .getLogger(Tools.class
+                        .getName()).log(Level.INFO, "Step for the plot with min and max values on x axis {0}, {1} is decided to be {2}", new Object[]{min, max, ret
+        }
+                );
         return ret;
     }
 
@@ -595,7 +601,9 @@ public class Tools {
         double retD = currD - prevD;
         float ret = Tools.ifSmallerThanOneStepForHistogram((float) retD);
         ret = Tools.ifSmallerThanOneStepForHistogram(ret);
-        Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Histogram bar width identified as {0}. This has to be the same value as above.", ret);
+        Logger
+                .getLogger(Tools.class
+                        .getName()).log(Level.INFO, "Histogram bar width identified as {0}. This has to be the same value as above.", ret);
         return ret;
     }
 
