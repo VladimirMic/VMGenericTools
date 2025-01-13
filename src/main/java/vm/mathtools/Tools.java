@@ -378,33 +378,46 @@ public class Tools {
         return Math.sqrt(sum);
     }
 
-    private static double gcd(Number a, Number b) {
-        double ad = a.doubleValue();
-        double bd = b.doubleValue();
+    private static float gcd(Float a, Float b) {
+        if (a == null || b == null) {
+            return Float.NaN;
+        }
+        b = Math.abs(b);
+        a = Math.abs(a);
+        double ad = DataTypeConvertor.floatToPreciseDouble(a);
+        double bd = DataTypeConvertor.floatToPreciseDouble(b);
         while (bd > 0) {
             double temp = bd;
             bd = ad % bd;
             ad = temp;
+            a = DataTypeConvertor.doubleToPreciseFloat(ad);
+            b = DataTypeConvertor.doubleToPreciseFloat(bd);
+            ad = DataTypeConvertor.floatToPreciseDouble(a);
+            bd = DataTypeConvertor.floatToPreciseDouble(b);
         }
-        return ad;
+        return DataTypeConvertor.doubleToPreciseFloat(ad);
     }
 
-    public static double gcd(Number... input) {
-        double result = input[0].doubleValue();
+    public static float gcd(Float... input) {
+        Float result = input[0];
         for (int i = 1; i < input.length; i++) {
             result = gcd(result, input[i]);
         }
         return result;
     }
 
-    public static double lcm(Number a, Number b) {
-        double ad = a.doubleValue();
-        double bd = b.doubleValue();
+    public static float lcm(Float ad, Float bd) {
         return ad * (bd / gcd(ad, bd));
     }
 
-    public static double lcm(Number... input) {
-        double result = input[0].doubleValue();
+    public static float lcm(Long a, Long b) {
+        Float af = a.floatValue();
+        Float bf = b.floatValue();
+        return af * (bf / gcd(af, bf));
+    }
+
+    public static float lcm(Float... input) {
+        Float result = input[0];
         for (int i = 1; i < input.length; i++) {
             result = lcm(result, input[i]);
         }
@@ -507,6 +520,19 @@ public class Tools {
         return computeBasicXIntervalForHistogram(min, max);
     }
 
+    public static float computeBasicXIntervalForHistogram(Collection<Float> values) {
+        float max = (float) Tools.getMax(values);
+        float min = (float) Tools.getMin(values);
+        return computeBasicXIntervalForHistogram(min, max);
+    }
+
+    /**
+     * Return the width of the interval that defines between 80 and 160 points
+     *
+     * @param min
+     * @param max
+     * @return
+     */
     public static float computeBasicXIntervalForHistogram(float min, float max) {
         int exp = 0;
         float diff = max - min;

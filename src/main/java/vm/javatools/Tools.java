@@ -3,8 +3,12 @@ package vm.javatools;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -73,6 +77,15 @@ public class Tools {
 
     public static String getCurrDateAndTime() {
         return DF_DDMMYYYY_HHMM.format(new Date());
+    }
+
+    public static final <X, Y> SortedSet<Y> degroupCollections(Map groupedFishingPerDays) {
+        SortedSet<Y> ret = new TreeSet<>();
+        Collection<Collection<Y>> values = groupedFishingPerDays.values();
+        for (Collection<Y> set : values) {
+            ret.addAll(set);
+        }
+        return ret;
     }
 
     public static class ArrayIterator<T> implements Iterator<T> {
