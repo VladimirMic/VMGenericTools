@@ -35,21 +35,43 @@ public class Tools {
 
     public static float round(float input, float toValue, boolean floor) {
         float addition = floor ? 0 : toValue / 2;
+        int sig = input < 0 ? -1 : 1;
+        toValue = Math.abs(toValue);
+        input = Math.abs(input);
+        if ((input < toValue && floor) || input < addition) {
+            Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Rounding to zero. Trying to round {0} to {1} (floor: {2}). The results is {3}. Check manually!", new Object[]{input, toValue, floor, 0});
+            return 0;
+        }
         int order = 0;
-        long inputL = (long) input;
+        float additionCopy = addition;
+        float inputCopy = input;
+        float toValueCopy = toValue;
+        long inputL = (long) inputCopy;
         long toValueL = (long) toValue;
         long additionL = (long) addition;
-        while (inputL != input || additionL != addition || toValueL != toValue) {
-            input *= 10;
-            addition *= 10;
-            toValue *= 10;
+        while ((inputL != inputCopy || additionL != additionCopy || toValueL != toValueCopy)) {
             order++;
-            inputL = (long) input;
-            toValueL = (long) toValue;
-            additionL = (long) addition;
+            inputCopy = input * (float) Math.pow(10, order);
+            toValueCopy = toValue * (float) Math.pow(10, order);
+            additionCopy = addition * (float) Math.pow(10, order);
+            inputL = (long) Math.round(inputCopy);
+            toValueL = (long) Math.round(toValueCopy);
+            additionL = (long) Math.round(additionCopy);
+            if (Float.isInfinite(inputCopy) || Float.isInfinite(toValueCopy) || Float.isInfinite(additionCopy)) {
+                int m = -1;
+                inputCopy = Math.abs(input) + addition;
+                while (inputCopy > 0) {
+                    inputCopy -= toValue;
+                    m++;
+                }
+                float ret = sig * m * toValue;
+                Logger.getLogger(Tools.class.getName()).log(Level.WARNING, "Rounding error. Trying to round {0} to {1} (floor: {2}). Longs: {3} / {4}. The results is {5}. Check manually!", new Object[]{input, toValue, floor, inputL, toValueL, ret});
+                System.gc();
+                return ret;
+            }
         }
         long m = (inputL + additionL) / toValueL;
-        m *= toValueL;
+        m *= toValueL * sig;
         Double ret = m * Math.pow(10, -order);
         return ret.floatValue();
     }
@@ -377,17 +399,19 @@ public class Tools {
         if (a == null || b == null) {
             return Float.NaN;
         }
-        float af = Math.abs(a);
-        float bf = Math.abs(b);
+        float aAbs = Math.abs(a);
+        float bAbs = Math.abs(b);
+        float aCopy = aAbs;
+        float bCopy = bAbs;
         int order = 0;
-        long aL = (long) Math.round(af);
-        long bL = (long) Math.round(bf);
-        while (af != aL || bf != bL) {
-            aL = (long) Math.round(af * 10);
-            bL = (long) Math.round(bf * 10);
-            af *= 10;
-            bf *= 10;
+        long aL = (long) Math.round(aCopy);
+        long bL = (long) Math.round(bCopy);
+        while (aCopy != aL || bCopy != bL) {
             order++;
+            aCopy = aAbs * (float) Math.pow(10, order);
+            bCopy = bAbs * (float) Math.pow(10, order);
+            aL = (long) Math.round(aCopy);
+            bL = (long) Math.round(bCopy);
         }
         while (bL > 0) {
             long temp = bL;
@@ -395,7 +419,7 @@ public class Tools {
             aL = temp;
         }
         float ret = aL;
-        ret = (float) (ret * Math.pow(10, -order));
+        ret = ret * (float) Math.pow(10, -order);
         return ret;
     }
 
@@ -535,6 +559,21 @@ public class Tools {
      * @return
      */
     public static float computeBasicXIntervalForHistogram(float min, float max) {
+        return computeBasicXIntervalForHistogram(min, max, 80, 160);
+    }
+
+    /**
+     * Return the width of the interval that defines between 80 and 160 points
+     *
+     * @param min
+     * @param max
+     * @return
+     */
+    public static float computeBasicYIntervalForHistogram(float min, float max) {
+        return computeBasicXIntervalForHistogram(min, max, 30, 60);
+    }
+
+    private static float computeBasicXIntervalForHistogram(float min, float max, int minCount, int maxCount) {
         int exp = 0;
         float diff = max - min;
         if (diff == 0) {
@@ -566,18 +605,14 @@ public class Tools {
         counter -= 3;
         float ret = (float) (prev * Math.pow(10, counter));
         ret = (float) (ret / Math.pow(10, exp));
-        while (80 * ret > max - min) {
+        while (minCount * ret > max - min) {
             ret /= 1.25;
         }
-        while (160 * ret < max - min) {
+        while (maxCount * ret < max - min) {
             ret *= 1.25;
         }
         ret = Tools.ifSmallerThanOneStepForHistogram(ret);
-        Logger
-                .getLogger(Tools.class
-                        .getName()).log(Level.INFO, "Step for the plot with min and max values on x axis {0}, {1} is decided to be {2}", new Object[]{min, max, ret
-        }
-                );
+        Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Step for the plot with min and max values on x axis {0}, {1} is decided to be {2}", new Object[]{min, max, ret});
         return ret;
     }
 
