@@ -34,13 +34,24 @@ import vm.datatools.DataTypeConvertor;
 public class Tools {
 
     public static float round(float input, float toValue, boolean floor) {
-        double tValueD = DataTypeConvertor.floatToPreciseDouble(toValue);
-        double inputD = DataTypeConvertor.floatToPreciseDouble(input);
-        if (toValue < 1) {
-            return roundInternal(inputD, tValueD, floor, true);
-        } else {
-            return roundInternal(inputD, tValueD, floor, false);
+        float addition = floor ? 0 : toValue / 2;
+        int order = 0;
+        long inputL = (long) input;
+        long toValueL = (long) toValue;
+        long additionL = (long) addition;
+        while (inputL != input || additionL != addition || toValueL != toValue) {
+            input *= 10;
+            addition *= 10;
+            toValue *= 10;
+            order++;
+            inputL = (long) input;
+            toValueL = (long) toValue;
+            additionL = (long) addition;
         }
+        long m = (inputL + additionL) / toValueL;
+        m *= toValueL;
+        Double ret = m * Math.pow(10, -order);
+        return ret.floatValue();
     }
 
     public static double roundDouble(double input, float toValue, boolean floor) {
@@ -54,22 +65,6 @@ public class Tools {
         }
         long part = input / toValue;
         return part * toValue;
-    }
-
-    private static float roundInternal(double input, double toValue, boolean floor, boolean multiplication) {
-        double add = 0;
-        if (!floor) {
-            if (input > 0) {
-                add = toValue / 2;
-            } else {
-                add = -toValue / 2;
-            }
-        }
-        double scale = multiplication ? toValue : 1 / toValue;
-        double f = multiplication ? ((input + add) / scale) : ((input + add) * scale);
-        int m = (int) f;
-        double ret = multiplication ? m * scale : m / scale;
-        return DataTypeConvertor.doubleToPreciseFloat(ret);
     }
 
     public static float[][] copyMatrix(float[][] matrix) {
