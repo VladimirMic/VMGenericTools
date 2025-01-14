@@ -38,8 +38,7 @@ public class Tools {
         int sig = input < 0 ? -1 : 1;
         toValue = Math.abs(toValue);
         input = Math.abs(input);
-        if ((input < toValue && floor) || input < addition) {
-            Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Rounding to zero. Trying to round {0} to {1} (floor: {2}). The results is {3}. Check manually!", new Object[]{input, toValue, floor, 0});
+        if ((floor && input < toValue) || input < addition) {
             return 0;
         }
         int order = 0;
