@@ -622,17 +622,17 @@ public class Tools {
         while (maxCount * ret < max - min) {
             ret *= constant;
         }
-        if (!xAxis && ret >= 20000f) {
+        if (!xAxis && ret > 11500f) {
             ret = Tools.round(ret, 1000f, false);
-        } else if (!xAxis && ret >= 2000f) {
+        } else if (!xAxis && ret > 1150f) {
             ret = Tools.round(ret, 100f, false);
-        } else if (!xAxis && ret >= 200f) {
+        } else if (!xAxis && ret > 115f) {
             ret = Tools.round(ret, 10f, false);
-        } else if (!xAxis && ret >= 20f) {
+        } else if (!xAxis && ret > 11.5f) {
             ret = Tools.round(ret, 1f, false);
-        } else if (!xAxis && ret >= 2f) {
+        } else if (!xAxis && ret > 1.15f) {
             ret = Tools.round(ret, 0.1f, false);
-        } else if (!xAxis && ret >= 0.2f) {
+        } else if (!xAxis && ret > 0.115f) {
             ret = Tools.round(ret, 0.01f, false);
         }
         ret = Tools.ifSmallerThanOneStepForHistogram(ret);
