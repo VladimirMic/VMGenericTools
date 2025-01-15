@@ -428,7 +428,6 @@ public class Tools {
         return ret.toArray();
     }
 
-
     public static void printMapValues(Map<Float, Integer> counts, boolean newLines) {
         for (Map.Entry<Float, Integer> entry : counts.entrySet()) {
             Integer value = entry.getValue();
@@ -960,6 +959,9 @@ public class Tools {
 
     public static boolean isParseableToFloats(Object[] array) {
         for (Object o : array) {
+            if (o == null) {
+                return false;
+            }
             Float floatValue = parseFloat(o);
             if (floatValue == null) {
                 return false;
@@ -981,6 +983,5 @@ public class Tools {
     public static Float parseFloat(Object object) {
         return parseFloat(object.toString());
     }
-
 
 }

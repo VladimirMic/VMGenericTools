@@ -574,7 +574,7 @@ public class Tools {
      * @return
      */
     public static float computeBasicYIntervalForHistogram(float min, float max) {
-        return computeBasicXIntervalForHistogram(min, max, 20, 30, false);
+        return computeBasicXIntervalForHistogram(min, max, 20, 27, false);
     }
 
     public static float computeBasicYIntervalForHistogram(Collection<Float> values) {
@@ -618,9 +618,22 @@ public class Tools {
         while (minCount * ret > max - min) {
             ret /= 1.25;
         }
-        float constant = xAxis ? 1.25f : 2;
+        float constant = xAxis ? 1.25f : 1.2f;
         while (maxCount * ret < max - min) {
             ret *= constant;
+        }
+        if (!xAxis && ret >= 20000f) {
+            ret = Tools.round(ret, 1000f, false);
+        } else if (!xAxis && ret >= 2000f) {
+            ret = Tools.round(ret, 100f, false);
+        } else if (!xAxis && ret >= 200f) {
+            ret = Tools.round(ret, 10f, false);
+        } else if (!xAxis && ret >= 20f) {
+            ret = Tools.round(ret, 1f, false);
+        } else if (!xAxis && ret >= 2f) {
+            ret = Tools.round(ret, 0.1f, false);
+        } else if (!xAxis && ret >= 0.2f) {
+            ret = Tools.round(ret, 0.01f, false);
         }
         ret = Tools.ifSmallerThanOneStepForHistogram(ret);
         String axisName = xAxis ? "x" : "y";
