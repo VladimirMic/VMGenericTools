@@ -3,9 +3,12 @@ package vm.javatools;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -82,9 +85,11 @@ public class Tools {
     public static final <X, Y> SortedSet<Y> degroupCollections(Map groupedFishingPerDays) {
         SortedSet<Y> ret = new TreeSet<>();
         Collection<Collection<Y>> values = groupedFishingPerDays.values();
+        List<Y> arrayList = new ArrayList<>();
         for (Collection<Y> set : values) {
-            ret.addAll(set);
+            arrayList.addAll(set);
         }
+        ret.addAll(arrayList);
         return ret;
     }
 
