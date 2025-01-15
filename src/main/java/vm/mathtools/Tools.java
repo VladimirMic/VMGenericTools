@@ -423,6 +423,9 @@ public class Tools {
     }
 
     public static float gcd(Float... input) {
+        if (input == null || input.length == 0) {
+            return Float.NaN;
+        }
         Float result = input[0];
         for (int i = 1; i < input.length; i++) {
             if (input[i] != null) {
@@ -571,7 +574,7 @@ public class Tools {
      * @return
      */
     public static float computeBasicYIntervalForHistogram(float min, float max) {
-        return computeBasicXIntervalForHistogram(min, max, 30, 60, false);
+        return computeBasicXIntervalForHistogram(min, max, 20, 30, false);
     }
 
     public static float computeBasicYIntervalForHistogram(Collection<Float> values) {
