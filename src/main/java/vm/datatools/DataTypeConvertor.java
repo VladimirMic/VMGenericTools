@@ -366,10 +366,14 @@ public class DataTypeConvertor {
         return ret;
     }
 
-    public static Float[] objectsToObjectFloats(Object[] groupsNames) {
-        Float[] ret = new Float[groupsNames.length];
-        for (int i = 0; i < groupsNames.length; i++) {
-            ret[i] = Float.valueOf(groupsNames[i].toString());
+    public static Float[] objectsToObjectFloats(Object[] objects) {
+        Float[] ret = new Float[objects.length];
+        for (int i = 0; i < objects.length; i++) {
+            if (objects[i] == null) {
+                ret[i] = null;
+            } else {
+                ret[i] = Float.valueOf(objects[i].toString());
+            }
         }
         return ret;
     }

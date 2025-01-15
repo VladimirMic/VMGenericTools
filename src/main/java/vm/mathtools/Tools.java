@@ -425,7 +425,9 @@ public class Tools {
     public static float gcd(Float... input) {
         Float result = input[0];
         for (int i = 1; i < input.length; i++) {
-            result = gcd(result, input[i]);
+            if (input[i] != null) {
+                result = gcd(result, input[i]);
+            }
         }
         return result;
     }
@@ -558,7 +560,7 @@ public class Tools {
      * @return
      */
     public static float computeBasicXIntervalForHistogram(float min, float max) {
-        return computeBasicXIntervalForHistogram(min, max, 80, 160);
+        return computeBasicXIntervalForHistogram(min, max, 80, 160, true);
     }
 
     /**
@@ -569,10 +571,16 @@ public class Tools {
      * @return
      */
     public static float computeBasicYIntervalForHistogram(float min, float max) {
-        return computeBasicXIntervalForHistogram(min, max, 30, 60);
+        return computeBasicXIntervalForHistogram(min, max, 30, 60, false);
     }
 
-    private static float computeBasicXIntervalForHistogram(float min, float max, int minCount, int maxCount) {
+    public static float computeBasicYIntervalForHistogram(Collection<Float> values) {
+        float max = (float) Tools.getMax(values);
+        float min = (float) Tools.getMin(values);
+        return computeBasicYIntervalForHistogram(min, max);
+    }
+
+    private static float computeBasicXIntervalForHistogram(float min, float max, int minCount, int maxCount, boolean xAxis) {
         int exp = 0;
         float diff = max - min;
         if (diff == 0) {
@@ -607,11 +615,13 @@ public class Tools {
         while (minCount * ret > max - min) {
             ret /= 1.25;
         }
+        float constant = xAxis ? 1.25f : 2;
         while (maxCount * ret < max - min) {
-            ret *= 1.25;
+            ret *= constant;
         }
         ret = Tools.ifSmallerThanOneStepForHistogram(ret);
-        Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Step for the plot with min and max values on x axis {0}, {1} is decided to be {2}", new Object[]{min, max, ret});
+        String axisName = xAxis ? "x" : "y";
+        Logger.getLogger(Tools.class.getName()).log(Level.INFO, "Step for the plot with min and max values on {3} axis {0}, {1} is decided to be {2}", new Object[]{min, max, ret, axisName});
         return ret;
     }
 
