@@ -502,15 +502,15 @@ public class Tools {
         return ret;
     }
 
-    public static <T> T[] concatArrays(T[] array1, T obj) {
-        List<Object> list = new ArrayList<>();
+    public static <T> T[] addToArray(T[] array1, T obj) {
+        List<T> list = new ArrayList<>();
         list.addAll(Arrays.asList(array1));
         list.add(obj);
         return list.toArray(array1);
     }
 
-    public static <T> T[] concatArrays(T obj, T[] array1) {
-        List<Object> list = new ArrayList<>();
+    public static <T> T[] addToArray(T obj, T[] array1) {
+        List<T> list = new ArrayList<>();
         list.add(obj);
         list.addAll(Arrays.asList(array1));
         return list.toArray(array1);
