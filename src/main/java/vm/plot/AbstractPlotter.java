@@ -455,6 +455,9 @@ public abstract class AbstractPlotter {
         double lb = axis.getLowerBound();
         int decimalsOfNext = 0;
         boolean ok;
+        if (step < Tools.MIN_ROUNDING_TOVALUE) {
+            return;
+        }
         do {
             ok = true;
             double currDouble = max;
@@ -473,7 +476,7 @@ public abstract class AbstractPlotter {
                 currDouble -= step;
                 prev = currString;
             }
-        } while (!ok || step < Tools.MIN_ROUNDING_TOVALUE);
+        } while (!ok);
         LOG.log(Level.INFO, "yStep: {0}, decimals: {1}", new Object[]{step, decimalsOfNext});
     }
 
