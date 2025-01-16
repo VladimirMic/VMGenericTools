@@ -98,7 +98,7 @@ public class HeatMapPlotter extends AbstractPlotter {
                 int xIdx = x.getValue();
                 extremes[0] = Math.min(extremes[0], xValue);
                 extremes[1] = Math.max(extremes[1], xValue);
-                double zValue = values[yIdx][xIdx];
+                double zValue = values[xIdx][yIdx];
                 xValues[counter] = xValue;
                 yValues[counter] = yValue;
                 zValues[counter] = zValue;
