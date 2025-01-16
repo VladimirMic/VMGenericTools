@@ -350,7 +350,24 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static float[][] intsArrayToFloats(int[][] array) {
+        float[][] ret = new float[array.length][];
+        for (int i = 0; i < array.length; i++) {
+            int[] row = array[i];
+            ret[i] = intsArrayToFloats(row);
+        }
+        return ret;
+    }
+
     public static float[] longsArrayToFloats(long[] array) {
+        float[] ret = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            ret[i] = Float.parseFloat(Long.toString(array[i]));
+        }
+        return ret;
+    }
+
+    public static float[] intsArrayToFloats(int[] array) {
         float[] ret = new float[array.length];
         for (int i = 0; i < array.length; i++) {
             ret[i] = Float.parseFloat(Long.toString(array[i]));

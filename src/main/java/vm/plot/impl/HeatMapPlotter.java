@@ -7,6 +7,8 @@ package vm.plot.impl;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
@@ -17,6 +19,7 @@ import org.jfree.chart.title.PaintScaleLegend;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.xy.DefaultXYZDataset;
 import org.jfree.data.xy.XYZDataset;
+import vm.datatools.DataTypeConvertor;
 import vm.plot.AbstractPlotter;
 
 /**
@@ -40,6 +43,37 @@ public class HeatMapPlotter extends AbstractPlotter {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, values, columnHeaders, rowHeaders);
     }
 
+    /**
+     * see @createPlot with float arrays
+     *
+     * @param mainTitle
+     * @param xAxisLabel
+     * @param yAxisLabel
+     * @param traceName
+     * @param values
+     * @param columnHeaders
+     * @param rowHeaders
+     * @return
+     */
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, int[][] values, Map<Object, Integer> columnHeaders, Map<Object, Integer> rowHeaders) {
+        float[][] valuesFloat = DataTypeConvertor.intsArrayToFloats(values);
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, valuesFloat, columnHeaders, rowHeaders);
+    }
+
+    /**
+     *
+     * @param mainTitle title of the plot (up)
+     * @param xAxisLabel xAxisLabel (can be null to hide)
+     * @param yAxisLabel yAxisLabel (can be null to hide)
+     * @param traceName the name of the showed data for a legend. Can be null to
+     * hide.
+     * @param values values to show
+     * @param columnHeaders mapping of tick labels shown to the second index (y)
+     * in @values
+     * @param rowHeaders mapping of tick labels shown to the first index (x) in
+     * @values
+     * @return
+     */
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, float[][] values, Map<Object, Integer> columnHeaders, Map<Object, Integer> rowHeaders) {
         DefaultXYZDataset dataset = new DefaultXYZDataset();
         int size = columnHeaders.size() * rowHeaders.size();
@@ -101,6 +135,9 @@ public class HeatMapPlotter extends AbstractPlotter {
         // create a paint-scale and a legend showing it
         double minZ = extremes[4];
         double maxZ = extremes[5];
+        if (minZ >= maxZ) {
+            String s = "";
+        }
         LookupPaintScale paintScale = new LookupPaintScale(minZ, maxZ, Color.black);
 
         PaintScaleLegend psl = new PaintScaleLegend(paintScale, new NumberAxis());
@@ -145,7 +182,12 @@ public class HeatMapPlotter extends AbstractPlotter {
 
     @Override
     public void storePlotPDF(String path, JFreeChart plot, int width, int height) {
-        throw new UnsupportedOperationException("For some reason, the library cannot store heatmaps in a vector format");
+        try {
+            super.storePlotPDF(path, plot, IMPLICIT_WIDTH_FOR_HEAT_MAP_PLOT, IMPLICIT_HEIGHT_FOR_HEAT_MAP_PLOT);
+        } catch (Throwable e) {// ignore - just at attempt.
+            Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.SEVERE, "For some reason, the library cannot store heatmaps in a vector format. Storing png instead.");
+            storePlotPNG(path, plot);
+        }
     }
 
     @Override
