@@ -34,6 +34,9 @@ import vm.datatools.DataTypeConvertor;
 public class Tools {
 
     public static float round(float input, float toValue, boolean floor) {
+        if(toValue < 0.00001f){
+            return input;
+        }
         float addition = floor ? 0 : toValue / 2;
         int sig = input < 0 ? -1 : 1;
         toValue = Math.abs(toValue);
