@@ -135,8 +135,8 @@ public class HeatMapPlotter extends AbstractPlotter {
         // create a paint-scale and a legend showing it
         double minZ = extremes[4];
         double maxZ = extremes[5];
-        if (minZ >= maxZ) {
-            String s = "";
+        if (minZ == maxZ) {
+            maxZ += 1;
         }
         LookupPaintScale paintScale = new LookupPaintScale(minZ, maxZ, Color.black);
 
