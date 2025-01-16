@@ -471,12 +471,14 @@ public abstract class AbstractPlotter {
                     ok = false;
                     decimalsOfNext++;
                     nfBig.setMaximumFractionDigits(decimalsOfNext);
+                    nfBig.setMinimumFractionDigits(decimalsOfNext);
                     break;
                 }
-                currDouble -= step;
+                currDouble = DataTypeConvertor.floatToPreciseDouble(Tools.round((float) (currDouble - step), step.floatValue(), false)); // problem with floats
                 prev = currString;
             }
         } while (!ok);
+        nfBig.setMinimumFractionDigits(0);
         LOG.log(Level.INFO, "yStep: {0}, decimals: {1}", new Object[]{step, decimalsOfNext});
     }
 
