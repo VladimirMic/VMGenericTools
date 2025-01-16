@@ -6,6 +6,8 @@ package vm.plot.impl;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +22,7 @@ import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.xy.DefaultXYZDataset;
 import org.jfree.data.xy.XYZDataset;
 import vm.datatools.DataTypeConvertor;
+import vm.mathtools.Tools;
 import vm.plot.AbstractPlotter;
 
 /**
@@ -38,9 +41,9 @@ public class HeatMapPlotter extends AbstractPlotter {
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object... data) {
         String traceName = (String) data[0];
         float[][] values = (float[][]) data[1];
-        Map<Object, Integer> columnHeaders = (Map<Object, Integer>) data[2];
-        Map<Object, Integer> rowHeaders = (Map<Object, Integer>) data[3];
-        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, values, columnHeaders, rowHeaders);
+        Map<Object, Integer> yHeaders = (Map<Object, Integer>) data[2];
+        Map<Object, Integer> xHeaders = (Map<Object, Integer>) data[3];
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, values, yHeaders, xHeaders);
     }
 
     /**
@@ -51,13 +54,13 @@ public class HeatMapPlotter extends AbstractPlotter {
      * @param yAxisLabel
      * @param traceName
      * @param values
-     * @param columnHeaders
-     * @param rowHeaders
+     * @param yHeaders
+     * @param xHeaders
      * @return
      */
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, int[][] values, Map<Object, Integer> columnHeaders, Map<Object, Integer> rowHeaders) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, int[][] values, Map<Object, Integer> yHeaders, Map<Object, Integer> xHeaders) {
         float[][] valuesFloat = DataTypeConvertor.intsArrayToFloats(values);
-        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, valuesFloat, columnHeaders, rowHeaders);
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, valuesFloat, yHeaders, xHeaders);
     }
 
     /**
@@ -68,15 +71,15 @@ public class HeatMapPlotter extends AbstractPlotter {
      * @param traceName the name of the showed data for a legend. Can be null to
      * hide.
      * @param values values to show
-     * @param columnHeaders mapping of tick labels shown to the second index (y)
+     * @param yHeaders mapping of tick labels shown to the second index (y)
      * in @values
-     * @param rowHeaders mapping of tick labels shown to the first index (x) in
+     * @param xHeaders mapping of tick labels shown to the first index (x) in
      * @values
      * @return
      */
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, float[][] values, Map<Object, Integer> columnHeaders, Map<Object, Integer> rowHeaders) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, float[][] values, Map<Object, Integer> yHeaders, Map<Object, Integer> xHeaders) {
         DefaultXYZDataset dataset = new DefaultXYZDataset();
-        int size = columnHeaders.size() * rowHeaders.size();
+        int size = yHeaders.size() * xHeaders.size();
         double[] xValues = new double[size];
         double[] yValues = new double[size];
         double[] zValues = new double[size];
@@ -85,12 +88,12 @@ public class HeatMapPlotter extends AbstractPlotter {
         extremes[2] = Double.MAX_VALUE;
         extremes[4] = Double.MAX_VALUE;
         int counter = 0;
-        for (Map.Entry<Object, Integer> row : rowHeaders.entrySet()) {
+        for (Map.Entry<Object, Integer> row : xHeaders.entrySet()) {
             double yValue = Double.parseDouble(row.getKey().toString());
             int yIdx = row.getValue();
             extremes[2] = Math.min(extremes[2], yValue);
             extremes[3] = Math.max(extremes[3], yValue);
-            for (Map.Entry<Object, Integer> column : columnHeaders.entrySet()) {
+            for (Map.Entry<Object, Integer> column : yHeaders.entrySet()) {
                 double xValue = Double.parseDouble(column.getKey().toString());
                 int xIdx = column.getValue();
                 extremes[0] = Math.min(extremes[0], xValue);
@@ -170,6 +173,70 @@ public class HeatMapPlotter extends AbstractPlotter {
     @Override
     public String getSimpleName() {
         return "HeatMap";
+    }
+
+    public int[][] transformTo2DHistogramHeatMap(List<float[]> valuesToPlot, Map<Object, Integer> emptyMapToStoreYTickLabels, Map<Object, Integer> emptyMapToStoreXTickLabels) {
+        List<Float> xValues = new ArrayList<>();
+        List<Float> yValues = new ArrayList<>();
+        for (float[] fs : valuesToPlot) {
+            xValues.add(fs[0]);
+            yValues.add(fs[1]);
+        }
+        return transformTo2DHistogramHeatMap(xValues, yValues, emptyMapToStoreYTickLabels, emptyMapToStoreXTickLabels);
+    }
+
+    /**
+     * coordinates in two separated lists, so the values xValues[i] matches
+     * values yValues[i] to make a point
+     *
+     * @param xValues
+     * @param yValues
+     * @param emptyMapToStoreXTickLabels to be used as the param in createPlot
+     * @param emptyMapToStoreYTickLabels to be used as the param in createPlot
+     * @return
+     */
+    public int[][] transformTo2DHistogramHeatMap(List<Float> xValues, List<Float> yValues, Map<Object, Integer> emptyMapToStoreYTickLabels, Map<Object, Integer> emptyMapToStoreXTickLabels) {
+        if (xValues.size() != yValues.size()) {
+            throw new IllegalArgumentException("Diff lists: " + xValues.size() + "; " + yValues.size());
+        }
+        float[] xCountStepShownMin = initHeatMapHeaders(xValues, emptyMapToStoreXTickLabels, true);
+        float[] yCountStepShownMin = initHeatMapHeaders(yValues, emptyMapToStoreYTickLabels, false);
+        int[][] ret = new int[(int) xCountStepShownMin[0]][(int) yCountStepShownMin[0]];
+        for (int idx = 0; idx < xValues.size(); idx++) {
+            Float x = xValues.get(idx);
+            x = Tools.round(x, xCountStepShownMin[1], false);
+            Float y = yValues.get(idx);
+            y = Tools.round(y, yCountStepShownMin[1], false);
+            int yInt = (int) ((y - yCountStepShownMin[2]) / yCountStepShownMin[1]);
+            int xInt = (int) ((x - xCountStepShownMin[2]) / xCountStepShownMin[1]);
+//            if (xInt < 0 || yInt < 0) {
+//                String s = "";
+//            }
+            ret[xInt][yInt]++;
+        }
+        return ret;
+
+    }
+
+    private float[] initHeatMapHeaders(List<Float> valuesOnTheAxis, Map<Object, Integer> axisHeadersToFill, boolean isXAxis) {
+        float max = (float) Tools.getMax(valuesOnTheAxis);
+        float min = (float) Tools.getMin(valuesOnTheAxis);
+        float step;
+        if (isXAxis) {
+            step = vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max);
+        } else {
+            step = vm.mathtools.Tools.computeBasicYIntervalForHistogram(min, max);
+        }
+        min = Tools.round(min - step, step, false);
+        max = Tools.round(max + step, step, false);
+        int counter = 0;
+        float y = min;
+        while (y <= max) {
+            axisHeadersToFill.put(y, counter);
+            y = Tools.round(y + step, step, false);
+            counter++;
+        }
+        return new float[]{counter, step, min};
     }
 
     private JFreeChart setAppearence(JFreeChart chart, XYPlot plot, NumberAxis xAxis, NumberAxis yAxis, NumberAxis zAxis) {
