@@ -32,9 +32,11 @@ import vm.datatools.DataTypeConvertor;
  * @author Vlada
  */
 public class Tools {
+    
+    public static final Float MIN_ROUNDING_TOVALUE = 0.00001f;
 
     public static float round(float input, float toValue, boolean floor) {
-        if(toValue < 0.00001f){
+        if(toValue < MIN_ROUNDING_TOVALUE){
             return input;
         }
         float addition = floor ? 0 : toValue / 2;

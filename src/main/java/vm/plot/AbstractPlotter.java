@@ -473,7 +473,7 @@ public abstract class AbstractPlotter {
                 currDouble -= step;
                 prev = currString;
             }
-        } while (!ok);
+        } while (!ok && step > Tools.MIN_ROUNDING_TOVALUE);
         LOG.log(Level.INFO, "yStep: {0}, decimals: {1}", new Object[]{step, decimalsOfNext});
     }
 
