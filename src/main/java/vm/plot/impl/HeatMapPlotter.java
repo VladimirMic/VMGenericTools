@@ -88,14 +88,14 @@ public class HeatMapPlotter extends AbstractPlotter {
         extremes[2] = Double.MAX_VALUE;
         extremes[4] = Double.MAX_VALUE;
         int counter = 0;
-        for (Map.Entry<Object, Integer> row : xHeaders.entrySet()) {
-            double yValue = Double.parseDouble(row.getKey().toString());
-            int yIdx = row.getValue();
+        for (Map.Entry<Object, Integer> y : yHeaders.entrySet()) {
+            double yValue = Double.parseDouble(y.getKey().toString());
+            int yIdx = y.getValue();
             extremes[2] = Math.min(extremes[2], yValue);
             extremes[3] = Math.max(extremes[3], yValue);
-            for (Map.Entry<Object, Integer> column : yHeaders.entrySet()) {
-                double xValue = Double.parseDouble(column.getKey().toString());
-                int xIdx = column.getValue();
+            for (Map.Entry<Object, Integer> x : xHeaders.entrySet()) {
+                double xValue = Double.parseDouble(x.getKey().toString());
+                int xIdx = x.getValue();
                 extremes[0] = Math.min(extremes[0], xValue);
                 extremes[1] = Math.max(extremes[1], xValue);
                 double zValue = values[yIdx][xIdx];
