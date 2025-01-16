@@ -39,23 +39,6 @@ public class MyBoxAndWhiskerRenderer extends BoxAndWhiskerRenderer {
     public static Integer GAP_GROUPS = 28;
     public static Integer Y_WIDTH = 160;
 
-//    private Float minDisplayedCategoryValue = null;
-//    private Float maxnDisplayedCategoryValue = null;
-//
-//    public MyBoxAndWhiskerRenderer(Object[] categoryLabels) {
-//        if (Tools.isParseableToFloats(categoryLabels)) {
-//            minDisplayedCategoryValue = Float.valueOf(categoryLabels[0].toString());
-//            minDisplayedCategoryValue = Float.valueOf(categoryLabels[categoryLabels.length - 1].toString());
-//        }
-//    }
-//
-//    public void setMinDisplayedCategoryValue(Float minDisplayedCategoryValue) {
-//        this.minDisplayedCategoryValue = minDisplayedCategoryValue;
-//    }
-//
-//    public void setMaxnDisplayedCategoryValue(Float maxnDisplayedCategoryValue) {
-//        this.maxnDisplayedCategoryValue = maxnDisplayedCategoryValue;
-//    }
     private Double outlierRadius;
 
     public Double getOutlierRadius() {
@@ -159,7 +142,6 @@ public class MyBoxAndWhiskerRenderer extends BoxAndWhiskerRenderer {
                 }
             }
         }
-
 
         // draw median...
         g2.setPaint(outlinePaint);

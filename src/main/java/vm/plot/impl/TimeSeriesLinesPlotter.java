@@ -22,7 +22,7 @@ public class TimeSeriesLinesPlotter extends LinesPlotter {
         this.timeUnitInterval = timeUnitInterval;
     }
 
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAMES traceColour, Date[] tracesXValues, float[] tracesYValues) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, Date[] tracesXValues, float[] tracesYValues) {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, tracesXValues, tracesYValues);
     }
 

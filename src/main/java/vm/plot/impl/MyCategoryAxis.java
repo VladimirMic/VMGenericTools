@@ -1,9 +1,7 @@
 package vm.plot.impl;
 
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
@@ -17,7 +15,6 @@ import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.entity.CategoryLabelEntity;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.text.TextBlock;
 

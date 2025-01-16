@@ -17,11 +17,9 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.data.Range;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.statistics.BoxAndWhiskerItem;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import vm.datatools.DataTypeConvertor;
-import vm.mathtools.Tools;
 import vm.plot.AbstractPlotter;
 import static vm.plot.AbstractPlotter.COLOURS;
 import static vm.plot.AbstractPlotter.getColor;
@@ -35,21 +33,21 @@ public class BoxPlotPlotter extends AbstractPlotter {
     @Override
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object... data) {
         String[] tracesNames = (String[]) data[0];
-        COLOUR_NAMES[] tracesColours = (COLOUR_NAMES[]) data[1];
+        COLOUR_NAME[] tracesColours = (COLOUR_NAME[]) data[1];
         Object[] groupsNames = (Object[]) data[2];
         List<Float>[][] values = (List<Float>[][]) data[3];
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, tracesNames, tracesColours, groupsNames, values);
     }
 
     // never tested - check!
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAMES traceColour, Object[] groupsNames, List<Float>[] values) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Object[] groupsNames, List<Float>[] values) {
         String[] tracesNames = DataTypeConvertor.objectToSingularArray(traceName);
-        COLOUR_NAMES[] tracesColours = DataTypeConvertor.objectToSingularArray(traceColour);
+        COLOUR_NAME[] tracesColours = DataTypeConvertor.objectToSingularArray(traceColour);
         List<Float>[][] valuesArray = DataTypeConvertor.objectToSingularArray(values);
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, tracesNames, tracesColours, groupsNames, valuesArray);
     }
 
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAMES[] tracesColours, Object[] groupsNames, List<Float>[][] values) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] groupsNames, List<Float>[][] values) {
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
         if (tracesNames.length != values.length) {
             throw new IllegalArgumentException("Number of traces descriptions does not match the values" + tracesNames.length + ", " + values.length);
@@ -105,7 +103,7 @@ public class BoxPlotPlotter extends AbstractPlotter {
     protected int lastTracesCount;
     protected int lastGroupCount;
 
-    protected JFreeChart setAppearence(JFreeChart chart, String[] tracesNames, COLOUR_NAMES[] tracesColours, Object[] groupsNames) {
+    protected JFreeChart setAppearence(JFreeChart chart, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] groupsNames) {
         lastTracesCount = tracesNames.length;
         lastGroupCount = groupsNames.length;
 

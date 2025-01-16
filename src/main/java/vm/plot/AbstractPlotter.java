@@ -104,7 +104,7 @@ public abstract class AbstractPlotter {
         new Color(139, 222, 231)
     };
 
-    public static enum COLOUR_NAMES {
+    public static enum COLOUR_NAME {
         C1_BLUE,
         C2_RED,
         C3_GREEN,
@@ -477,9 +477,9 @@ public abstract class AbstractPlotter {
         LOG.log(Level.INFO, "yStep: {0}, decimals: {1}", new Object[]{step, decimalsOfNext});
     }
 
-    public static final Color getColor(COLOUR_NAMES name, boolean light) {
-        int idx = Arrays.binarySearch(COLOUR_NAMES.values(), name);
-        if (name == COLOUR_NAMES.CX_BLACK) {
+    public static final Color getColor(COLOUR_NAME name, boolean light) {
+        int idx = Arrays.binarySearch(COLOUR_NAME.values(), name);
+        if (name == COLOUR_NAME.CX_BLACK) {
             if (!light) {
                 return BOX_BLACK;
             } else {

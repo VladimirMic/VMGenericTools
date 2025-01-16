@@ -23,7 +23,7 @@ public class BoxPlotYXHorizontalPlotter extends BoxPlotXYPlotter {
     }
 
     @Override
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAMES[] tracesColours, Object[] yValues, List<Float>[][] valuesYX) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] yValues, List<Float>[][] valuesYX) {
         return super.createPlot(mainTitle, xAxisLabel, yAxisLabel, tracesNames, tracesColours, yValues, valuesYX);
     }
 
@@ -39,7 +39,7 @@ public class BoxPlotYXHorizontalPlotter extends BoxPlotXYPlotter {
     }
 
     @Override
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAMES traceColour, Map<Float, List<Float>> yToXListsValies) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map<Float, List<Float>> yToXListsValies) {
         return super.createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, traceColour, yToXListsValies);
     }
 

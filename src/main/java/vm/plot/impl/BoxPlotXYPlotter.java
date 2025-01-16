@@ -9,9 +9,7 @@ import java.util.Map;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
-import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import vm.datatools.DataTypeConvertor;
@@ -34,7 +32,7 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
     }
 
     @Override
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAMES[] tracesColours, Object[] xValues, List<Float>[][] values) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] xValues, List<Float>[][] values) {
         // notice that DefaultBoxAndWhiskerXYDataset contains a single only one series in the dataset. For that reason, implemented as category dataset with fixed step
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
         if (tracesNames.length != values.length) {
@@ -81,7 +79,7 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
         return setAppearence(chart, tracesNames, tracesColours, xValues);
     }
 
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAMES traceColour, Map<Float, List<Float>> xToYValues) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map<Float, List<Float>> xToYValues) {
         Object[] xValues = xToYValues.keySet().toArray();
         List<Float>[] retArray = new List[xValues.length];
         for (int i = 0; i < xValues.length; i++) {
@@ -98,7 +96,7 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
     }
 
     @Override
-    protected JFreeChart setAppearence(JFreeChart chart, String[] tracesNames, COLOUR_NAMES[] tracesColours, Object[] groupsNames) {
+    protected JFreeChart setAppearence(JFreeChart chart, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] groupsNames) {
         if (isHorizontal) {
             CategoryPlot plot = (CategoryPlot) chart.getPlot();
             String label = plot.getDomainAxis().getLabel();

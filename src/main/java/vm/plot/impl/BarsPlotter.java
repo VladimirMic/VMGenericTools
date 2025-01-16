@@ -30,7 +30,7 @@ public class BarsPlotter extends LinesPlotter {
     }
 
     @Override
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object[] tracesNames, COLOUR_NAMES[] tracesColours, float[][] tracesXValues, float[][] tracesYValues) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object[] tracesNames, COLOUR_NAME[] tracesColours, float[][] tracesXValues, float[][] tracesYValues) {
         XYSeries[] traces = transformCoordinatesIntoTraces(tracesNames, tracesXValues, tracesYValues);
         XYSeriesCollection dataset = new XYSeriesCollection();
         for (XYSeries trace : traces) {
@@ -43,17 +43,17 @@ public class BarsPlotter extends LinesPlotter {
         return setAppearence(chart, traces, tracesColours, xAxisLabel, yAxisLabel);
     }
 
-    public JFreeChart createHistogramPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAMES traceColour, SortedMap<Float, Float> histogram) {
+    public JFreeChart createHistogramPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, SortedMap<Float, Float> dataPoints) {
         if (traceColour == null) {
-            traceColour = COLOUR_NAMES.C1_BLUE;
+            traceColour = COLOUR_NAME.C1_BLUE;
         }
-        Object[] xValues = histogram.keySet().toArray();
-        Object[] yValues = histogram.values().toArray();
+        Object[] xValues = dataPoints.keySet().toArray();
+        Object[] yValues = dataPoints.values().toArray();
         float[] xFloats = DataTypeConvertor.objectsToPrimitiveFloats(xValues);
         float[] yFloats = DataTypeConvertor.objectsToPrimitiveFloats(yValues);
         float[][] xTracesValues = DataTypeConvertor.objectToSingularArray(xFloats);
         float[][] yTracesValues = DataTypeConvertor.objectToSingularArray(yFloats);
-        COLOUR_NAMES[] colours = DataTypeConvertor.objectToSingularArray(traceColour);
+        COLOUR_NAME[] colours = DataTypeConvertor.objectToSingularArray(traceColour);
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, mainTitle, colours, xTracesValues, yTracesValues);
     }
 

@@ -60,12 +60,12 @@ public class LinesPlotter extends AbstractPlotter {
                 tracesNames = (Object[]) DataTypeConvertor.objectToSingularArray(data[0]);
             }
         }
-        COLOUR_NAMES[] tracesColours = null;
+        COLOUR_NAME[] tracesColours = null;
         if (data[1] != null) {
-            if (data[1] instanceof COLOUR_NAMES[]) {
-                tracesColours = (COLOUR_NAMES[]) data[1];
+            if (data[1] instanceof COLOUR_NAME[]) {
+                tracesColours = (COLOUR_NAME[]) data[1];
             } else {
-                tracesColours = (COLOUR_NAMES[]) DataTypeConvertor.objectToSingularArray(data[1]);
+                tracesColours = (COLOUR_NAME[]) DataTypeConvertor.objectToSingularArray(data[1]);
             }
         }
         float[][] tracesXValues;
@@ -94,11 +94,11 @@ public class LinesPlotter extends AbstractPlotter {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, tracesNames, tracesColours, tracesXValues, tracesYValues);
     }
 
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAMES traceColour, float[] tracesXValues, float[] tracesYValues) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, float[] tracesXValues, float[] tracesYValues) {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, tracesXValues, tracesYValues);
     }
 
-    protected JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object[] tracesNames, COLOUR_NAMES[] tracesColours, float[][] tracesXValues, float[][] tracesYValues) {
+    protected JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object[] tracesNames, COLOUR_NAME[] tracesColours, float[][] tracesXValues, float[][] tracesYValues) {
         XYSeries[] traces = transformCoordinatesIntoTraces(tracesNames, tracesXValues, tracesYValues);
         XYSeriesCollection dataset = new XYSeriesCollection();
         for (XYSeries trace : traces) {
@@ -148,7 +148,7 @@ public class LinesPlotter extends AbstractPlotter {
         return ret;
     }
 
-    protected JFreeChart setAppearence(JFreeChart chart, XYSeries[] traces, COLOUR_NAMES[] tracesColours, String xAxisLabel, String yAxisLabel) {
+    protected JFreeChart setAppearence(JFreeChart chart, XYSeries[] traces, COLOUR_NAME[] tracesColours, String xAxisLabel, String yAxisLabel) {
         XYPlot plot = (XYPlot) chart.getPlot();
         // chart colours
         setChartColor(chart, plot);
