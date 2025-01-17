@@ -38,9 +38,15 @@ public class HeatMapPlotter extends AbstractPlotter {
     public static final Integer IMPLICIT_HEIGHT_FOR_HEAT_MAP_PLOT = (int) (IMPLICIT_HEIGHT * 1.5);
     public static final Integer IMPLICIT_Z_COLOUR_COUNT = 20;
     private int legendCount = IMPLICIT_Z_COLOUR_COUNT;
+    private Double givenZStep;
 
     public HeatMapPlotter(int zColoursCount) {
+        this(0, null);
+    }
+
+    public HeatMapPlotter(int zColoursCount, Double zStep) {
         this.legendCount = zColoursCount + 1;
+        this.givenZStep = zStep;
     }
 
     @Override
@@ -162,7 +168,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         psl.setMargin(50.0, 20.0, 80.0, 0.0);
 
         // step for z axis
-        double stepDouble = setAxisUnits(null, (NumberAxis) psl.getAxis(), legendCount, false); // todo - integers?
+        double stepDouble = setAxisUnits(givenZStep, (NumberAxis) psl.getAxis(), legendCount, false); // todo - integers?
         float zStep = (float) stepDouble;
         minZ = vm.mathtools.Tools.round((float) minZ, zStep, true) - zStep;
         for (int i = 0; minZ <= maxZ; i++) {
