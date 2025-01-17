@@ -40,7 +40,7 @@ public class HeatMapPlotter extends AbstractPlotter {
     private int legendCount = IMPLICIT_Z_COLOUR_COUNT;
 
     public HeatMapPlotter(int zColoursCount) {
-        this.legendCount = zColoursCount;
+        this.legendCount = (int) zColoursCount * 1.2;
     }
 
     @Override
@@ -119,7 +119,9 @@ public class HeatMapPlotter extends AbstractPlotter {
         float xStep = Tools.gcd(array);
         array = yHeaders.keySet().toArray(Float[]::new);
         float yStep = Tools.gcd(array);
-        JFreeChart ret = datasetToChart(dataset, xAxisLabel, yAxisLabel, traceName, extremes, xStep, yStep);
+        String xWidth = " (width: " + DataTypeConvertor.formatPossibleInt(xStep) + ")";
+        String yWidth = " (width: " + DataTypeConvertor.formatPossibleInt(yStep) + ")";
+        JFreeChart ret = datasetToChart(dataset, xAxisLabel + xWidth, yAxisLabel + yWidth, traceName, extremes, xStep, yStep);
         return ret;
     }
 
@@ -152,8 +154,8 @@ public class HeatMapPlotter extends AbstractPlotter {
         LookupPaintScale paintScale = new LookupPaintScale(minZ, maxZ, Color.black);
 
         NumberAxis zAxis = new NumberAxis(zAxisLabel);
-        zAxis.setLowerBound(extremes[4]);
-        zAxis.setUpperBound(extremes[5]);
+        zAxis.setLowerBound(minZ);
+        zAxis.setUpperBound(maxZ);
         PaintScaleLegend psl = new PaintScaleLegend(paintScale, zAxis);
         psl.setPosition(RectangleEdge.RIGHT);
         psl.setAxisLocation(AxisLocation.TOP_OR_RIGHT);
@@ -161,13 +163,13 @@ public class HeatMapPlotter extends AbstractPlotter {
 
         // step for z axis
         double stepDouble = setAxisUnits(null, (NumberAxis) psl.getAxis(), legendCount, false); // todo - integers?
-        float step = (float) stepDouble;
-        minZ = vm.mathtools.Tools.round((float) minZ, step, true) - step;
+        float zStep = (float) stepDouble;
+        minZ = vm.mathtools.Tools.round((float) minZ, zStep, true) - zStep;
         for (int i = 0; minZ <= maxZ; i++) {
             int idx = i % COLOURS.length;
-            minZ += step;
+            minZ += zStep;
             paintScale.add(minZ, COLOURS[idx]);
-            minZ += step;
+            minZ += zStep;
             paintScale.add(minZ, LIGHT_COLOURS[idx]);
         }
 
@@ -187,8 +189,9 @@ public class HeatMapPlotter extends AbstractPlotter {
         tickUnits.add(tickUnitNumber);
         yAxis.setStandardTickUnits(tickUnits);
         yAxis.setTickUnit(tickUnitNumber);
+        yAxis.setLowerBound(yAxis.getLowerBound() - yStep / 2);
+        yAxis.setUpperBound(yAxis.getUpperBound() + yStep / 2);
         // z axis
-        float zStep = (float) ((extremes[5] - extremes[4]) / legendCount);
         tickUnitNumber = new NumberTickUnit(zStep);
         tickUnits = new TickUnits();
         tickUnits.add(tickUnitNumber);
@@ -251,8 +254,8 @@ public class HeatMapPlotter extends AbstractPlotter {
         } else {
             step = vm.mathtools.Tools.computeBasicYIntervalForHistogram(min, max);
         }
-        min = Tools.round(min - step / 2, step / 2, true);
-        max = Tools.round(max + step / 2, step / 2, true);
+        min = Tools.round(min, step, false);
+        max = Tools.round(max + step / 2, step, false);
         int counter = 0;
         float y = min;
         while (y <= max) {

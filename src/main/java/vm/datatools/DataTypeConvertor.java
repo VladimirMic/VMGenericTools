@@ -522,4 +522,12 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static String formatPossibleInt(float f) {
+        int i = (int) f;
+        if (i == f) {
+            return Integer.toString(i);
+        }
+        return Float.toString(f);
+    }
+
 }
