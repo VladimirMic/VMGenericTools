@@ -313,11 +313,12 @@ public class DataTypeConvertor {
         return ret;
     }
 
-    public static float[] floatToPrimitiveArray(List<Float> list) {
+    public static float[] floatToPrimitiveArray(Collection<Float> list) {
         float[] ret = new float[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            Number n = list.get(i);
-            ret[i] = n.floatValue();
+        int counter = 0;
+        for (Float f : list) {
+            ret[counter] = f;
+            counter++;
         }
         return ret;
     }

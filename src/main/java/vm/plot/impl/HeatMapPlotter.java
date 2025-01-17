@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jfree.chart.JFreeChart;
@@ -71,14 +72,13 @@ public class HeatMapPlotter extends AbstractPlotter {
      * @param traceName the name of the showed data for a legend. Can be null to
      * hide.
      * @param values values to show
-     * @param yHeaders mapping of tick labels shown to the second index (y)
-     * in @values
+     * @param yHeaders mapping of tick labels shown to the second index (y) in
+     * @values
      * @param xHeaders mapping of tick labels shown to the first index (x) in
      * @values
      * @return
      */
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, float[][] values, Map<Object, Integer> yHeaders, Map<Object, Integer> xHeaders) {
-        DefaultXYZDataset dataset = new DefaultXYZDataset();
         int size = yHeaders.size() * xHeaders.size();
         double[] xValues = new double[size];
         double[] yValues = new double[size];
@@ -107,15 +107,18 @@ public class HeatMapPlotter extends AbstractPlotter {
                 counter++;
             }
         }
-//        extremes[1] = 60;
-//        extremes[3] = 1000000;
         double[][] valuesArray = new double[][]{xValues, yValues, zValues};
+        DefaultXYZDataset dataset = new DefaultXYZDataset();
         dataset.addSeries(traceName, valuesArray);
-        JFreeChart ret = datasetToChart(dataset, xAxisLabel, yAxisLabel, extremes);
+        Float[] array = xHeaders.keySet().toArray(Float[]::new);
+        float xStep = Tools.gcd(array);
+        array = yHeaders.keySet().toArray(Float[]::new);
+        float yStep = Tools.gcd(array);
+        JFreeChart ret = datasetToChart(dataset, xAxisLabel, yAxisLabel, extremes, xStep, yStep);
         return ret;
     }
 
-    private JFreeChart datasetToChart(XYZDataset dataset, String xAxisLabel, String yAxisLabel, double[] extremes) {
+    private JFreeChart datasetToChart(XYZDataset dataset, String xAxisLabel, String yAxisLabel, double[] extremes, float xStep, float yStep) {
         // x-axis for time
         NumberAxis xAxis = new NumberAxis(xAxisLabel);
         xAxis.setLowerBound(extremes[0]);
@@ -159,7 +162,7 @@ public class HeatMapPlotter extends AbstractPlotter {
             paintScale.add(minZ, LIGHT_COLOURS[idx]);
         }
 
-        // finally a renderer and a plot
+        // finally a renderer and a plot       
         XYPlot plot = new XYPlot(dataset, xAxis, yAxis, new XYBlockRenderer());
         XYBlockRenderer renderer = ((XYBlockRenderer) plot.getRenderer());
         renderer.setPaintScale(paintScale);
