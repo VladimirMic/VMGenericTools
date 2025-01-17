@@ -40,7 +40,7 @@ public class HeatMapPlotter extends AbstractPlotter {
     private int legendCount = IMPLICIT_Z_COLOUR_COUNT;
 
     public HeatMapPlotter(int zColoursCount) {
-        this.legendCount = (int) zColoursCount * 1.2;
+        this.legendCount = (int) (zColoursCount * 1.2f);
     }
 
     @Override
