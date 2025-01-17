@@ -428,7 +428,6 @@ public abstract class AbstractPlotter {
         axis.setTickLabelFont(FONT_AXIS_MARKERS);
         axis.setLabelFont(FONT_AXIS_TITLE);
         axis.setAxisLineVisible(false); // doubles lines next to axes
-
     }
 
     protected void setLegendFont(LegendTitle legend) {

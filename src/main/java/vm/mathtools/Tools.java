@@ -32,11 +32,11 @@ import vm.datatools.DataTypeConvertor;
  * @author Vlada
  */
 public class Tools {
-    
+
     public static final Float MIN_ROUNDING_TOVALUE = 0.00001f;
 
     public static float round(float input, float toValue, boolean floor) {
-        if(toValue < MIN_ROUNDING_TOVALUE){
+        if (toValue < MIN_ROUNDING_TOVALUE) {
             return input;
         }
         float addition = floor ? 0 : toValue / 2;
@@ -726,6 +726,14 @@ public class Tools {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double d = R * c; // in metres
         return d;
+    }
+
+    public static int sumArray(int[] array) {
+        int ret = 0;
+        for (int i : array) {
+            ret += i;
+        }
+        return ret;
     }
 
 }
