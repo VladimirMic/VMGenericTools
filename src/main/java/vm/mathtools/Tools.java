@@ -466,7 +466,7 @@ public class Tools {
     }
 
     private static float ifSmallerThanOneStepForHistogram(float f) {
-        if (f >= 1 || f <= -1) {
+        if (f >= 1 || f <= -1 || f == 0) {
             return f;
         }
         int sig = f < 0 ? -1 : 1;
@@ -506,6 +506,9 @@ public class Tools {
      */
     public static SortedMap<Float, Float> createHistogramOfValues(float[] values, float step, boolean absoluteValues, boolean printLogMinMax) {
         SortedMap<Float, Float> ret = new TreeMap<>();
+        if (step == 0) {
+            return ret;
+        }
         for (Float value : values) {
             Float key = Tools.round(value, step, false);
             if (!ret.containsKey(key)) {
