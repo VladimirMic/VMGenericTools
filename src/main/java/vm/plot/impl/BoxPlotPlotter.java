@@ -126,8 +126,8 @@ public class BoxPlotPlotter extends AbstractPlotter {
         if (axisBound > dataBound) {
             yAxis.setLowerBound(dataBound);
         }
-        yAxis.setUpperMargin(0.3);
-        yAxis.setLowerMargin(0.3);
+        yAxis.setUpperMargin(0.5);
+        yAxis.setLowerMargin(0.5);
         double range = yAxis.getUpperBound() - yAxis.getLowerBound();
         axisBound = yAxis.getUpperBound() + yAxis.getUpperMargin() * range;
         yAxis.setUpperBound(axisBound);
