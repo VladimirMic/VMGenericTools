@@ -115,13 +115,13 @@ public class HeatMapPlotter extends AbstractPlotter {
      * @param xAxisLabel
      * @param yAxisLabel
      * @param traceName
-     * @param values
+     * @param yxzValues
      * @param yHeaders
      * @param xHeaders
      * @return
      */
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, int[][] values, Map<Object, Integer> yHeaders, Map<Object, Integer> xHeaders) {
-        float[][] valuesFloat = DataTypeConvertor.intsArrayToFloats(values);
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, int[][] yxzValues, Map<Object, Integer> yHeaders, Map<Object, Integer> xHeaders) {
+        float[][] valuesFloat = DataTypeConvertor.intsArrayToFloats(yxzValues);
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, valuesFloat, yHeaders, xHeaders);
     }
 
@@ -132,14 +132,14 @@ public class HeatMapPlotter extends AbstractPlotter {
      * @param yAxisLabel yAxisLabel (can be null to hide)
      * @param traceName the name of the showed data for a legend. Can be null to
      * hide.
-     * @param values values to show
+     * @param yxzValues values to show
      * @param yHeaders mapping of tick labels shown to the second index (y) in
      * @values
      * @param xHeaders mapping of tick labels shown to the first index (x) in
      * @values
      * @return
      */
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, float[][] values, Map<Object, Integer> yHeaders, Map<Object, Integer> xHeaders) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, float[][] yxzValues, Map<Object, Integer> yHeaders, Map<Object, Integer> xHeaders) {
         int size = yHeaders.size() * xHeaders.size();
         double[] xValues = new double[size];
         double[] yValues = new double[size];
@@ -159,7 +159,7 @@ public class HeatMapPlotter extends AbstractPlotter {
                 int xIdx = x.getValue();
                 extremes[0] = Math.min(extremes[0], xValue);
                 extremes[1] = Math.max(extremes[1], xValue);
-                double zValue = values[xIdx][yIdx];
+                double zValue = yxzValues[yIdx][xIdx];
                 xValues[counter] = xValue;
                 yValues[counter] = yValue;
                 zValues[counter] = zValue;
@@ -171,9 +171,10 @@ public class HeatMapPlotter extends AbstractPlotter {
         double[][] valuesArray = new double[][]{xValues, yValues, zValues};
         DefaultXYZDataset dataset = new DefaultXYZDataset();
         dataset.addSeries(traceName, valuesArray);
-        Float[] array = xHeaders.keySet().toArray(Float[]::new);
+
+        Float[] array = DataTypeConvertor.objectsToObjectFloats(xHeaders.keySet().toArray());
         float xStep = Tools.gcd(array);
-        array = yHeaders.keySet().toArray(Float[]::new);
+        array = DataTypeConvertor.objectsToObjectFloats(yHeaders.keySet().toArray());
         float yStep = Tools.gcd(array);
         String xWidth = " (width: " + DataTypeConvertor.formatPossibleInt(xStep) + ")";
         String yWidth = " (width: " + DataTypeConvertor.formatPossibleInt(yStep) + ")";
@@ -296,7 +297,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         }
         float[] xCountStepShownMin = initHeatMapHeaders(xValues, emptyMapToStoreXTickLabels, true);
         float[] yCountStepShownMin = initHeatMapHeaders(yValues, emptyMapToStoreYTickLabels, false);
-        int[][] ret = new int[(int) xCountStepShownMin[0]][(int) yCountStepShownMin[0]];
+        int[][] ret = new int[(int) yCountStepShownMin[0]][(int) xCountStepShownMin[0]];
         for (int idx = 0; idx < xValues.size(); idx++) {
             Float x = xValues.get(idx);
             x = Tools.round(x, xCountStepShownMin[1], false);
@@ -304,7 +305,7 @@ public class HeatMapPlotter extends AbstractPlotter {
             y = Tools.round(y, yCountStepShownMin[1], false);
             int yInt = (int) ((y - yCountStepShownMin[2]) / yCountStepShownMin[1]);
             int xInt = (int) ((x - xCountStepShownMin[2]) / xCountStepShownMin[1]);
-            ret[xInt][yInt]++;
+            ret[yInt][xInt]++;
         }
         return ret;
 
