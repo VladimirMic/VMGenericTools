@@ -171,9 +171,10 @@ public class HeatMapPlotter extends AbstractPlotter {
         double[][] valuesArray = new double[][]{xValues, yValues, zValues};
         DefaultXYZDataset dataset = new DefaultXYZDataset();
         dataset.addSeries(traceName, valuesArray);
-        Float[] array = xHeaders.keySet().toArray(Float[]::new);
+
+        Float[] array = DataTypeConvertor.objectsToObjectFloats(xHeaders.keySet().toArray());
         float xStep = Tools.gcd(array);
-        array = yHeaders.keySet().toArray(Float[]::new);
+        array = DataTypeConvertor.objectsToObjectFloats(yHeaders.keySet().toArray());
         float yStep = Tools.gcd(array);
         String xWidth = " (width: " + DataTypeConvertor.formatPossibleInt(xStep) + ")";
         String yWidth = " (width: " + DataTypeConvertor.formatPossibleInt(yStep) + ")";
