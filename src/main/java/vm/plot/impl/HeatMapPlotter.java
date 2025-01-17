@@ -229,6 +229,9 @@ public class HeatMapPlotter extends AbstractPlotter {
                 paintScale.add(minZ, StandardColours.COLOURS[idx]);
                 minZ += zStep;
                 paintScale.add(minZ, StandardColours.LIGHT_COLOURS[idx]);
+                if (Double.MAX_VALUE == maxZ) {
+                    break;
+                }
             }
         } else {
             int i = 0;
@@ -236,6 +239,9 @@ public class HeatMapPlotter extends AbstractPlotter {
                 minZ += zStep;
                 paintScale.add(minZ, StandardColours.RAINBOW_COLOURS[i]);
                 i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
+                if (Double.MAX_VALUE == maxZ) {
+                    break;
+                }
             }
         }
 

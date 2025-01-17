@@ -74,8 +74,6 @@ public abstract class AbstractPlotter {
     public static final Stroke DASHED_STROKE = new BasicStroke(GRID_STROKE, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3, 3}, 0);
     public static final Stroke FULL_STROKE = new BasicStroke(GRID_STROKE);
 
-
-
     protected boolean logY = false;
     protected boolean enforceInvolvingZeroToYAxis = false;
     protected boolean verticalXLabels = false;
@@ -128,6 +126,9 @@ public abstract class AbstractPlotter {
     }
 
     private double getStep(float division) {
+        if (Float.isInfinite(division)) {
+            return 1;
+        }
         int m = 0;
         int d = 0;
         while (division > 1) {
@@ -457,7 +458,6 @@ public abstract class AbstractPlotter {
         nfBig.setMinimumFractionDigits(0);
         LOG.log(Level.INFO, "yStep: {0}, decimals: {1}", new Object[]{step, decimalsOfNext});
     }
-
 
     protected float[] minMaxY;
 
