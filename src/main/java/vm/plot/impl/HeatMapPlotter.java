@@ -24,8 +24,6 @@ import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.xy.DefaultXYZDataset;
 import org.jfree.data.xy.XYZDataset;
 import vm.colour.StandardColours;
-import vm.colour.StandardColours.COLOUR_NAME;
-import static vm.colour.StandardColours.getColor;
 import vm.datatools.DataTypeConvertor;
 import vm.mathtools.Tools;
 import vm.plot.AbstractPlotter;
@@ -36,10 +34,11 @@ import vm.plot.AbstractPlotter;
  */
 public class HeatMapPlotter extends AbstractPlotter {
 
+    public static final Float IMPLICIT_RELATIVE_SPACE_OF_BLOCKS = 0.9f;
     public static final Integer IMPLICIT_WIDTH_FOR_HEAT_MAP_PLOT = (int) (IMPLICIT_WIDTH * 1.5);
-
     public static final Integer IMPLICIT_HEIGHT_FOR_HEAT_MAP_PLOT = (int) (IMPLICIT_HEIGHT * 1.5);
     public static final Integer IMPLICIT_Z_COLOUR_COUNT = 20;
+
     private Integer zColoursCount = null;
     private Double givenZStep = null;
     private Double givenXStep = null;
@@ -242,8 +241,8 @@ public class HeatMapPlotter extends AbstractPlotter {
         // finally a renderer and a plot       
         XYPlot plot = new XYPlot(dataset, xAxis, yAxis, new XYBlockRenderer());
         XYBlockRenderer renderer = ((XYBlockRenderer) plot.getRenderer());
-        renderer.setBlockWidth(xStep * 0.9f);
-        renderer.setBlockHeight(yStep * 0.9f);
+        renderer.setBlockWidth(xStep * IMPLICIT_RELATIVE_SPACE_OF_BLOCKS);
+        renderer.setBlockHeight(yStep * IMPLICIT_RELATIVE_SPACE_OF_BLOCKS);
         renderer.setPaintScale(paintScale);
         renderer.setSeriesStroke(0, new BasicStroke(30));
         JFreeChart chart = new JFreeChart(null, null, plot, false);
