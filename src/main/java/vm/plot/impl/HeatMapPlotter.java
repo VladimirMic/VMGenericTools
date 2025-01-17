@@ -236,8 +236,8 @@ public class HeatMapPlotter extends AbstractPlotter {
         } else {
             step = vm.mathtools.Tools.computeBasicYIntervalForHistogram(min, max);
         }
-        min = Tools.round(min - step, step, false);
-        max = Tools.round(max + step, step, false);
+        min = Tools.round(min - step / 2, step, true);
+        max = Tools.round(max + step / 2, step, true);
         int counter = 0;
         float y = min;
         while (y <= max) {
