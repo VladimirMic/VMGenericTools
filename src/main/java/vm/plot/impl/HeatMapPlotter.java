@@ -15,6 +15,8 @@ import java.util.logging.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.axis.TickUnits;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.LookupPaintScale;
 import org.jfree.chart.renderer.xy.XYBlockRenderer;
@@ -176,6 +178,11 @@ public class HeatMapPlotter extends AbstractPlotter {
         xAxis.setUpperMargin(0);
         yAxis.setLowerMargin(0);
         yAxis.setUpperMargin(0);
+        NumberTickUnit tickUnitNumber = new NumberTickUnit(yStep);
+        TickUnits tickUnits = new TickUnits();
+        tickUnits.add(tickUnitNumber);
+        yAxis.setStandardTickUnits(tickUnits);
+        yAxis.setTickUnit(tickUnitNumber);
         return chart;
     }
 
@@ -218,9 +225,6 @@ public class HeatMapPlotter extends AbstractPlotter {
             y = Tools.round(y, yCountStepShownMin[1], false);
             int yInt = (int) ((y - yCountStepShownMin[2]) / yCountStepShownMin[1]);
             int xInt = (int) ((x - xCountStepShownMin[2]) / xCountStepShownMin[1]);
-//            if (xInt < 0 || yInt < 0) {
-//                String s = "";
-//            }
             ret[xInt][yInt]++;
         }
         return ret;
