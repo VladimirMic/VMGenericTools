@@ -16,7 +16,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,48 +74,7 @@ public abstract class AbstractPlotter {
     public static final Stroke DASHED_STROKE = new BasicStroke(GRID_STROKE, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3, 3}, 0);
     public static final Stroke FULL_STROKE = new BasicStroke(GRID_STROKE);
 
-    public static final Color BOX_BLACK = Color.BLACK;
-    public static final Color LIGHT_BOX_BLACK = new Color(128, 128, 128);
 
-    public static final Color[] COLOURS = new Color[]{
-        new Color(31, 119, 180),
-        new Color(214, 39, 40),
-        new Color(44, 160, 44),
-        new Color(255, 127, 14),
-        new Color(148, 103, 189),
-        new Color(140, 86, 75),
-        new Color(227, 119, 194),
-        new Color(127, 127, 127),
-        new Color(188, 189, 34),
-        new Color(23, 190, 207)
-    };
-
-    public static final Color[] LIGHT_COLOURS = new Color[]{
-        new Color(143, 187, 217),
-        new Color(234, 147, 147),
-        new Color(149, 207, 149),
-        new Color(255, 191, 134),
-        new Color(201, 179, 222),
-        new Color(197, 170, 165),
-        new Color(241, 187, 224),
-        new Color(191, 191, 191),
-        new Color(221, 222, 144),
-        new Color(139, 222, 231)
-    };
-
-    public static enum COLOUR_NAME {
-        C1_BLUE,
-        C2_RED,
-        C3_GREEN,
-        C4_ORANGE,
-        C5_VIOLET,
-        C6_BROWN,
-        C7_PURPLE,
-        C8_GREY,
-        C9_LIME,
-        C10_CYAN,
-        CX_BLACK
-    }
 
     protected boolean logY = false;
     protected boolean enforceInvolvingZeroToYAxis = false;
@@ -500,20 +458,6 @@ public abstract class AbstractPlotter {
         LOG.log(Level.INFO, "yStep: {0}, decimals: {1}", new Object[]{step, decimalsOfNext});
     }
 
-    public static final Color getColor(COLOUR_NAME name, boolean light) {
-        int idx = Arrays.binarySearch(COLOUR_NAME.values(), name);
-        if (name == COLOUR_NAME.CX_BLACK) {
-            if (!light) {
-                return BOX_BLACK;
-            } else {
-                return LIGHT_BOX_BLACK;
-            }
-        }
-        if (!light) {
-            return COLOURS[idx];
-        }
-        return LIGHT_COLOURS[idx];
-    }
 
     protected float[] minMaxY;
 

@@ -16,6 +16,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import vm.colour.StandardColours.COLOUR_NAME;
 import vm.datatools.DataTypeConvertor;
 import vm.mathtools.Tools;
 

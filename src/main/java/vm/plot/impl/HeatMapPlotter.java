@@ -23,6 +23,9 @@ import org.jfree.chart.title.PaintScaleLegend;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.xy.DefaultXYZDataset;
 import org.jfree.data.xy.XYZDataset;
+import vm.colour.StandardColours;
+import vm.colour.StandardColours.COLOUR_NAME;
+import static vm.colour.StandardColours.getColor;
 import vm.datatools.DataTypeConvertor;
 import vm.mathtools.Tools;
 import vm.plot.AbstractPlotter;
@@ -42,20 +45,14 @@ public class HeatMapPlotter extends AbstractPlotter {
     private Double givenXStep = null;
     private Double givenYStep = null;
 
+    private boolean contrastiveColours;
+
     public HeatMapPlotter() {
-        this(IMPLICIT_Z_COLOUR_COUNT);
+        this(true);
     }
 
-    public void setGivenZStep(Double givenZStep) {
-        this.givenZStep = givenZStep;
-    }
-
-    public void setGivenXStep(Double givenXStep) {
-        this.givenXStep = givenXStep;
-    }
-
-    public void setGivenYStep(Double givenYStep) {
-        this.givenYStep = givenYStep;
+    public HeatMapPlotter(boolean contrastiveColours) {
+        this(IMPLICIT_Z_COLOUR_COUNT, contrastiveColours);
     }
 
     /**
@@ -68,7 +65,12 @@ public class HeatMapPlotter extends AbstractPlotter {
      * @param zColoursCount
      */
     public HeatMapPlotter(int zColoursCount) {
+        this(zColoursCount, true);
+    }
+
+    public HeatMapPlotter(int zColoursCount, boolean contrastiveColours) {
         this.zColoursCount = zColoursCount + 1;
+        this.contrastiveColours = contrastiveColours;
     }
 
     /**
@@ -77,8 +79,25 @@ public class HeatMapPlotter extends AbstractPlotter {
      * @param zStep
      */
     public HeatMapPlotter(Double zStep) {
+        this(zStep, true);
+    }
+
+    public HeatMapPlotter(Double zStep, boolean contrastiveColours) {
         this.zColoursCount = IMPLICIT_Z_COLOUR_COUNT;
         this.givenZStep = zStep;
+        this.contrastiveColours = contrastiveColours;
+    }
+
+    public void setGivenZStep(Double givenZStep) {
+        this.givenZStep = givenZStep;
+    }
+
+    public void setGivenXStep(Double givenXStep) {
+        this.givenXStep = givenXStep;
+    }
+
+    public void setGivenYStep(Double givenYStep) {
+        this.givenYStep = givenYStep;
     }
 
     @Override
@@ -203,12 +222,21 @@ public class HeatMapPlotter extends AbstractPlotter {
         double stepDouble = setAxisUnits(givenZStep, (NumberAxis) psl.getAxis(), zColoursCount, false); // todo - integers?
         float zStep = (float) stepDouble;
         minZ = vm.mathtools.Tools.round((float) minZ, zStep, true) - zStep;
-        for (int i = 0; minZ <= maxZ; i++) {
-            int idx = i % COLOURS.length;
-            minZ += zStep;
-            paintScale.add(minZ, COLOURS[idx]);
-            minZ += zStep;
-            paintScale.add(minZ, LIGHT_COLOURS[idx]);
+        if (contrastiveColours) {
+            for (int i = 0; minZ <= maxZ; i++) {
+                int idx = i % StandardColours.COLOURS.length;
+                minZ += zStep;
+                paintScale.add(minZ, StandardColours.COLOURS[idx]);
+                minZ += zStep;
+                paintScale.add(minZ, StandardColours.LIGHT_COLOURS[idx]);
+            }
+        } else {
+            int i = 0;
+            while (minZ <= maxZ) {
+                minZ += zStep;
+                paintScale.add(minZ, StandardColours.RAINBOW_COLOURS[i]);
+                i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
+            }
         }
 
         // finally a renderer and a plot       

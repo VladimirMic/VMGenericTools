@@ -10,7 +10,7 @@ import java.util.Map;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
-import vm.mathtools.Tools;
+import vm.colour.StandardColours.COLOUR_NAME;
 
 /**
  *

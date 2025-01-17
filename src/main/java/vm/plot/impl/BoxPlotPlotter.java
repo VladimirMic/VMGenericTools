@@ -19,10 +19,11 @@ import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.data.Range;
 import org.jfree.data.statistics.BoxAndWhiskerItem;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import vm.colour.StandardColours;
+import vm.colour.StandardColours.COLOUR_NAME;
+import static vm.colour.StandardColours.getColor;
 import vm.datatools.DataTypeConvertor;
 import vm.plot.AbstractPlotter;
-import static vm.plot.AbstractPlotter.COLOURS;
-import static vm.plot.AbstractPlotter.getColor;
 
 /**
  *
@@ -165,8 +166,8 @@ public class BoxPlotPlotter extends AbstractPlotter {
         // set traces strokes
         for (int i = 0; i < tracesNames.length; i++) {
             renderer.setSeriesStroke(i, new BasicStroke(SERIES_STROKE));
-            Color darkColor = tracesColours == null ? COLOURS[i % COLOURS.length] : getColor(tracesColours[i], false);
-            Color lightColor = tracesColours == null ? LIGHT_COLOURS[i % LIGHT_COLOURS.length] : getColor(tracesColours[i], true);
+            Color darkColor = tracesColours == null ? StandardColours.COLOURS[i % StandardColours.COLOURS.length] : getColor(tracesColours[i], false);
+            Color lightColor = tracesColours == null ? StandardColours.LIGHT_COLOURS[i % StandardColours.LIGHT_COLOURS.length] : getColor(tracesColours[i], true);
 //            if (tracesNames.length > 1) {
             renderer.setSeriesPaint(i, lightColor);
             renderer.setSeriesOutlinePaint(i, darkColor);

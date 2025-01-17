@@ -12,6 +12,7 @@ import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import vm.colour.StandardColours.COLOUR_NAME;
 import vm.datatools.DataTypeConvertor;
 import vm.datatools.Tools;
 

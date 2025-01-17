@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateTickUnitType;
+import vm.colour.StandardColours.COLOUR_NAME;
 
 /**
  *

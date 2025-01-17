@@ -29,6 +29,11 @@ import org.jfree.chart.ui.GradientPaintTransformType;
 import org.jfree.chart.ui.StandardGradientPaintTransformer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import vm.colour.StandardColours;
+import static vm.colour.StandardColours.BOX_BLACK;
+import vm.colour.StandardColours.COLOUR_NAME;
+import static vm.colour.StandardColours.LIGHT_BOX_BLACK;
+import static vm.colour.StandardColours.getColor;
 import vm.datatools.DataTypeConvertor;
 import vm.datatools.Tools;
 import vm.plot.AbstractPlotter;
@@ -209,8 +214,8 @@ public class LinesPlotter extends AbstractPlotter {
                 }
                 lineAndShapeRenderer.setSeriesShapesVisible(i, true);
             }
-            Color darkColor = tracesColours == null ? COLOURS[i % COLOURS.length] : getColor(tracesColours[i], false);
-            Color lightColor = tracesColours == null ? LIGHT_COLOURS[i % LIGHT_COLOURS.length] : getColor(tracesColours[i], true);
+            Color darkColor = tracesColours == null ? StandardColours.COLOURS[i % StandardColours.COLOURS.length] : getColor(tracesColours[i], false);
+            Color lightColor = tracesColours == null ? StandardColours.LIGHT_COLOURS[i % StandardColours.LIGHT_COLOURS.length] : getColor(tracesColours[i], true);
             if (traces.length == 1 && barRenderer == null && tracesColours == null) {
                 darkColor = BOX_BLACK;
                 lightColor = LIGHT_BOX_BLACK;
