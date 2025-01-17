@@ -291,7 +291,7 @@ public abstract class AbstractPlotter {
             includeZeroForXAxisLocal = true;
         }
         if (xAxis instanceof NumberAxis) {
-            setTicksForNumberAxis((NumberAxis) xAxis, includeZeroForXAxisLocal);
+            setTicksForXNumberAxis((NumberAxis) xAxis, includeZeroForXAxisLocal);
         }
         if (xAxis instanceof DateAxis) {
             setTicksForDateAxis((DateAxis) xAxis);
@@ -310,7 +310,21 @@ public abstract class AbstractPlotter {
         // intentional
     }
 
-    private void setTicksForNumberAxis(NumberAxis xAxis, Boolean includeZeroForXAxisLocal) {
+    protected void setRotationOfValueAxisFont(ValueAxis axis, double step, NumberFormat nf) {
+        int maxLength = 0;
+        Double lowerBound = axis.getLowerBound();
+        double upperBound = axis.getUpperBound();
+        float curr = Tools.round(lowerBound.floatValue(), Float.parseFloat(Double.toString(step)), false);
+        while (curr < upperBound) {
+            maxLength = Math.max(maxLength, nf.format(curr).length());
+            curr += step;
+        }
+        if (maxLength >= 3) {
+            axis.setVerticalTickLabels(true);
+        }
+    }
+
+    private void setTicksForXNumberAxis(NumberAxis xAxis, Boolean includeZeroForXAxisLocal) {
         xAxis.setAutoRangeIncludesZero(includeZeroForXAxisLocal);
         NumberFormat nf = NumberFormat.getInstance(Locale.US);
         Double xStep = setAxisUnits(null, xAxis, X_TICKS_IMPLICIT_NUMBER_FOR_SHORT_DESC, false);
@@ -334,6 +348,7 @@ public abstract class AbstractPlotter {
         if (maxTickLength >= 4) {
             setAxisUnits(null, xAxis, X_TICKS_IMPLICIT_NUMBER_FOR_LONG_DESC, false);
         }
+        setRotationOfValueAxisFont(xAxis, xStep, nf);
     }
 
     protected void setRotationOfXAxisCategoriesFont(CategoryAxis xAxis, Object[] groupsNames, int tracesPerGroup) {
@@ -413,6 +428,7 @@ public abstract class AbstractPlotter {
         axis.setTickLabelFont(FONT_AXIS_MARKERS);
         axis.setLabelFont(FONT_AXIS_TITLE);
         axis.setAxisLineVisible(false); // doubles lines next to axes
+
     }
 
     protected void setLegendFont(LegendTitle legend) {

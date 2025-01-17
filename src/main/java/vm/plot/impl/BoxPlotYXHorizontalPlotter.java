@@ -50,17 +50,7 @@ public class BoxPlotYXHorizontalPlotter extends BoxPlotXYPlotter {
 
     @Override
     protected void setRotationOfYAxisNumbersFont(NumberAxis axis, double step, NumberFormat nf) {
-        int maxLength = 0;
-        Double lowerBound = axis.getLowerBound();
-        double upperBound = axis.getUpperBound();
-        float curr = Tools.round(lowerBound.floatValue(), Float.parseFloat(Double.toString(step)), false);
-        while (curr < upperBound) {
-            maxLength = Math.max(maxLength, nf.format(curr).length());
-            curr += step;
-        }
-        if (maxLength >= 3) {
-            axis.setVerticalTickLabels(true);
-        }
+        setRotationOfValueAxisFont(axis, step, nf);
     }
 
 }

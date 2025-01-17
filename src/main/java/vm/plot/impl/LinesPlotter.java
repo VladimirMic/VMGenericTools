@@ -158,7 +158,6 @@ public class LinesPlotter extends AbstractPlotter {
         setTicksOfXNumericAxis(xAxis);
         xAxis.setUpperMargin(0.1);
         setLabelsOfAxis(xAxis);
-
         // y axis settings
         if (logY) {
             LogAxis yAxis = new LogAxis();
