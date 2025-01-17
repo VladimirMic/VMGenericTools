@@ -148,7 +148,10 @@ public abstract class AbstractPlotter {
 
     public abstract String getSimpleName();
 
-    protected double setAxisUnits(Double step, NumberAxis axis, int axisImplicitTicksNumber, boolean forceIntegerStep) {
+    protected double setAxisUnits(Double step, NumberAxis axis, Integer axisImplicitTicksNumber, boolean forceIntegerStep) {
+        if (step == null && axisImplicitTicksNumber == null) {
+            throw new IllegalArgumentException("At least one param, step and axisImplicitTicksNumber must be non-null");
+        }
         if (step == null) {
             double diff = Math.abs(axis.getUpperBound() - axis.getLowerBound());
             float division = (float) (diff / axisImplicitTicksNumber);

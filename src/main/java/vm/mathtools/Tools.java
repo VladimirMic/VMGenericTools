@@ -414,6 +414,12 @@ public class Tools {
             order++;
             aCopy = aAbs * (float) Math.pow(10, order);
             bCopy = bAbs * (float) Math.pow(10, order);
+            if (Float.isInfinite(aCopy) || Float.isInfinite(bCopy)) {
+                float tmpA = Tools.correctPossiblyCorruptedFloat(a);
+                float tmpB = Tools.correctPossiblyCorruptedFloat(b);
+                System.err.println(tmpA + ";" + tmpB);
+                return gcd(tmpA, tmpB);
+            }
             aL = (long) Math.round(aCopy);
             bL = (long) Math.round(bCopy);
         }
@@ -424,6 +430,7 @@ public class Tools {
         }
         float ret = aL;
         ret = ret * (float) Math.pow(10, -order);
+        ret = Tools.correctPossiblyCorruptedFloat(ret);
         return ret;
     }
 
@@ -734,6 +741,40 @@ public class Tools {
             ret += i;
         }
         return ret;
+    }
+
+    public static float correctPossiblyCorruptedFloat(Float f) {
+        Float f1 = Float.intBitsToFloat(Float.floatToIntBits(f) - 1);
+        Float f2 = Float.intBitsToFloat(Float.floatToIntBits(f) + 1);
+        Float f3 = Float.intBitsToFloat(Float.floatToIntBits(f));
+        String s1 = f1.toString();
+        String s2 = f2.toString();
+        String s3 = f3.toString();
+        int l1 = s1.length();
+        int l2 = s2.length();
+        int l3 = s3.length();
+        boolean e1 = s1.contains("E");
+        boolean e2 = s2.contains("E");
+        boolean e3 = s3.contains("E");
+//        if (e1 || e2 || e3) {
+//            String s = "";
+//        }
+        int lMin;
+        boolean eMin;
+        Float fMin;
+        if (l1 < l2 && ((!e1 && !e2) || (e1 && e2))) {
+            lMin = l1;
+            fMin = f1;
+            eMin = e1;
+        } else {
+            lMin = l2;
+            fMin = f2;
+            eMin = e2;
+        }
+        if (l3 < lMin && ((!e3 && !eMin) || (e3 && eMin))) {
+            fMin = f3;
+        }
+        return fMin;
     }
 
 }

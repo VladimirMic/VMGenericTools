@@ -37,15 +37,47 @@ public class HeatMapPlotter extends AbstractPlotter {
 
     public static final Integer IMPLICIT_HEIGHT_FOR_HEAT_MAP_PLOT = (int) (IMPLICIT_HEIGHT * 1.5);
     public static final Integer IMPLICIT_Z_COLOUR_COUNT = 20;
-    private int legendCount = IMPLICIT_Z_COLOUR_COUNT;
-    private Double givenZStep;
+    private Integer zColoursCount = null;
+    private Double givenZStep = null;
+    private Double givenXStep = null;
+    private Double givenYStep = null;
 
-    public HeatMapPlotter(int zColoursCount) {
-        this(0, null);
+    public HeatMapPlotter() {
+        this(IMPLICIT_Z_COLOUR_COUNT);
     }
 
-    public HeatMapPlotter(int zColoursCount, Double zStep) {
-        this.legendCount = zColoursCount + 1;
+    public void setGivenZStep(Double givenZStep) {
+        this.givenZStep = givenZStep;
+    }
+
+    public void setGivenXStep(Double givenXStep) {
+        this.givenXStep = givenXStep;
+    }
+
+    public void setGivenYStep(Double givenYStep) {
+        this.givenYStep = givenYStep;
+    }
+
+    /**
+     * Defines granularity of z axis by APPROXIMATE number of colours. Notice
+     * the final count can be different due to rounding numbers: the colour
+     * width is rounded for simple reading
+     *
+     * If want to set values for other axes, use corresponding setters
+     *
+     * @param zColoursCount
+     */
+    public HeatMapPlotter(int zColoursCount) {
+        this.zColoursCount = zColoursCount + 1;
+    }
+
+    /**
+     * Defines a strict step on the z axis
+     *
+     * @param zStep
+     */
+    public HeatMapPlotter(Double zStep) {
+        this.zColoursCount = IMPLICIT_Z_COLOUR_COUNT;
         this.givenZStep = zStep;
     }
 
@@ -168,7 +200,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         psl.setMargin(50.0, 20.0, 80.0, 0.0);
 
         // step for z axis
-        double stepDouble = setAxisUnits(givenZStep, (NumberAxis) psl.getAxis(), legendCount, false); // todo - integers?
+        double stepDouble = setAxisUnits(givenZStep, (NumberAxis) psl.getAxis(), zColoursCount, false); // todo - integers?
         float zStep = (float) stepDouble;
         minZ = vm.mathtools.Tools.round((float) minZ, zStep, true) - zStep;
         for (int i = 0; minZ <= maxZ; i++) {
@@ -182,8 +214,8 @@ public class HeatMapPlotter extends AbstractPlotter {
         // finally a renderer and a plot       
         XYPlot plot = new XYPlot(dataset, xAxis, yAxis, new XYBlockRenderer());
         XYBlockRenderer renderer = ((XYBlockRenderer) plot.getRenderer());
-        renderer.setBlockWidth(xStep);
-        renderer.setBlockHeight(yStep);
+        renderer.setBlockWidth(xStep * 0.9f);
+        renderer.setBlockHeight(yStep * 0.9f);
         renderer.setPaintScale(paintScale);
         renderer.setSeriesStroke(0, new BasicStroke(30));
         JFreeChart chart = new JFreeChart(null, null, plot, false);
@@ -260,6 +292,12 @@ public class HeatMapPlotter extends AbstractPlotter {
         } else {
             step = vm.mathtools.Tools.computeBasicYIntervalForHistogram(min, max);
         }
+        if (isXAxis && givenXStep != null) {
+            step = Tools.round(step, givenXStep.floatValue(), false);
+        }
+        if (!isXAxis && givenYStep != null) {
+            step = Tools.round(step, givenYStep.floatValue(), false);
+        }
         min = Tools.round(min, step, false);
         max = Tools.round(max + step / 2, step, false);
         int counter = 0;
@@ -277,6 +315,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         setLabelsOfAxis(yAxis);
         setLabelsOfAxis(zAxis);
         setChartColor(chart, plot);
+        plot.setBackgroundPaint(Color.gray);
         return chart;
     }
 
@@ -301,7 +340,7 @@ public class HeatMapPlotter extends AbstractPlotter {
      * @param legendCount
      */
     public void setLegendCount(int legendCount) {
-        this.legendCount = legendCount;
+        this.zColoursCount = legendCount;
     }
 
 }
