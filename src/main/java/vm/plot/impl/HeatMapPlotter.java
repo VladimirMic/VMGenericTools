@@ -165,11 +165,17 @@ public class HeatMapPlotter extends AbstractPlotter {
         // finally a renderer and a plot       
         XYPlot plot = new XYPlot(dataset, xAxis, yAxis, new XYBlockRenderer());
         XYBlockRenderer renderer = ((XYBlockRenderer) plot.getRenderer());
+        renderer.setBlockWidth(xStep);
+        renderer.setBlockHeight(yStep);
         renderer.setPaintScale(paintScale);
         renderer.setSeriesStroke(0, new BasicStroke(30));
         JFreeChart chart = new JFreeChart(null, null, plot, false);
         chart.addSubtitle(psl);
         setAppearence(chart, plot, xAxis, yAxis, (NumberAxis) psl.getAxis());
+        xAxis.setLowerMargin(0);
+        xAxis.setUpperMargin(0);
+        yAxis.setLowerMargin(0);
+        yAxis.setUpperMargin(0);
         return chart;
     }
 
