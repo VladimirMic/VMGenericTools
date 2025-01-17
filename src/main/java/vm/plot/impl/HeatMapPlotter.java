@@ -145,9 +145,9 @@ public class HeatMapPlotter extends AbstractPlotter {
         double[] yValues = new double[size];
         double[] zValues = new double[size];
         double[] extremes = new double[6];
-        extremes[0] = Double.MAX_VALUE;
-        extremes[2] = Double.MAX_VALUE;
-        extremes[4] = Double.MAX_VALUE;
+        extremes[1] = Double.MAX_VALUE;
+        extremes[3] = Double.MAX_VALUE;
+        extremes[5] = Double.MAX_VALUE;
         int counter = 0;
         for (Map.Entry<Object, Integer> y : yHeaders.entrySet()) {
             double yValue = Double.parseDouble(y.getKey().toString());
