@@ -254,8 +254,12 @@ public class HeatMapPlotter extends AbstractPlotter {
         // finally a renderer and a plot       
         XYPlot plot = new XYPlot(dataset, xAxis, yAxis, new XYBlockRenderer());
         XYBlockRenderer renderer = ((XYBlockRenderer) plot.getRenderer());
-        renderer.setBlockWidth(xStep * IMPLICIT_RELATIVE_SPACE_OF_BLOCKS);
-        renderer.setBlockHeight(yStep * IMPLICIT_RELATIVE_SPACE_OF_BLOCKS);
+        if (xStep != 0) {
+            renderer.setBlockWidth(xStep * IMPLICIT_RELATIVE_SPACE_OF_BLOCKS);
+        }
+        if (yStep != 0) {
+            renderer.setBlockHeight(yStep * IMPLICIT_RELATIVE_SPACE_OF_BLOCKS);
+        }
         renderer.setPaintScale(paintScale);
         renderer.setSeriesStroke(0, new BasicStroke(30));
         JFreeChart chart = new JFreeChart(null, null, plot, false);
