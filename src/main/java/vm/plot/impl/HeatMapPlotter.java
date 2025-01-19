@@ -456,12 +456,12 @@ public class HeatMapPlotter extends AbstractPlotter {
     }
 
     private double[] checkExtremes(double[] extremes) {
-        double[] ret = new double[extremes.length];
         for (int i = 0; i < extremes.length; i += 2) {
             if (Math.abs(extremes[i]) == Double.MAX_VALUE || Math.abs(extremes[i + 1]) == Double.MAX_VALUE) {
-                ret[i] = 0;
-                ret[i + 1] = 1;
-            } else if (extremes[i] == extremes[i + 1]) {
+                extremes[i] = 0;
+                extremes[i + 1] = 1;
+            }
+            if (extremes[i] >= extremes[i + 1]) {
                 extremes[i + 1] = extremes[i] + 1;
             }
         }
