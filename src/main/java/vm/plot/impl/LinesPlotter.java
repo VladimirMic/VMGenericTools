@@ -9,7 +9,11 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.awt.geom.AffineTransform;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -261,8 +265,34 @@ public class LinesPlotter extends AbstractPlotter {
         XYPlot plot = (XYPlot) chart.getPlot();
         XYSeriesCollection dataset = (XYSeriesCollection) plot.getDataset();
         List series = dataset.getSeries();
-        for (Object trace : series) {
-            
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(path))) {
+            for (int sIdx = 0; sIdx < series.size(); sIdx++) {
+                XYSeries cast = (XYSeries) series.get(sIdx);
+                List<Float> xValues = new ArrayList<>();
+                List<Float> yValues = new ArrayList<>();
+                int itemCount = cast.getItemCount();
+                for (int i = 0; i < itemCount; i++) {
+                    float x = vm.mathtools.Tools.correctPossiblyCorruptedFloat(cast.getX(i).floatValue());
+                    float y = vm.mathtools.Tools.correctPossiblyCorruptedFloat(cast.getY(i).floatValue());
+                    xValues.add(x);
+                    yValues.add(y);
+                }
+                w.write("Trace;");
+                w.write(dataset.getSeriesKey(sIdx).toString() + ";X:");
+                for (Float xValue : xValues) {
+                    w.write(";" + xValue);
+                }
+                w.newLine();
+                w.write("Trace;");
+                w.write(dataset.getSeriesKey(sIdx).toString() + ";Y:");
+                for (Float yValue : yValues) {
+                    w.write(";" + yValue);
+                }
+                w.newLine();
+            }
+            w.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

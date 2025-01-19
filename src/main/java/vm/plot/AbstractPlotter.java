@@ -196,6 +196,13 @@ public abstract class AbstractPlotter {
         } catch (IOException ex) {
             Logger.getLogger(AbstractPlotter.class.getName()).log(Level.SEVERE, null, ex);
         }
+        String pathToCSV = deriveCSVPath(path);
+        if ((lastStoredPlotPath == null || !pathToCSV.equals(lastStoredPlotPath))
+                && (lastStoredPlot == null || lastStoredPlot != plot)) {
+            storeCsvRawData(pathToCSV, plot);
+            lastStoredPlotPath = pathToCSV;
+            lastStoredPlot = plot;
+        }
     }
     private String lastStoredPlotPath = null;
     private JFreeChart lastStoredPlot = null;
@@ -246,7 +253,7 @@ public abstract class AbstractPlotter {
         parent = new File(parent, "csv");
         parent.mkdirs();
         String name = file.getName();
-        if (name.toLowerCase().endsWith(".pdf") || name.toLowerCase().endsWith(".png")) {
+        if (name.toLowerCase().endsWith(".pdf") || name.toLowerCase().endsWith(".png") || name.toLowerCase().endsWith(".svg")) {
             name = name.substring(0, name.length() - 4);
         }
         File ret = new File(parent, name + ".csv");
