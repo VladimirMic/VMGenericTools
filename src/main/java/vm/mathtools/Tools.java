@@ -61,23 +61,26 @@ public class Tools {
             inputL = (long) Math.round(inputCopy);
             toValueL = (long) Math.round(toValueCopy);
             additionL = (long) Math.round(additionCopy);
-            if (Float.isInfinite(inputCopy) || Float.isInfinite(toValueCopy) || Float.isInfinite(additionCopy)) {
+            if (order > 10 || inputL == Long.MAX_VALUE) {
                 int m = -1;
                 inputCopy = Math.abs(input) + addition;
                 while (inputCopy > 0) {
                     inputCopy -= toValue;
                     m++;
                 }
-                float ret = sig * m * toValue;
-                Logger.getLogger(Tools.class.getName()).log(Level.WARNING, "Rounding error. Trying to round {0} to {1} (floor: {2}). Longs: {3} / {4}. The results is {5}. Check manually!", new Object[]{input, toValue, floor, inputL, toValueL, ret});
-                System.gc();
+                float ret = Tools.correctPossiblyCorruptedFloat(sig * m * toValue);
+                //check
+                float relativeDiff = Math.abs(sig * input - ret) / toValue;
+                if (relativeDiff > 0.5 || relativeDiff < 0) {
+                    Logger.getLogger(Tools.class.getName()).log(Level.WARNING, "Rounding error. Trying to round {0} to {1} (floor: {2}). The results is {5}. Check manually!", new Object[]{sig * input, toValue, floor, inputL, toValueL, ret});
+                }
                 return ret;
             }
         }
         long m = (inputL + additionL) / toValueL;
         m *= toValueL * sig;
         Double ret = m * Math.pow(10, -order);
-        return ret.floatValue();
+        return Tools.correctPossiblyCorruptedFloat(ret.floatValue());
     }
 
     public static double roundDouble(double input, float toValue, boolean floor) {

@@ -189,6 +189,7 @@ public abstract class AbstractPlotter {
         try {
             LOG.log(Level.INFO, "Storing plot {0}", f);
             SVGUtils.writeToSVG(f, g2.getSVGElement());
+            LOG.log(Level.INFO, "Transforming svg to pdf");
             boolean transformToPdf = SVGtoPDF.transformToPdf(f);
             if (transformToPdf) {
                 f.delete();

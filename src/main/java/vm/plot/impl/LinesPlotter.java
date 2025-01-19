@@ -278,13 +278,17 @@ public class LinesPlotter extends AbstractPlotter {
                     yValues.add(y);
                 }
                 w.write("Trace;");
-                w.write(dataset.getSeriesKey(sIdx).toString() + ";X:");
+                String traceName = dataset.getSeriesKey(sIdx).toString();
+                if (traceName.isBlank()) {
+                    traceName = plot.getRangeAxis().getLabel();
+                }
+                w.write(traceName + ";X:");
                 for (Float xValue : xValues) {
                     w.write(";" + xValue);
                 }
                 w.newLine();
                 w.write("Trace;");
-                w.write(dataset.getSeriesKey(sIdx).toString() + ";Y:");
+                w.write(traceName + ";Y:");
                 for (Float yValue : yValues) {
                     w.write(";" + yValue);
                 }
