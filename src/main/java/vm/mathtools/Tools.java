@@ -61,10 +61,10 @@ public class Tools {
             inputL = (long) Math.round(inputCopy);
             toValueL = (long) Math.round(toValueCopy);
             additionL = (long) Math.round(additionCopy);
-            if (order > 10 || inputL == Long.MAX_VALUE) {
+            if (order > 100 || inputL == Long.MAX_VALUE) {
                 int m = -1;
-                inputCopy = Math.abs(input) + addition;
-                while (inputCopy > 0) {
+                inputCopy = Tools.correctPossiblyCorruptedFloat(Math.abs(input) + addition);
+                while (inputCopy > -0.25 * toValue) {
                     inputCopy -= toValue;
                     m++;
                 }

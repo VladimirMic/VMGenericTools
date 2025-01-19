@@ -415,6 +415,14 @@ public class HeatMapPlotter extends AbstractPlotter {
         float xStep = Tools.gcd(xData.toArray(Float[]::new));
         float yStep = Tools.gcd(yData.toArray(Float[]::new));
 
+        while ((xMax - xMin) / xStep > 10000) {
+            xStep = Tools.gcd(xData.toArray(Float[]::new));
+        }
+
+        while ((yMax - yMin) / yStep > 10000) {
+            yStep = Tools.gcd(yData.toArray(Float[]::new));
+        }
+
         int xLength = (int) Tools.round((float) ((xMax - xMin) / xStep), 1, false) + 1;
         int yLength = (int) Tools.round((float) ((yMax - yMin) / yStep), 1, false) + 1;
 
