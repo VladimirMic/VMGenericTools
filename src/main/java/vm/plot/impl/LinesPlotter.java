@@ -12,6 +12,7 @@ import java.awt.geom.AffineTransform;
 import java.util.AbstractMap;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -256,7 +257,12 @@ public class LinesPlotter extends AbstractPlotter {
     }
 
     @Override
-    protected void storeCsvRawData(String path, JFreeChart plot) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    protected void storeCsvRawData(String path, JFreeChart chart) {
+        XYPlot plot = (XYPlot) chart.getPlot();
+        XYSeriesCollection dataset = (XYSeriesCollection) plot.getDataset();
+        List series = dataset.getSeries();
+        for (Object trace : series) {
+            
+        }
     }
 }
