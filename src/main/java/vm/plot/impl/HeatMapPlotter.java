@@ -148,9 +148,12 @@ public class HeatMapPlotter extends AbstractPlotter {
         double[] yValues = new double[size];
         double[] zValues = new double[size];
         double[] extremes = new double[6];
-        extremes[1] = Double.MAX_VALUE;
-        extremes[3] = Double.MAX_VALUE;
-        extremes[5] = Double.MAX_VALUE;
+        extremes[0] = Double.MAX_VALUE;
+        extremes[2] = Double.MAX_VALUE;
+        extremes[4] = Double.MAX_VALUE;
+        extremes[1] = -Double.MAX_VALUE;
+        extremes[3] = -Double.MAX_VALUE;
+        extremes[5] = -Double.MAX_VALUE;
         int counter = 0;
         for (Map.Entry<Object, Integer> y : yHeaders.entrySet()) {
             double yValue = Double.parseDouble(y.getKey().toString());
@@ -176,9 +179,9 @@ public class HeatMapPlotter extends AbstractPlotter {
         dataset.addSeries(traceName, valuesArray);
 
         Float[] array = DataTypeConvertor.objectsToObjectFloats(xHeaders.keySet().toArray());
-        float xStep = Tools.gcd(array);
+        float xStep = DataTypeConvertor.doubleToPreciseFloat((extremes[1] - extremes[0]) / (xHeaders.size() - 1));
         array = DataTypeConvertor.objectsToObjectFloats(yHeaders.keySet().toArray());
-        float yStep = Tools.gcd(array);
+        float yStep = DataTypeConvertor.doubleToPreciseFloat((extremes[3] - extremes[2]) / (yHeaders.size() - 1));;
         String xWidth = " (width: " + DataTypeConvertor.formatPossibleInt(xStep) + ")";
         String yWidth = " (width: " + DataTypeConvertor.formatPossibleInt(yStep) + ")";
         JFreeChart ret = datasetToChart(dataset, xAxisLabel + xWidth, yAxisLabel + yWidth, traceName, extremes, xStep, yStep);
@@ -225,25 +228,24 @@ public class HeatMapPlotter extends AbstractPlotter {
         double stepDouble = setAxisUnits(givenZStep, (NumberAxis) psl.getAxis(), zColoursCount, false); // todo - integers?
         float zStep = (float) stepDouble;
         minZ = vm.mathtools.Tools.round((float) minZ, zStep, true) - zStep;
-        if (contrastiveColours) {
-            for (int i = 0; minZ <= maxZ; i++) {
-                int idx = i % StandardColours.COLOURS.length;
-                minZ += zStep;
-                paintScale.add(minZ, StandardColours.COLOURS[idx]);
-                minZ += zStep;
-                paintScale.add(minZ, StandardColours.LIGHT_COLOURS[idx]);
-                if (Double.MAX_VALUE == maxZ) {
-                    break;
-                }
-            }
+        if (Double.MAX_VALUE == minZ) {
+            paintScale.add(0, StandardColours.COLOURS[0]);
+            paintScale.add(1, StandardColours.LIGHT_COLOURS[0]);
         } else {
-            int i = 0;
-            while (minZ <= maxZ) {
-                minZ += zStep;
-                paintScale.add(minZ, StandardColours.RAINBOW_COLOURS[i]);
-                i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
-                if (Double.MAX_VALUE == maxZ) {
-                    break;
+            if (contrastiveColours) {
+                for (int i = 0; minZ <= maxZ; i++) {
+                    int idx = i % StandardColours.COLOURS.length;
+                    minZ += zStep;
+                    paintScale.add(minZ, StandardColours.COLOURS[idx]);
+                    minZ += zStep;
+                    paintScale.add(minZ, StandardColours.LIGHT_COLOURS[idx]);
+                }
+            } else {
+                int i = 0;
+                while (minZ <= maxZ) {
+                    minZ += zStep;
+                    paintScale.add(minZ, StandardColours.RAINBOW_COLOURS[i]);
+                    i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
                 }
             }
         }
@@ -341,7 +343,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         float y = min;
         while (y <= max) {
             axisHeadersToFill.put(y, counter);
-            y = Tools.round(y + step, step, false);
+            y = Tools.correctPossiblyCorruptedFloat(y + step);
             counter++;
         }
         return new float[]{counter, step, min};
@@ -412,20 +414,15 @@ public class HeatMapPlotter extends AbstractPlotter {
         float yMin = Tools.correctPossiblyCorruptedFloat(ydMin.floatValue());
         float yMax = Tools.correctPossiblyCorruptedFloat(ydMax.floatValue());
 
-        float xStep = Tools.gcd(xData.toArray(Float[]::new));
-        float yStep = Tools.gcd(yData.toArray(Float[]::new));
-
-        while ((xMax - xMin) / xStep > 10000) {
-            xStep = Tools.gcd(xData.toArray(Float[]::new));
-        }
-
-        while ((yMax - yMin) / yStep > 10000) {
-            yStep = Tools.gcd(yData.toArray(Float[]::new));
-        }
+        float xStep = vm.mathtools.Tools.computeBasicXIntervalForHistogram(xMin, xMax);
+        float yStep = vm.mathtools.Tools.computeBasicYIntervalForHistogram(yMin, yMax);
 
         int xLength = (int) Tools.round((float) ((xMax - xMin) / xStep), 1, false) + 1;
         int yLength = (int) Tools.round((float) ((yMax - yMin) / yStep), 1, false) + 1;
 
+        if (xLength > 1000 || yLength > 1000) {
+            String s = "";
+        }
         float[][] dataMatrix = new float[yLength][xLength];
         for (int i = 0; i < zData.size(); i++) {
             int x = (int) Tools.correctPossiblyCorruptedFloat((xData.get(i) - xMin) / xStep);
