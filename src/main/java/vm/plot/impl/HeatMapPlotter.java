@@ -6,6 +6,9 @@ package vm.plot.impl;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -375,6 +378,75 @@ public class HeatMapPlotter extends AbstractPlotter {
      */
     public void setLegendCount(int legendCount) {
         this.zColoursCount = legendCount;
+    }
+
+    @Override
+    protected void storeCsvRawData(String path, JFreeChart chart) {
+        Logger.getLogger(AbstractPlotter.class.getName()).log(Level.INFO, "Storing raw data for the heatmap to the csv file {0}", path);
+        XYPlot plot = (XYPlot) chart.getPlot();
+        XYZDataset dataset = (XYZDataset) plot.getDataset();
+        int series = dataset.getSeriesCount();
+        if (series != 1) {
+            Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.WARNING, "Plot contains more series. Only the first one will be stored");
+        }
+        series = 0;
+        int itemCount = dataset.getItemCount(series);
+        List<Float> xData = new ArrayList<>();
+        List<Float> yData = new ArrayList<>();
+        List<Float> zData = new ArrayList<>();
+        for (int item = 0; item < itemCount; item++) {
+            Number x = dataset.getX(series, item);
+            Number y = dataset.getY(series, item);
+            Number z = dataset.getZ(series, item);
+            xData.add(x.floatValue());
+            yData.add(y.floatValue());
+            zData.add(z.floatValue());
+        }
+        Double xdMin = Tools.getMin(xData);
+        Double xdMax = Tools.getMax(xData);
+        Double ydMin = Tools.getMin(yData);
+        Double ydMax = Tools.getMax(yData);
+
+        float xMin = Tools.correctPossiblyCorruptedFloat(xdMin.floatValue());
+        float xMax = Tools.correctPossiblyCorruptedFloat(xdMax.floatValue());
+        float yMin = Tools.correctPossiblyCorruptedFloat(ydMin.floatValue());
+        float yMax = Tools.correctPossiblyCorruptedFloat(ydMax.floatValue());
+
+        float xStep = Tools.gcd(xData.toArray(Float[]::new));
+        float yStep = Tools.gcd(yData.toArray(Float[]::new));
+
+        int xLength = (int) Tools.round((float) ((xMax - xMin) / xStep), 1, false) + 1;
+        int yLength = (int) Tools.round((float) ((yMax - yMin) / yStep), 1, false) + 1;
+
+        float[][] dataMatrix = new float[yLength][xLength];
+        for (int i = 0; i < zData.size(); i++) {
+            int x = (int) Tools.correctPossiblyCorruptedFloat((xData.get(i) - xMin) / xStep);
+            int y = (int) Tools.correctPossiblyCorruptedFloat((yData.get(i) - yMin) / yStep);
+            Float z = zData.get(i);
+            dataMatrix[y][x] = z;
+        }
+        storeCsvRawData(xMin, xStep, xMax, yMax, yStep, dataMatrix, path);
+    }
+
+    private void storeCsvRawData(float xMin, float xStep, double xMax, float yMax, float yStep, float[][] dataMatrix, String path) {
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(path))) {
+            printXCSVHeader(xMin, xStep, xMax, w);
+            float y = yMax;
+            for (int yIdx = dataMatrix.length - 1; yIdx >= 0; yIdx--) {
+                float[] row = dataMatrix[yIdx];
+                w.write(Float.toString(y));
+                for (float z : row) {
+                    w.write(";" + Float.toString(z));
+                }
+                y = Tools.correctPossiblyCorruptedFloat(y + yStep);
+                w.newLine();
+            }
+            printXCSVHeader(xMin, xStep, xMax, w);
+            w.write(path);
+            w.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

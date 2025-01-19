@@ -678,23 +678,6 @@ public class Tools {
         return ret;
     }
 
-    public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
-
-        private static final long serialVersionUID = 159756321810L;
-
-        @Override
-        public int compare(int[] o1, int[] o2) {
-            for (int i = 0; i < o1.length; i++) {
-                int ret = Integer.compare(o1[i], o2[i]);
-                if (ret != 0) {
-                    return ret;
-                }
-            }
-            return 0;
-        }
-
-    }
-
     public static double[] getPrefixOfVector(double[] array, int finalDimensions) {
         if (finalDimensions > array.length) {
             throw new IllegalArgumentException("Cannot extend the vector");
@@ -815,6 +798,77 @@ public class Tools {
 
     }
 
+    public static boolean isEmptyString(String string) {
+        return string == null || string.trim().equals("");
+    }
+
+    public static String removeQuotes(String string) {
+        if (string == null) {
+            return null;
+        }
+        string = string.trim();
+        if (string.startsWith("\"") && string.endsWith("\"")) {
+            return string.substring(1, string.length() - 1);
+        }
+        return string;
+    }
+
+    public static Float parseFloat(String string) {
+        try {
+            string = Tools.removeQuotes(string);
+            if (string == null || string.isBlank() || string.toLowerCase().equals("nan") || string.endsWith("D")) {
+                return null;
+            }
+            return Float.valueOf(string);
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    public static boolean isParseableToFloats(Object[] array) {
+        for (Object o : array) {
+            if (o == null) {
+                return false;
+            }
+            Float floatValue = parseFloat(o);
+            if (floatValue == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isParseableToIntegers(Object[] array) {
+        for (Object o : array) {
+            Integer iValue = parseInteger(o);
+            if (iValue == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static Float parseFloat(Object object) {
+        return parseFloat(object.toString());
+    }
+
+    public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
+
+        private static final long serialVersionUID = 159756321810L;
+
+        @Override
+        public int compare(int[] o1, int[] o2) {
+            for (int i = 0; i < o1.length; i++) {
+                int ret = Integer.compare(o1[i], o2[i]);
+                if (ret != 0) {
+                    return ret;
+                }
+            }
+            return 0;
+        }
+
+    }
+
     public static class MapByFloatValueComparator<T extends Comparable> implements Comparator<Map.Entry<T, Float>> {
 
         @Override
@@ -888,7 +942,7 @@ public class Tools {
         }
     }
 
-    public static class FloatVectorComparator implements Comparator<float[]> {
+    public static class FloatArraySameLengthsComparator implements Comparator<float[]> {
 
         @Override
         public int compare(float[] o1, float[] o2) {
@@ -928,60 +982,6 @@ public class Tools {
             return 0;
         }
 
-    }
-
-    public static boolean isEmptyString(String string) {
-        return string == null || string.trim().equals("");
-    }
-
-    public static String removeQuotes(String string) {
-        if (string == null) {
-            return null;
-        }
-        string = string.trim();
-        if (string.startsWith("\"") && string.endsWith("\"")) {
-            return string.substring(1, string.length() - 1);
-        }
-        return string;
-    }
-
-    public static Float parseFloat(String string) {
-        try {
-            string = Tools.removeQuotes(string);
-            if (string == null || string.isBlank() || string.toLowerCase().equals("nan") || string.endsWith("D")) {
-                return null;
-            }
-            return Float.valueOf(string);
-        } catch (Exception e) {
-        }
-        return null;
-    }
-
-    public static boolean isParseableToFloats(Object[] array) {
-        for (Object o : array) {
-            if (o == null) {
-                return false;
-            }
-            Float floatValue = parseFloat(o);
-            if (floatValue == null) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean isParseableToIntegers(Object[] array) {
-        for (Object o : array) {
-            Integer iValue = parseInteger(o);
-            if (iValue == null) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static Float parseFloat(Object object) {
-        return parseFloat(object.toString());
     }
 
 }

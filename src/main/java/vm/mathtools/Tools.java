@@ -747,6 +747,9 @@ public class Tools {
     }
 
     public static float correctPossiblyCorruptedFloat(Float f) {
+        if (f.equals(0f)) {
+            return f;
+        }
         Float f1 = Float.intBitsToFloat(Float.floatToIntBits(f) - 1);
         Float f2 = Float.intBitsToFloat(Float.floatToIntBits(f) + 1);
         Float f3 = Float.intBitsToFloat(Float.floatToIntBits(f));
@@ -759,9 +762,6 @@ public class Tools {
         boolean e1 = s1.contains("E");
         boolean e2 = s2.contains("E");
         boolean e3 = s3.contains("E");
-//        if (e1 || e2 || e3) {
-//            String s = "";
-//        }
         int lMin;
         boolean eMin;
         Float fMin;

@@ -191,6 +191,11 @@ public class BoxPlotPlotter extends AbstractPlotter {
         return "BoxPlotCat";
     }
 
+    @Override
+    protected void storeCsvRawData(String path, JFreeChart plot) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public static class DummyBoxAndWhiskerItem extends BoxAndWhiskerItem {
 
         public DummyBoxAndWhiskerItem() {

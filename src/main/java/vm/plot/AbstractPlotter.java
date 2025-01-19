@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.text.CompactNumberFormat;
@@ -196,6 +197,8 @@ public abstract class AbstractPlotter {
             Logger.getLogger(AbstractPlotter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    private String lastStoredPlotPath = null;
+    private JFreeChart lastStoredPlot = null;
 
     public void storePlotPNG(String path, JFreeChart plot) {
         storePlotPNG(path, plot, IMPLICIT_WIDTH, IMPLICIT_HEIGHT);
@@ -225,7 +228,40 @@ public abstract class AbstractPlotter {
         } catch (IOException ex) {
             Logger.getLogger(AbstractPlotter.class.getName()).log(Level.SEVERE, null, ex);
         }
+        String pathToCSV = deriveCSVPath(path);
+        if ((lastStoredPlotPath == null || !pathToCSV.equals(lastStoredPlotPath))
+                && (lastStoredPlot == null || lastStoredPlot != plot)) {
+            storeCsvRawData(pathToCSV, plot);
+            lastStoredPlotPath = pathToCSV;
+            lastStoredPlot = plot;
+        }
     }
+
+    private String deriveCSVPath(String path) {
+        File file = new File(path);
+        File parent = file.getParentFile();
+        if (parent.getName().equals("png")) {
+            parent = parent.getParentFile();
+        }
+        parent = new File(parent, "csv");
+        parent.mkdirs();
+        String name = file.getName();
+        if (name.toLowerCase().endsWith(".pdf") || name.toLowerCase().endsWith(".png")) {
+            name = name.substring(0, name.length() - 4);
+        }
+        File ret = new File(parent, name + ".csv");
+        return ret.getAbsolutePath();
+    }
+
+    protected void printXCSVHeader(float xMin, float xStep, double xMax, BufferedWriter w) throws IOException {
+        float x = xMin;
+        while (x <= xMax) {
+            w.write(";" + Float.toString(x));
+            x = Tools.correctPossiblyCorruptedFloat(x + xStep);
+        }
+    }
+
+    protected abstract void storeCsvRawData(String path, JFreeChart plot);
 
     private Double xAxisUpperBound = Double.NaN;
 
@@ -482,5 +518,4 @@ public abstract class AbstractPlotter {
             minMaxY[1] *= 1.1;
         }
     }
-
 }
