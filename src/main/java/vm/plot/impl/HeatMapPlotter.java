@@ -257,7 +257,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         if (xStep * IMPLICIT_RELATIVE_SPACE_OF_BLOCKS > 0) {
             renderer.setBlockWidth(xStep * IMPLICIT_RELATIVE_SPACE_OF_BLOCKS);
         }
-        if (yStep != 0) {
+        if (yStep * IMPLICIT_RELATIVE_SPACE_OF_BLOCKS > 0) {
             renderer.setBlockHeight(yStep * IMPLICIT_RELATIVE_SPACE_OF_BLOCKS);
         }
         renderer.setPaintScale(paintScale);
@@ -338,15 +338,21 @@ public class HeatMapPlotter extends AbstractPlotter {
         }
         if (isXAxis && givenXStep != null) {
             step = Tools.round(step, givenXStep.floatValue(), false);
+            if (step == 0) {
+                step = givenXStep.floatValue();
+            }
         }
         if (!isXAxis && givenYStep != null) {
             step = Tools.round(step, givenYStep.floatValue(), false);
+            if (step == 0) {
+                step = givenYStep.floatValue();
+            }
         }
         min = Tools.round(min, step, false);
         max = Tools.round(max + step / 2, step, false);
         int counter = 0;
         float y = min;
-        while (y <= max) {
+        while (y <= max && step > 0) {
             axisHeadersToFill.put(y, counter);
             y = Tools.correctPossiblyCorruptedFloat(y + step);
             counter++;
@@ -389,7 +395,6 @@ public class HeatMapPlotter extends AbstractPlotter {
 
     @Override
     protected void storeCsvRawData(String path, JFreeChart chart) {
-        Logger.getLogger(AbstractPlotter.class.getName()).log(Level.INFO, "Storing raw data for the heatmap to the csv file {0}", path);
         XYPlot plot = (XYPlot) chart.getPlot();
         XYZDataset dataset = (XYZDataset) plot.getDataset();
         int series = dataset.getSeriesCount();
