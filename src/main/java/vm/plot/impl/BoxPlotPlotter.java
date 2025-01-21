@@ -34,7 +34,10 @@ public class BoxPlotPlotter extends AbstractPlotter {
 
     @Override
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object... data) {
-        if (this instanceof BoxPlotXYPlotter && data.length >= 3 && data[2] instanceof Map) {
+        if (this instanceof BoxPlotXYPlotter && data.length >= 3
+                && (data[0] == null || data[0] instanceof String)
+                && (data[1] == null || data[1] instanceof COLOUR_NAME)
+                && data[2] instanceof Map) {
             BoxPlotXYPlotter xy = (BoxPlotXYPlotter) this;
             return xy.createPlot(mainTitle, xAxisLabel, yAxisLabel, (String) data[0], (COLOUR_NAME) data[1], (Map) data[2]);
         } else {
@@ -101,7 +104,7 @@ public class BoxPlotPlotter extends AbstractPlotter {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, traceColour, xValues, retArray);
     }
 
-    public int precomputeSuitableWidth(int height, int tracesCount, int groupsCount) {
+    protected int precomputeSuitablePlotWidth(int height, int tracesCount, int groupsCount) {
         int tracesTotalCount = tracesCount * groupsCount;
         double usedWidth = 28 * tracesTotalCount + 30 * (tracesTotalCount - 1);
         if (groupsCount > 1) {
@@ -115,13 +118,13 @@ public class BoxPlotPlotter extends AbstractPlotter {
 
     @Override
     public void storePlotPDF(String path, JFreeChart plot) {
-        int width = precomputeSuitableWidth(IMPLICIT_HEIGHT, lastTracesCount, lastGroupCount);
+        int width = precomputeSuitablePlotWidth(IMPLICIT_HEIGHT, lastTracesCount, lastGroupCount);
         storePlotPDF(path, plot, width, IMPLICIT_HEIGHT);
     }
 
     @Override
     public void storePlotPNG(String path, JFreeChart plot) {
-        int width = precomputeSuitableWidth(IMPLICIT_HEIGHT, lastTracesCount, lastGroupCount);
+        int width = precomputeSuitablePlotWidth(IMPLICIT_HEIGHT, lastTracesCount, lastGroupCount);
         storePlotPNG(path, plot, width, IMPLICIT_HEIGHT);
     }
 

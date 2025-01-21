@@ -118,7 +118,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, tracesXValues, tracesYValues);
     }
 
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, SortedMap<Float, Float> xToYMap) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map<Float, Float> xToYMap) {
         float[] xValues = new float[xToYMap.size()];
         float[] yValues = new float[xToYMap.size()];
         Iterator<Map.Entry<Float, Float>> it = xToYMap.entrySet().iterator();
@@ -127,7 +127,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             xValues[i] = entry.getKey();
             yValues[i] = entry.getValue();
         }
-        return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, xValues, yValues);
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, traceColour, xValues, yValues);
     }
 
     protected JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object[] tracesNames, COLOUR_NAME[] tracesColours, float[][] tracesXValues, float[][] tracesYValues) {

@@ -4,8 +4,11 @@
  */
 package vm.plot.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
@@ -46,7 +49,7 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
         Float[] groupNumbers = DataTypeConvertor.objectsToObjectFloats(xValues);
         float xStep = (float) vm.mathtools.Tools.gcd(groupNumbers); // achtung
         if (Float.isNaN(xStep)) {
-            xStep = Float.MAX_VALUE;
+            xStep = 1;
         }
         for (int traceID = 0; traceID < values.length; traceID++) {
             List<Float>[] valuesForGroups = values[traceID];
@@ -108,7 +111,7 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
         if (isHorizontal) {
             width = IMPLICIT_WIDTH;
         } else {
-            width = precomputeSuitableWidth(IMPLICIT_HEIGHT, lastTracesCount, lastGroupCount);
+            width = precomputeSuitablePlotWidth(IMPLICIT_HEIGHT, lastTracesCount, lastGroupCount);
         }
         storePlotPDF(path, plot, width, IMPLICIT_HEIGHT);
     }
@@ -119,13 +122,29 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
         if (isHorizontal) {
             width = IMPLICIT_WIDTH;
         } else {
-            width = precomputeSuitableWidth(IMPLICIT_HEIGHT, lastTracesCount, lastGroupCount);
+            width = precomputeSuitablePlotWidth(IMPLICIT_HEIGHT, lastTracesCount, lastGroupCount);
         }
         storePlotPNG(path, plot, width, IMPLICIT_HEIGHT);
     }
 
     protected int getNumberOrderOfShownXLabel(int numberOfXLabels) {
         return 1;
+    }
+
+    public Map<Float, List<Float>> quantiseMapToBoxPlotValues(Map<Float, Float> xToYMap) {
+        Set<Float> keySet = xToYMap.keySet();
+        Float[] groupNumbers = keySet.toArray(Float[]::new);
+        float xStep = (float) vm.mathtools.Tools.gcd(groupNumbers);
+        Map<Float, List<Float>> ret = new TreeMap<>();
+        for (Map.Entry<Float, Float> entry : xToYMap.entrySet()) {
+            float key = vm.mathtools.Tools.round(entry.getKey(), xStep, false);
+            if (!ret.containsKey(key)) {
+                ret.put(key, new ArrayList<>());
+            }
+            List<Float> list = ret.get(key);
+            list.add(entry.getValue());
+        }
+        return ret;
     }
 
 }
