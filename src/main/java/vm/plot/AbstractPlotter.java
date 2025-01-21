@@ -269,6 +269,7 @@ public abstract class AbstractPlotter {
             w.write(";" + Float.toString(x));
             x = Tools.correctPossiblyCorruptedFloat(x + xStep);
         }
+        w.newLine();
     }
 
     protected abstract void storeCsvRawData(String path, JFreeChart plot);

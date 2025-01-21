@@ -424,13 +424,14 @@ public class HeatMapPlotter extends AbstractPlotter {
         Double ydMin = Tools.getMin(yData);
         Double ydMax = Tools.getMax(yData);
 
-        float xMin = Tools.correctPossiblyCorruptedFloat(xdMin.floatValue());
-        float xMax = Tools.correctPossiblyCorruptedFloat(xdMax.floatValue());
-        float yMin = Tools.correctPossiblyCorruptedFloat(ydMin.floatValue());
-        float yMax = Tools.correctPossiblyCorruptedFloat(ydMax.floatValue());
+        XYBlockRenderer renderer = (XYBlockRenderer) ((XYPlot) chart.getPlot()).getRenderer();
+        float xStep = (float) (renderer.getBlockWidth() / IMPLICIT_RELATIVE_SPACE_OF_BLOCKS);
+        float yStep = (float) (renderer.getBlockHeight() / IMPLICIT_RELATIVE_SPACE_OF_BLOCKS);
 
-        float xStep = vm.mathtools.Tools.computeBasicXIntervalForHistogram(xMin, xMax);
-        float yStep = vm.mathtools.Tools.computeBasicYIntervalForHistogram(yMin, yMax);
+        float xMin = Tools.round(xdMin.floatValue(), xStep, false);
+        float xMax = Tools.round(xdMax.floatValue(), xStep, false);
+        float yMin = Tools.round(ydMin.floatValue(), xStep, false);
+        float yMax = Tools.round(ydMax.floatValue(), xStep, false);
 
         int xLength = (int) Tools.round((float) ((xMax - xMin) / xStep), 1, false) + 1;
         int yLength = (int) Tools.round((float) ((yMax - yMin) / yStep), 1, false) + 1;
@@ -462,7 +463,6 @@ public class HeatMapPlotter extends AbstractPlotter {
                 w.newLine();
             }
             printXCSVHeader(xMin, xStep, xMax, w);
-            w.write(path);
             w.flush();
         } catch (IOException ex) {
             Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.SEVERE, null, ex);
