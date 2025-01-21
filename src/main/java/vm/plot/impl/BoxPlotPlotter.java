@@ -7,7 +7,9 @@ package vm.plot.impl;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -38,7 +40,16 @@ public class BoxPlotPlotter extends AbstractPlotter {
                 && (data[0] == null || data[0] instanceof String)
                 && (data[1] == null || data[1] instanceof COLOUR_NAME)
                 && data[2] instanceof Map) {
+            Map map = (Map) data[2];
+            Iterator<Map.Entry> it = map.entrySet().iterator();
             BoxPlotXYPlotter xy = (BoxPlotXYPlotter) this;
+            if (it.hasNext()) {
+                Object v = it.next().getValue();
+                if (!(v instanceof Collection)) {
+                    Map quantisedMap = xy.quantiseMapToBoxPlotValues(map);
+                    return xy.createPlot(mainTitle, xAxisLabel, yAxisLabel, (String) data[0], (COLOUR_NAME) data[1], quantisedMap);
+                }
+            }
             return xy.createPlot(mainTitle, xAxisLabel, yAxisLabel, (String) data[0], (COLOUR_NAME) data[1], (Map) data[2]);
         } else {
             String[] tracesNames = (String[]) data[0];

@@ -131,7 +131,7 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
         return 1;
     }
 
-    public Map<Float, List<Float>> quantiseMapToBoxPlotValues(Map<Float, Float> xToYMap) {
+    public static Map<Float, List<Float>> quantiseMapToBoxPlotValues(Map<Float, Float> xToYMap) {
         Set<Float> keySet = xToYMap.keySet();
         Float[] groupNumbers = keySet.toArray(Float[]::new);
         float xStep = (float) vm.mathtools.Tools.gcd(groupNumbers);
