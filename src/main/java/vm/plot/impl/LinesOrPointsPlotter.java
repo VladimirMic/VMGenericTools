@@ -48,16 +48,16 @@ import vm.plot.AbstractPlotter;
  *
  * @author au734419
  */
-public class LinesPlotter extends AbstractPlotter {
+public class LinesOrPointsPlotter extends AbstractPlotter {
 
     private final boolean linesVisible;
     private boolean isTimeSeries;
 
-    public LinesPlotter() {
+    public LinesOrPointsPlotter() {
         this(true);
     }
 
-    public LinesPlotter(boolean linesVisible) {
+    public LinesOrPointsPlotter(boolean linesVisible) {
         this.linesVisible = linesVisible;
     }
 
@@ -232,7 +232,7 @@ public class LinesPlotter extends AbstractPlotter {
         if (barRenderer != null) {
             barRenderer.setDrawBarOutline(true); // border of the columns
             int barCount = traces[0].getItemCount();
-            Logger.getLogger(LinesPlotter.class.getName()).log(Level.INFO, "Creating bars-plot with X axis named {0} and {1} bars", new Object[]{xAxisLabel, barCount});
+            Logger.getLogger(LinesOrPointsPlotter.class.getName()).log(Level.INFO, "Creating bars-plot with X axis named {0} and {1} bars", new Object[]{xAxisLabel, barCount});
             barRenderer.setMargin(0);
             barRenderer.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.HORIZONTAL));
             barRenderer.setBarPainter(new MyBarPainter(0, 0, 0));

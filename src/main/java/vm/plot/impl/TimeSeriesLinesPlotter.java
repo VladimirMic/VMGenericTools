@@ -14,7 +14,7 @@ import vm.colour.StandardColours.COLOUR_NAME;
  *
  * @author au734419
  */
-public class TimeSeriesLinesPlotter extends LinesPlotter {
+public class TimeSeriesLinesPlotter extends LinesOrPointsPlotter {
 
     public TimeSeriesLinesPlotter(DateFormat dateFormat, DateTickUnitType timeTickType, int timeUnitInterval, boolean linesVisible) {
         super(linesVisible);

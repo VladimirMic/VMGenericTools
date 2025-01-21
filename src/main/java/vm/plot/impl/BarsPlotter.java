@@ -26,7 +26,7 @@ import vm.mathtools.Tools;
  *
  * @author au734419
  */
-public class BarsPlotter extends LinesPlotter {
+public class BarsPlotter extends LinesOrPointsPlotter {
 
     public BarsPlotter() {
         super(true);
