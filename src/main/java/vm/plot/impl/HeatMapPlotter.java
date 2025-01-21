@@ -179,9 +179,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         DefaultXYZDataset dataset = new DefaultXYZDataset();
         dataset.addSeries(traceName, valuesArray);
 
-        Float[] array = DataTypeConvertor.objectsToObjectFloats(xHeaders.keySet().toArray());
         float xStep = DataTypeConvertor.doubleToPreciseFloat((extremes[1] - extremes[0]) / (xHeaders.size() - 1));
-        array = DataTypeConvertor.objectsToObjectFloats(yHeaders.keySet().toArray());
         float yStep = DataTypeConvertor.doubleToPreciseFloat((extremes[3] - extremes[2]) / (yHeaders.size() - 1));;
         String xWidth = " (width: " + DataTypeConvertor.formatPossibleInt(xStep) + ")";
         String yWidth = " (width: " + DataTypeConvertor.formatPossibleInt(yStep) + ")";
@@ -327,7 +325,14 @@ public class HeatMapPlotter extends AbstractPlotter {
 
     }
 
-    private float[] initHeatMapHeaders(List<Float> valuesOnTheAxis, Map<Object, Integer> axisHeadersToFill, boolean isXAxis) {
+    /**
+     *
+     * @param valuesOnTheAxis
+     * @param axisHeadersToFill
+     * @param isXAxis
+     * @return float[]{numerOfTickLabels, step, minTickLabel}
+     */
+    public float[] initHeatMapHeaders(List<Float> valuesOnTheAxis, Map<Object, Integer> axisHeadersToFill, boolean isXAxis) {
         float max = (float) Tools.getMax(valuesOnTheAxis);
         float min = (float) Tools.getMin(valuesOnTheAxis);
         float step;
@@ -351,10 +356,10 @@ public class HeatMapPlotter extends AbstractPlotter {
         min = Tools.round(min, step, false);
         max = Tools.round(max + step / 2, step, false);
         int counter = 0;
-        float y = min;
-        while (y <= max && step > 0) {
-            axisHeadersToFill.put(y, counter);
-            y = Tools.correctPossiblyCorruptedFloat(y + step);
+        float v = min;
+        while (v <= max && step > 0) {
+            axisHeadersToFill.put(v, counter);
+            v = Tools.correctPossiblyCorruptedFloat(v + step);
             counter++;
         }
         return new float[]{counter, step, min};
@@ -453,7 +458,7 @@ public class HeatMapPlotter extends AbstractPlotter {
                 for (float z : row) {
                     w.write(";" + Float.toString(z));
                 }
-                y = Tools.correctPossiblyCorruptedFloat(y + yStep);
+                y = Tools.correctPossiblyCorruptedFloat(y - yStep);
                 w.newLine();
             }
             printXCSVHeader(xMin, xStep, xMax, w);

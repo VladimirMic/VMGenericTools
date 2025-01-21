@@ -498,6 +498,10 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static <T> T[] collectionToArray(Collection<T> list) {
+        return (T[]) list.toArray();
+    }
+
     public static List<Float> arrayToList(float[] values) {
         List<Float> ret = new ArrayList<>();
         for (float i : values) {

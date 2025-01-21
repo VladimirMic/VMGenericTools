@@ -82,9 +82,9 @@ public class Tools {
         return DF_DDMMYYYY_HHMM.format(new Date());
     }
 
-    public static final <X, Y> SortedSet<Y> degroupCollections(Map groupedFishingPerDays) {
+    public static final <X, Y> SortedSet<Y> degroupCollections(Map mapToCollectionOfY) {
         SortedSet<Y> ret = new TreeSet<>();
-        Collection<Collection<Y>> values = groupedFishingPerDays.values();
+        Collection<Collection<Y>> values = mapToCollectionOfY.values();
         List<Y> arrayList = new ArrayList<>();
         for (Collection<Y> set : values) {
             arrayList.addAll(set);

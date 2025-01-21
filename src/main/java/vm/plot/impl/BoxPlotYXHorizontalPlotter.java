@@ -38,10 +38,10 @@ public class BoxPlotYXHorizontalPlotter extends BoxPlotXYPlotter {
         return preserveEachTh;
     }
 
-    @Override
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map<Float, List<Float>> yToXListsValies) {
-        return super.createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, traceColour, yToXListsValies);
-    }
+//    @Override
+//    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map<Float, List<Float>> yToXListsValies) {
+//        return super.createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, traceColour, yToXListsValies);
+//    }
 
     @Override
     protected void setRotationOfXAxisCategoriesFont(CategoryAxis xAxis, Object[] groupsNames, int tracesPerGroup) {

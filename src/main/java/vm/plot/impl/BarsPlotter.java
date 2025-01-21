@@ -14,6 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import vm.colour.StandardColours.COLOUR_NAME;
@@ -43,6 +46,17 @@ public class BarsPlotter extends LinesPlotter {
         }
         return setAppearence(chart, traces, tracesColours, xAxisLabel, yAxisLabel);
     }
+
+    @Override
+    protected JFreeChart setAppearence(JFreeChart chart, XYSeries[] traces, COLOUR_NAME[] tracesColours, String xAxisLabel, String yAxisLabel) {
+        JFreeChart ret = super.setAppearence(chart, traces, tracesColours, xAxisLabel, yAxisLabel); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+        CategoryPlot categoryPlot = ret.getCategoryPlot();
+        BarRenderer renderer = (BarRenderer) categoryPlot.getRenderer();
+        renderer.setMaximumBarWidth(0.3);
+        return ret;
+    }
+    
+    
 
     public JFreeChart createHistogramPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, SortedMap<Float, Float> dataPoints) {
         if (traceColour == null) {

@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,6 +80,15 @@ public class LinesPlotter extends AbstractPlotter {
             }
         }
         float[][] tracesXValues;
+        if (data[2] == null) {
+            float[] yValues = (float[]) data[3];
+            float[] xValues = new float[yValues.length];
+            data[2] = new float[yValues.length];
+            for (int i = 0; i < yValues.length; i++) {
+                xValues[i] = i;
+            }
+            data[2] = xValues;
+        }
         if (data[2] instanceof float[][]) {
             tracesXValues = (float[][]) data[2];
             isTimeSeries = false;
@@ -91,7 +101,7 @@ public class LinesPlotter extends AbstractPlotter {
             float[] tmp2 = DataTypeConvertor.longsArrayToFloats(tmp);
             tracesXValues = DataTypeConvertor.objectToSingularArray(tmp2);
             isTimeSeries = true;
-        } else {
+        } else { // assumes float[]
             tracesXValues = (float[][]) DataTypeConvertor.objectToSingularArray(data[2]);
             isTimeSeries = false;
         }
@@ -106,6 +116,18 @@ public class LinesPlotter extends AbstractPlotter {
 
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, float[] tracesXValues, float[] tracesYValues) {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, tracesXValues, tracesYValues);
+    }
+
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, SortedMap<Float, Float> xToYMap) {
+        float[] xValues = new float[xToYMap.size()];
+        float[] yValues = new float[xToYMap.size()];
+        Iterator<Map.Entry<Float, Float>> it = xToYMap.entrySet().iterator();
+        for (int i = 0; it.hasNext(); i++) {
+            Map.Entry<Float, Float> entry = it.next();
+            xValues[i] = entry.getKey();
+            yValues[i] = entry.getValue();
+        }
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, xValues, yValues);
     }
 
     protected JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object[] tracesNames, COLOUR_NAME[] tracesColours, float[][] tracesXValues, float[][] tracesYValues) {
@@ -127,6 +149,9 @@ public class LinesPlotter extends AbstractPlotter {
     }
 
     protected XYSeries[] transformCoordinatesIntoTraces(Object[] tracesNames, float[][] tracesXValues, float[][] tracesYValues) {
+        if (tracesNames == null) {
+            tracesNames = new String[]{""};
+        }
         if (tracesNames.length != tracesXValues.length || tracesNames.length != tracesYValues.length) {
             throw new IllegalArgumentException("Inconsistent number of traces in data. Names count: " + tracesNames.length + ", x count: " + tracesXValues.length + ", y count: " + tracesYValues.length);
         }

@@ -36,11 +36,15 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] xValues, List<Float>[][] values) {
         // notice that DefaultBoxAndWhiskerXYDataset contains a single only one series in the dataset. For that reason, implemented as category dataset with fixed step
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
+        if (tracesNames == null) {
+            tracesNames = new String[]{""};
+        }
         if (tracesNames.length != values.length) {
-            throw new IllegalArgumentException("Number of traces descriptions does not match the values" + tracesNames.length + ", " + values.length);
+            String s = Integer.toString(tracesNames.length);
+            throw new IllegalArgumentException("Number of traces descriptions does not match the values or is null when more traces are specified: " + s + ", " + values.length);
         }
         Float[] groupNumbers = DataTypeConvertor.objectsToObjectFloats(xValues);
-        float xStep = (float) vm.mathtools.Tools.gcd(groupNumbers);
+        float xStep = (float) vm.mathtools.Tools.gcd(groupNumbers); // achtung
         if (Float.isNaN(xStep)) {
             xStep = Float.MAX_VALUE;
         }
@@ -78,17 +82,6 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
             chart = ChartFactory.createBoxAndWhiskerChart(mainTitle, xAxisLabel, yAxisLabel, dataset, true);
         }
         return setAppearence(chart, tracesNames, tracesColours, xValues);
-    }
-
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map<Float, List<Float>> xToYValues) {
-        Object[] xValues = xToYValues.keySet().toArray();
-        List<Float>[] retArray = new List[xValues.length];
-        for (int i = 0; i < xValues.length; i++) {
-            Float key = (Float) xValues[i];
-            retArray[i] = xToYValues.get(key);
-
-        }
-        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, traceColour, xValues, retArray);
     }
 
     @Override
