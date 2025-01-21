@@ -186,7 +186,7 @@ public class LinesPlotter extends AbstractPlotter {
     protected JFreeChart setAppearence(JFreeChart chart, XYSeries[] traces, COLOUR_NAME[] tracesColours, String xAxisLabel, String yAxisLabel) {
         XYPlot plot = (XYPlot) chart.getPlot();
         // chart colours
-        setChartColor(chart, plot);
+        setChartColorAndTitleFont(chart, plot);
 
         // x axis settings
         ValueAxis xAxis = plot.getDomainAxis();

@@ -369,7 +369,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         setLabelsOfAxis(xAxis);
         setLabelsOfAxis(yAxis);
         setLabelsOfAxis(zAxis);
-        setChartColor(chart, plot);
+        setChartColorAndTitleFont(chart, plot);
         plot.setBackgroundPaint(Color.gray);
         return chart;
     }

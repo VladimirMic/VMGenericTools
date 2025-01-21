@@ -39,6 +39,7 @@ import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
@@ -446,7 +447,8 @@ public abstract class AbstractPlotter {
         }
     }
 
-    protected void setChartColor(JFreeChart chart, Plot plot) {
+    protected void setChartColorAndTitleFont(JFreeChart chart, Plot plot) {
+        chart.getTitle().setFont(FONT_AXIS_TITLE);
         chart.setBackgroundPaint(Color.WHITE);
         plot.setBackgroundAlpha(0);
         if (plot instanceof XYPlot) {

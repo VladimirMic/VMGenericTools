@@ -134,7 +134,7 @@ public class BoxPlotPlotter extends AbstractPlotter {
 
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
         // chart colours
-        setChartColor(chart, plot);
+        setChartColorAndTitleFont(chart, plot);
 
         // y axis settings
         NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
