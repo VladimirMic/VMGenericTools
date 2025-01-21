@@ -26,6 +26,7 @@ import vm.colour.StandardColours;
 import vm.colour.StandardColours.COLOUR_NAME;
 import static vm.colour.StandardColours.getColor;
 import vm.datatools.DataTypeConvertor;
+import vm.mathtools.Tools;
 import vm.plot.AbstractPlotter;
 
 /**
@@ -46,7 +47,7 @@ public class BoxPlotPlotter extends AbstractPlotter {
             if (it.hasNext()) {
                 Object v = it.next().getValue();
                 if (!(v instanceof Collection)) {
-                    Map quantisedMap = xy.quantiseMapToBoxPlotValues(map);
+                    Map quantisedMap = BoxPlotXYPlotter.quantiseMapToBoxPlotValues(map);
                     return xy.createPlot(mainTitle, xAxisLabel, yAxisLabel, (String) data[0], (COLOUR_NAME) data[1], quantisedMap);
                 }
             }
@@ -69,6 +70,7 @@ public class BoxPlotPlotter extends AbstractPlotter {
     }
 
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] groupsNames, List<Float>[][] values) {
+        groupsNames = vm.mathtools.Tools.correctPossiblyCorruptedFloats(DataTypeConvertor.objectsToObjectFloats(groupsNames));
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
         if (tracesNames == null) {
             tracesNames = new String[]{""};

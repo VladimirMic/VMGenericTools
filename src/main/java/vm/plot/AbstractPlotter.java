@@ -511,6 +511,7 @@ public abstract class AbstractPlotter {
         LOG.log(Level.INFO, "yStep: {0}, decimals: {1}", new Object[]{step, decimalsOfNext});
     }
 
+
     protected float[] minMaxY;
 
     protected void setMinAndMaxYValues(float[][] tracesYValues) {

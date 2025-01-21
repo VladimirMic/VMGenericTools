@@ -768,6 +768,21 @@ public class Tools {
         return ret;
     }
 
+    public static Float[] correctPossiblyCorruptedFloats(Float[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return numbers;
+        }
+        Float[] ret = new Float[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            Float f = numbers[i];
+            if (f != null) {
+                f = Tools.correctPossiblyCorruptedFloat(f);
+            }
+            ret[i] = f;
+        }
+        return ret;
+    }
+
     public static float correctPossiblyCorruptedFloat(Float f) {
         if (f.equals(0f)) {
             return f;

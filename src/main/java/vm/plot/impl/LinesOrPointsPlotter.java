@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -119,14 +118,16 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     }
 
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map<Float, Float> xToYMap) {
-        float[] xValues = new float[xToYMap.size()];
-        float[] yValues = new float[xToYMap.size()];
+        Float[] xValues = new Float[xToYMap.size()];
+        Float[] yValues = new Float[xToYMap.size()];
         Iterator<Map.Entry<Float, Float>> it = xToYMap.entrySet().iterator();
         for (int i = 0; it.hasNext(); i++) {
             Map.Entry<Float, Float> entry = it.next();
             xValues[i] = entry.getKey();
             yValues[i] = entry.getValue();
         }
+        xValues = vm.mathtools.Tools.correctPossiblyCorruptedFloats(xValues);
+        yValues = vm.mathtools.Tools.correctPossiblyCorruptedFloats(yValues);
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, traceColour, xValues, yValues);
     }
 
@@ -163,7 +164,11 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             }
             int[] idxs = permutationOfIndexesToMakeXIncreasing(tracesXValues[i]);
             for (int idx : idxs) {
-                ret[i].add(DataTypeConvertor.floatToPreciseDouble(tracesXValues[i][idx]), DataTypeConvertor.floatToPreciseDouble(tracesYValues[i][idx]));
+                float x = tracesXValues[i][idx];
+                float y = tracesYValues[i][idx];
+                x = vm.mathtools.Tools.correctPossiblyCorruptedFloat(x);
+                y = vm.mathtools.Tools.correctPossiblyCorruptedFloat(y);
+                ret[i].add(DataTypeConvertor.floatToPreciseDouble(x), DataTypeConvertor.floatToPreciseDouble(y));
             }
         }
         return ret;
