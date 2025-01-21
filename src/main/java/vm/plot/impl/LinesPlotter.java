@@ -241,6 +241,7 @@ public class LinesPlotter extends AbstractPlotter {
             if (lineAndShapeRenderer != null) {
                 if (!linesVisible) {
                     lineAndShapeRenderer.setSeriesLinesVisible(i, false);
+                    lineAndShapeRenderer.setSeriesItemLabelsVisible(i, true);
                 }
                 lineAndShapeRenderer.setSeriesShapesVisible(i, true);
             }

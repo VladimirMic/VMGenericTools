@@ -430,8 +430,8 @@ public class HeatMapPlotter extends AbstractPlotter {
 
         float xMin = Tools.round(xdMin.floatValue(), xStep, false);
         float xMax = Tools.round(xdMax.floatValue(), xStep, false);
-        float yMin = Tools.round(ydMin.floatValue(), xStep, false);
-        float yMax = Tools.round(ydMax.floatValue(), xStep, false);
+        float yMin = Tools.round(ydMin.floatValue(), yStep, false);
+        float yMax = Tools.round(ydMax.floatValue(), yStep, false);
 
         int xLength = (int) Tools.round((float) ((xMax - xMin) / xStep), 1, false) + 1;
         int yLength = (int) Tools.round((float) ((yMax - yMin) / yStep), 1, false) + 1;
@@ -444,7 +444,13 @@ public class HeatMapPlotter extends AbstractPlotter {
             int x = (int) Tools.correctPossiblyCorruptedFloat((xData.get(i) - xMin) / xStep);
             int y = (int) Tools.correctPossiblyCorruptedFloat((yData.get(i) - yMin) / yStep);
             Float z = zData.get(i);
-            dataMatrix[y][x] = z;
+            if (y > dataMatrix.length) {
+                String s = "";
+            } else if (x > dataMatrix[y].length) {
+                String s = "";
+            } else {
+                dataMatrix[y][x] = z;
+            }
         }
         storeCsvRawData(xMin, xStep, xMax, yMax, yStep, dataMatrix, path);
     }
