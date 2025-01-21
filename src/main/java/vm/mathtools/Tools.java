@@ -62,6 +62,9 @@ public class Tools {
             toValueL = (long) Math.round(toValueCopy);
             additionL = (long) Math.round(additionCopy);
             if (order > 100 || inputL == Long.MAX_VALUE) {
+                if (input / toValue > 10000000) {
+                    return input;
+                }
                 int m = -1;
                 inputCopy = Tools.correctPossiblyCorruptedFloat(Math.abs(input) + addition);
                 while (inputCopy > -0.25 * toValue) {
@@ -104,7 +107,7 @@ public class Tools {
         return ret;
     }
 
-    public static int[] maxValueWithIdxAndCount(int[] array) {
+    public static int[] getMaxValueWithIdxAndCount(int[] array) {
         int ret = -Integer.MAX_VALUE;
         int retIdx = -1;
         int count = 0;
@@ -122,7 +125,7 @@ public class Tools {
 
     }
 
-    public static int maxValue(int[] array) {
+    public static int getMax(int[] array) {
         int ret = -Integer.MAX_VALUE;
         for (int i : array) {
             ret = Math.max(ret, i);
@@ -130,7 +133,23 @@ public class Tools {
         return ret;
     }
 
-    public static float maxValue(Collection<float[]> floats) {
+    public static float getMax(Number[] array) {
+        float ret = -Float.MAX_VALUE;
+        for (Number i : array) {
+            ret = Math.max(ret, i.floatValue());
+        }
+        return ret;
+    }
+
+    public static float getMin(Number[] array) {
+        float ret = Float.MAX_VALUE;
+        for (Number i : array) {
+            ret = Math.min(ret, i.floatValue());
+        }
+        return ret;
+    }
+
+    public static float getMaxFromCollectionOfArrays(Collection<float[]> floats) {
         float ret = Float.MIN_VALUE;
         for (float[] fArray : floats) {
             for (float f : fArray) {
@@ -450,20 +469,20 @@ public class Tools {
         return result;
     }
 
-    public static float lcm(Float ad, Float bd) {
+    public static float getLcm(Float ad, Float bd) {
         return ad * (bd / gcd(ad, bd));
     }
 
-    public static float lcm(Long a, Long b) {
+    public static float getLcm(Long a, Long b) {
         Float af = a.floatValue();
         Float bf = b.floatValue();
         return af * (bf / gcd(af, bf));
     }
 
-    public static float lcm(Float... input) {
+    public static float getLcm(Float... input) {
         Float result = input[0];
         for (int i = 1; i < input.length; i++) {
-            result = lcm(result, input[i]);
+            result = Tools.getLcm(result, input[i]);
         }
         return result;
     }
@@ -777,7 +796,7 @@ public class Tools {
             fMin = f2;
             eMin = e2;
         }
-        if (l3 < lMin && ((!e3 && !eMin) || (e3 && eMin))) {
+        if (l3 <= lMin && ((!e3 && !eMin) || (e3 && eMin))) {
             fMin = f3;
         }
         return fMin;

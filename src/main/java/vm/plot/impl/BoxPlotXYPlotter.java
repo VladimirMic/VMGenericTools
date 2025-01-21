@@ -47,7 +47,9 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
             throw new IllegalArgumentException("Number of traces descriptions does not match the values or is null when more traces are specified: " + s + ", " + values.length);
         }
         Float[] groupNumbers = DataTypeConvertor.objectsToObjectFloats(xValues);
-        float xStep = (float) vm.mathtools.Tools.gcd(groupNumbers); // achtung
+        float max = vm.mathtools.Tools.getMax(groupNumbers);
+        float min = vm.mathtools.Tools.getMin(groupNumbers);
+        float xStep = (float) vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max);
         if (Float.isNaN(xStep)) {
             xStep = 1;
         }
