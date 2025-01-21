@@ -448,7 +448,10 @@ public abstract class AbstractPlotter {
     }
 
     protected void setChartColorAndTitleFont(JFreeChart chart, Plot plot) {
-        chart.getTitle().setFont(FONT_AXIS_TITLE);
+        TextTitle title = chart.getTitle();
+        if (title != null) {
+            title.setFont(FONT_AXIS_TITLE);
+        }
         chart.setBackgroundPaint(Color.WHITE);
         plot.setBackgroundAlpha(0);
         if (plot instanceof XYPlot) {
