@@ -784,6 +784,18 @@ public class Tools {
         return ret;
     }
 
+    public static float[] correctPossiblyCorruptedFloats(float[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return numbers;
+        }
+        float[] ret = new float[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            Float f = Tools.correctPossiblyCorruptedFloat(numbers[i]);
+            ret[i] = f;
+        }
+        return ret;
+    }
+
     public static float correctPossiblyCorruptedFloat(Float f) {
         if (f.equals(0f)) {
             return f;

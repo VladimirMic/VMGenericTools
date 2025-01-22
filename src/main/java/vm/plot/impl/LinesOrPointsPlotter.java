@@ -118,8 +118,8 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     }
 
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map<Float, Float> xToYMap) {
-        Float[] xValues = new Float[xToYMap.size()];
-        Float[] yValues = new Float[xToYMap.size()];
+        float[] xValues = new float[xToYMap.size()];
+        float[] yValues = new float[xToYMap.size()];
         Iterator<Map.Entry<Float, Float>> it = xToYMap.entrySet().iterator();
         for (int i = 0; it.hasNext(); i++) {
             Map.Entry<Float, Float> entry = it.next();
