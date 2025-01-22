@@ -324,7 +324,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         return ret;
 
     }
-
+    
     /**
      *
      * @param valuesOnTheAxis

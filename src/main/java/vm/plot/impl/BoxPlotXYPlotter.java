@@ -149,11 +149,12 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
         Float[] groupNumbers = keySet.toArray(Float[]::new);
         float max = vm.mathtools.Tools.getMax(groupNumbers);
         float min = vm.mathtools.Tools.getMin(groupNumbers);
-        float xStep;
-        if (givenXStep == null) {
-            xStep = vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max);
-        } else {
-            xStep = givenXStep;
+        float xStep = vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max);
+        if (givenXStep != null) {
+            xStep = vm.mathtools.Tools.round(xStep, givenXStep, false);
+            if (xStep == 0) {
+                xStep = givenXStep;
+            }
         }
         Map<Float, List<Float>> ret = new TreeMap<>();
         for (Map.Entry<Float, Float> entry : xToYMap.entrySet()) {
