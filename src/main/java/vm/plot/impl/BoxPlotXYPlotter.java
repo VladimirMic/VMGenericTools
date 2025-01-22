@@ -26,6 +26,7 @@ import vm.datatools.Tools;
 public class BoxPlotXYPlotter extends BoxPlotPlotter {
 
     protected final boolean isHorizontal;
+    private Float givenXStep = null;
 
     protected BoxPlotXYPlotter(boolean isHorizontal) {
         this.isHorizontal = isHorizontal;
@@ -33,6 +34,14 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
 
     public BoxPlotXYPlotter() {
         this(false);
+    }
+
+    public Float getGivenXStep() {
+        return givenXStep;
+    }
+
+    public void setGivenXStep(Float givenXStep) {
+        this.givenXStep = givenXStep;
     }
 
     @Override
@@ -49,7 +58,7 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
         Float[] groupNumbers = DataTypeConvertor.objectsToObjectFloats(xValues);
         float max = vm.mathtools.Tools.getMax(groupNumbers);
         float min = vm.mathtools.Tools.getMin(groupNumbers);
-        float xStep = (float) vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max);
+        float xStep = givenXStep == null ? (float) vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max) : givenXStep;
         if (Float.isNaN(xStep)) {
             xStep = 1;
         }
@@ -66,6 +75,7 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
                 Float groupName = Float.valueOf(groupNumbers[groupId].toString());
                 while (previousKey != null && groupName > previousKey + xStep * 1.5f) {// othewise damages the floating point numbers
                     previousKey += xStep;
+                    previousKey = vm.mathtools.Tools.correctPossiblyCorruptedFloat(previousKey);
                     iValue = Tools.parseInteger(previousKey);
                     keyString = iValue == null ? previousKey.toString() : iValue.toString();
                     dataset.add(new BoxPlotPlotter.DummyBoxAndWhiskerItem(), tracesNames[traceID], keyString);
@@ -76,7 +86,8 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
                 if (valuesForGroupAndTrace != null) {
                     dataset.add(valuesForGroupAndTrace, tracesNames[traceID], keyString);
                 }
-                previousKey = Float.valueOf(groupNumbers[groupId].toString());// othewise damages the floating point numbers
+                previousKey = groupNumbers[groupId];
+                previousKey = vm.mathtools.Tools.correctPossiblyCorruptedFloat(previousKey);
             }
         }
         JFreeChart chart;
@@ -133,10 +144,17 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
         return 1;
     }
 
-    public static Map<Float, List<Float>> quantiseMapToBoxPlotValues(Map<Float, Float> xToYMap) {
+    public Map<Float, List<Float>> quantiseMapToBoxPlotValues(Map<Float, Float> xToYMap) {
         Set<Float> keySet = xToYMap.keySet();
         Float[] groupNumbers = keySet.toArray(Float[]::new);
-        float xStep = (float) vm.mathtools.Tools.gcd(groupNumbers);
+        float max = vm.mathtools.Tools.getMax(groupNumbers);
+        float min = vm.mathtools.Tools.getMin(groupNumbers);
+        float xStep;
+        if (givenXStep == null) {
+            xStep = vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max);
+        } else {
+            xStep = givenXStep;
+        }
         Map<Float, List<Float>> ret = new TreeMap<>();
         for (Map.Entry<Float, Float> entry : xToYMap.entrySet()) {
             float key = vm.mathtools.Tools.round(entry.getKey(), xStep, false);

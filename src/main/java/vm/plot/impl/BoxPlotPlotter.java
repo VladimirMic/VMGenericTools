@@ -47,7 +47,7 @@ public class BoxPlotPlotter extends AbstractPlotter {
             if (it.hasNext()) {
                 Object v = it.next().getValue();
                 if (!(v instanceof Collection)) {
-                    Map quantisedMap = BoxPlotXYPlotter.quantiseMapToBoxPlotValues(map);
+                    Map quantisedMap = xy.quantiseMapToBoxPlotValues(map);
                     return xy.createPlot(mainTitle, xAxisLabel, yAxisLabel, (String) data[0], (COLOUR_NAME) data[1], quantisedMap);
                 }
             }

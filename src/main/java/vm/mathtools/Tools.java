@@ -456,6 +456,7 @@ public class Tools {
         return ret;
     }
 
+    @Deprecated // causes wrong rounding floats
     public static float gcd(Float... input) {
         if (input == null || input.length == 0) {
             return Float.NaN;
