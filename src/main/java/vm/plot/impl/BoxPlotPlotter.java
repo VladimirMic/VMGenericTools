@@ -158,22 +158,15 @@ public class BoxPlotPlotter extends AbstractPlotter {
         Range rangeBounds = dataset.getRangeBounds(true);
         double axisBound = yAxis.getUpperBound();
         double dataBound = rangeBounds.getUpperBound();
+        double range = yAxis.getUpperBound() - yAxis.getLowerBound();
         if (axisBound < dataBound) {
-            yAxis.setUpperBound(dataBound);
-            double fixedAutoRange = yAxis.getFixedAutoRange();
+            yAxis.setUpperBound(dataBound + 0.03 * range);
         }
         axisBound = yAxis.getLowerBound();
         dataBound = rangeBounds.getLowerBound();
         if (axisBound > dataBound) {
-            yAxis.setLowerBound(dataBound);
+            yAxis.setLowerBound(dataBound + 0.03 * range);
         }
-        yAxis.setUpperMargin(0.5);
-        yAxis.setLowerMargin(0.5);
-        double range = yAxis.getUpperBound() - yAxis.getLowerBound();
-        axisBound = yAxis.getUpperBound() + yAxis.getUpperMargin() * range;
-        yAxis.setUpperBound(axisBound);
-        axisBound = yAxis.getLowerBound() - yAxis.getLowerMargin() * range;
-        yAxis.setLowerBound(axisBound);
         setLabelsOfAxis(yAxis);
         setTicksOfYNumericAxis(yAxis, false); // todo integers
 
