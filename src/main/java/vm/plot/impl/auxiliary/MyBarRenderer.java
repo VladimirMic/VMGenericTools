@@ -1,10 +1,14 @@
-package vm.plot.impl;
+package vm.plot.impl.auxiliary;
 
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.EntityCollection;
@@ -13,6 +17,7 @@ import org.jfree.chart.plot.CrosshairState;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.LookupPaintScale;
 import org.jfree.chart.renderer.xy.XYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYItemRendererState;
@@ -21,6 +26,7 @@ import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeriesCollection;
+import vm.colour.StandardColours;
 
 /**
  * A renderer that draws bars on an {@link XYPlot} (requires an
@@ -31,6 +37,28 @@ import org.jfree.data.xy.XYSeriesCollection;
  * <img src="doc-files/XYBarRendererSample.png" alt="XYBarRendererSample.png">
  */
 public class MyBarRenderer extends XYBarRenderer {
+
+    private final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels;
+    private final TreeMap<Integer, LookupPaintScale> rainboxPaintScale;
+
+    public MyBarRenderer() {
+        this(null);
+    }
+
+    public MyBarRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels) {
+        this.seriesToXToLabels = seriesToXToLabels;
+        rainboxPaintScale = new TreeMap<>();
+        if (seriesToXToLabels != null) {
+            Set<Integer> series = seriesToXToLabels.keySet();
+            for (Integer sery : series) {
+                Map<Float, Float> labels = seriesToXToLabels.get(sery);
+                float min = (float) vm.mathtools.Tools.getMin(labels.values());
+                float max = (float) vm.mathtools.Tools.getMax(labels.values());
+                LookupPaintScale lookupPaintScale = StandardColours.createRainboxPaintScale(min, max);
+                rainboxPaintScale.put(sery, lookupPaintScale);
+            }
+        }
+    }
 
     /**
      * Draws the visual representation of a single data item.
@@ -221,6 +249,22 @@ public class MyBarRenderer extends XYBarRenderer {
         if (entities != null) {
             addEntity(entities, bar, dataset, series, item, 0.0, 0.0);
         }
-
     }
+
+    @Override
+    public Paint getItemPaint(int seriesIdx, int pointIdx) {
+        if (seriesToXToLabels.isEmpty()) {
+            return StandardColours.BOX_BLACK;
+        }
+        Map<Float, Float> xValueToColourValue = seriesToXToLabels.get(seriesIdx);
+        LookupPaintScale scale = rainboxPaintScale.get(seriesIdx);
+        if (xValueToColourValue.isEmpty() || scale == null) {
+            return StandardColours.BOX_BLACK;
+        }
+        XYDataset dataset = getPlot().getDataset();
+        double x = dataset.getXValue(seriesIdx, pointIdx);
+        Float colourValue = xValueToColourValue.get((float) x);
+        return scale.getPaint(colourValue);
+    }
+
 }

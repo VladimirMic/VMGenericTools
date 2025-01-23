@@ -57,6 +57,7 @@ public abstract class AbstractPlotter {
 
     public static final Integer FONT_SIZE_AXIS_LABEL = 28;
     public static final Integer FONT_SIZE_AXIS_TICKS = 28;
+    public static final Integer FONT_SIZE_VALUES_LABELS = 24;
 
     public static final Integer X_TICKS_IMPLICIT_NUMBER_FOR_SHORT_DESC = 12;
     public static final Integer X_TICKS_IMPLICIT_NUMBER_FOR_LONG_DESC = 8;
@@ -72,6 +73,7 @@ public abstract class AbstractPlotter {
 
     public static final Font FONT_AXIS_TITLE = new Font("Arial", Font.PLAIN, FONT_SIZE_AXIS_LABEL);
     public static final Font FONT_AXIS_MARKERS = new Font("Arial", Font.PLAIN, FONT_SIZE_AXIS_TICKS);
+    public static final Font FONT_VALUES_LABELSS = new Font("Arial", Font.PLAIN, FONT_SIZE_VALUES_LABELS);
 
     public static final Stroke DASHED_STROKE = new BasicStroke(GRID_STROKE, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3, 3}, 0);
     public static final Stroke FULL_STROKE = new BasicStroke(GRID_STROKE);

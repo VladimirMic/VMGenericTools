@@ -5,7 +5,12 @@
 package vm.colour;
 
 import java.awt.Color;
+import java.awt.Paint;
 import java.util.Arrays;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import org.jfree.chart.renderer.LookupPaintScale;
+import vm.datatools.Tools;
 
 /**
  *
@@ -94,4 +99,31 @@ public class StandardColours {
         return StandardColours.LIGHT_COLOURS[idx];
     }
 
+    private static final SortedMap<float[], LookupPaintScale> cache = new TreeMap<>(new Tools.FloatArraySameLengthsComparator());
+
+    public static Color getRainboxRelativeColour(float minValue, float maxValue, float value) {
+        LookupPaintScale paintScale = createRainboxPaintScale(minValue, maxValue);
+        Paint paint = paintScale.getPaint(value);
+        return (Color) paint;
+    }
+
+    public static LookupPaintScale createRainboxPaintScale(float minValue, float maxValue) {
+        float[] key = new float[]{minValue, maxValue};
+        LookupPaintScale paintScale;
+        if (cache.containsKey(key)) {
+            paintScale = cache.get(key);
+        } else {
+            paintScale = new LookupPaintScale(minValue, maxValue, Color.black);
+            float interval = maxValue - minValue;
+            float step = interval / 20;
+            int i = 0;
+            while (minValue <= maxValue) {
+                paintScale.add(minValue, StandardColours.RAINBOW_COLOURS[i]);
+                i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
+                minValue += step;
+            }
+            cache.put(key, paintScale);
+        }
+        return paintScale;
+    }
 }

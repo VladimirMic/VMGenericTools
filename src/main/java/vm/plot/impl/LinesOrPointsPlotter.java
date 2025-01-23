@@ -12,12 +12,14 @@ import java.awt.geom.AffineTransform;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,15 +44,23 @@ import static vm.colour.StandardColours.getColor;
 import vm.datatools.DataTypeConvertor;
 import vm.datatools.Tools;
 import vm.plot.AbstractPlotter;
+import vm.plot.impl.auxiliary.MyBarRenderer;
+import vm.plot.impl.auxiliary.MyStandardXYItemLabelGenerator;
+import vm.plot.impl.auxiliary.MyXYLineAndShapeColourfulRenderer;
 
 /**
  *
  * @author au734419
  */
 public class LinesOrPointsPlotter extends AbstractPlotter {
+//plot.mapDatasetToRangeAxis(1, 1)
 
     private final boolean linesVisible;
     private boolean isTimeSeries;
+
+    private final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels = new TreeMap<>();
+
+    private NumberFormat nf = null;
 
     public LinesOrPointsPlotter() {
         this(true);
@@ -58,6 +68,14 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
 
     public LinesOrPointsPlotter(boolean linesVisible) {
         this.linesVisible = linesVisible;
+    }
+
+    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels) {
+        seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
+    }
+
+    public void setNumberFormatLabels(NumberFormat nf) {
+        this.nf = nf;
     }
 
     @Override
@@ -196,7 +214,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         // x axis settings
         ValueAxis xAxis = plot.getDomainAxis();
         setTicksOfXNumericAxis(xAxis);
-        xAxis.setUpperMargin(0.1);
+//        xAxis.setUpperMargin(0.1);
         setLabelsOfAxis(xAxis);
         // y axis settings
         if (logY) {
@@ -225,10 +243,12 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         XYLineAndShapeRenderer lineAndShapeRenderer = null;
         XYBarRenderer barRenderer = null;
         if (renderer instanceof XYLineAndShapeRenderer) {
-            lineAndShapeRenderer = (XYLineAndShapeRenderer) renderer;
+            lineAndShapeRenderer = new MyXYLineAndShapeColourfulRenderer(seriesToXToLabels);
+            plot.setRenderer(lineAndShapeRenderer);
+            renderer = lineAndShapeRenderer;
         }
         if (renderer instanceof XYBarRenderer) {
-            barRenderer = new MyBarRenderer();
+            barRenderer = new MyBarRenderer(seriesToXToLabels);
             plot.setRenderer(barRenderer);
             renderer = barRenderer;
         }
@@ -250,27 +270,40 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                 }
                 lineAndShapeRenderer.setSeriesShapesVisible(i, true);
             }
-            Color darkColor = tracesColours == null ? StandardColours.COLOURS[i % StandardColours.COLOURS.length] : getColor(tracesColours[i], false);
-            Color lightColor = tracesColours == null ? StandardColours.LIGHT_COLOURS[i % StandardColours.LIGHT_COLOURS.length] : getColor(tracesColours[i], true);
-            if (traces.length == 1 && barRenderer == null && tracesColours == null) {
-                darkColor = BOX_BLACK;
-                lightColor = LIGHT_BOX_BLACK;
+            setLinesColours(renderer, traces, barRenderer, tracesColours, i);
+        }
+        if (renderer != null) {
+            renderer.setDefaultItemLabelFont(FONT_VALUES_LABELSS);
+            for (Map.Entry<Integer, Map<Float, Float>> entry : seriesToXToLabels.entrySet()) {
+                int seriesIdx = entry.getKey();
+                Map<Float, Float> labelsMap = entry.getValue();
+                MyStandardXYItemLabelGenerator<Float> generator = new MyStandardXYItemLabelGenerator(labelsMap, nf);
+                renderer.setSeriesItemLabelGenerator(seriesIdx, generator);
+                renderer.setSeriesItemLabelsVisible(seriesIdx, true);
             }
-            if (renderer != null) {
-                renderer.setSeriesStroke(i, new BasicStroke(SERIES_STROKE));
-                if (barRenderer == null) {
-                    renderer.setSeriesPaint(i, darkColor);
-                } else {
-                    Paint gradientPaint = new GradientPaint(0.0f, 0.0f, lightColor, Float.MAX_VALUE, Float.MAX_VALUE, lightColor);
-                    barRenderer.setSeriesPaint(i, gradientPaint);
-                    barRenderer.setSeriesOutlinePaint(i, darkColor);
-                }
-            }
-
         }
         plot.setBackgroundAlpha(0);
         plot.setRenderer(renderer);
         return chart;
+    }
+
+    private void setLinesColours(XYItemRenderer renderer, XYSeries[] traces, XYBarRenderer barRenderer, COLOUR_NAME[] tracesColours, int i) {
+        Color darkColor = tracesColours == null ? StandardColours.COLOURS[i % StandardColours.COLOURS.length] : getColor(tracesColours[i], false);
+        Color lightColor = tracesColours == null ? StandardColours.LIGHT_COLOURS[i % StandardColours.LIGHT_COLOURS.length] : getColor(tracesColours[i], true);
+        if (traces.length == 1 && barRenderer == null && tracesColours == null) {
+            darkColor = BOX_BLACK;
+            lightColor = LIGHT_BOX_BLACK;
+        }
+        if (renderer != null) {
+            renderer.setSeriesStroke(i, new BasicStroke(SERIES_STROKE));
+            if (barRenderer == null) {
+                renderer.setSeriesPaint(i, darkColor);
+            } else {
+                Paint gradientPaint = new GradientPaint(0.0f, 0.0f, lightColor, Float.MAX_VALUE, Float.MAX_VALUE, lightColor); // seems to be an issue but must be like this!
+                barRenderer.setSeriesPaint(i, gradientPaint);
+                barRenderer.setSeriesOutlinePaint(i, darkColor);
+            }
+        }
     }
 
     @Override
@@ -330,4 +363,5 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }

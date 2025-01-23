@@ -27,7 +27,7 @@ import vm.mathtools.Tools;
 public class BarsPlotter extends LinesOrPointsPlotter {
 
     public BarsPlotter() {
-        super(true);
+        super(false);
     }
 
     @Override
