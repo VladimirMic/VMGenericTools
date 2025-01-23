@@ -340,12 +340,21 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                 XYSeries cast = (XYSeries) series.get(sIdx);
                 List<Float> xValues = new ArrayList<>();
                 List<Float> yValues = new ArrayList<>();
+                List<Float> labels = new ArrayList<>();
+                Map<Float, Float> labelsMap = null;
+                if (seriesToXToLabels.containsKey(sIdx)) {
+                    labelsMap = seriesToXToLabels.get(sIdx);
+                }
                 int itemCount = cast.getItemCount();
                 for (int i = 0; i < itemCount; i++) {
                     float x = vm.mathtools.Tools.correctPossiblyCorruptedFloat(cast.getX(i).floatValue());
                     float y = vm.mathtools.Tools.correctPossiblyCorruptedFloat(cast.getY(i).floatValue());
                     xValues.add(x);
                     yValues.add(y);
+                    if (labelsMap != null && labelsMap.containsKey(x)) {
+                        Float label = labelsMap.get(x);
+                        labels.add(label);
+                    }
                 }
                 w.write("Trace;");
                 String traceName = dataset.getSeriesKey(sIdx).toString();
@@ -361,6 +370,12 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                 w.write(traceName + ";Y:");
                 for (Float yValue : yValues) {
                     w.write(";" + yValue);
+                }
+                w.newLine();
+                w.write("Labels:;");
+                w.write(traceName + ";of X:");
+                for (Float label : labels) {
+                    w.write(";" + label);
                 }
                 w.newLine();
             }
