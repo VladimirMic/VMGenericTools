@@ -113,14 +113,18 @@ public class StandardColours {
         if (cache.containsKey(key)) {
             paintScale = cache.get(key);
         } else {
-            paintScale = new LookupPaintScale(minValue, maxValue, Color.black);
-            float interval = maxValue - minValue;
-            float step = interval / (StandardColours.RAINBOW_COLOURS.length - 2);
-            int i = 0;
-            while (minValue <= maxValue) {
-                paintScale.add(minValue, StandardColours.RAINBOW_COLOURS[i]);
-                i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
-                minValue += step;
+            if (minValue < maxValue) {
+                paintScale = new LookupPaintScale(minValue, maxValue, Color.black);
+                float interval = maxValue - minValue;
+                float step = interval / (StandardColours.RAINBOW_COLOURS.length - 2);
+                int i = 0;
+                while (minValue <= maxValue) {
+                    paintScale.add(minValue, StandardColours.RAINBOW_COLOURS[i]);
+                    i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
+                    minValue += step;
+                }
+            } else {
+                paintScale = new LookupPaintScale(0, 1000, Color.black);
             }
             cache.put(key, paintScale);
         }
