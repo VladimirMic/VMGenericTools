@@ -8,7 +8,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,15 +46,12 @@ public class BarsPlotter extends LinesOrPointsPlotter {
         return setAppearence(chart, traces, tracesColours, xAxisLabel, yAxisLabel);
     }
 
-//    @Override
-//    protected JFreeChart setAppearence(JFreeChart chart, XYSeries[] traces, COLOUR_NAME[] tracesColours, String xAxisLabel, String yAxisLabel) {
-//        JFreeChart ret = super.setAppearence(chart, traces, tracesColours, xAxisLabel, yAxisLabel); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-//        XYPlot categoryPlot = (XYPlot) ret.getPlot();
-//        BarRenderer renderer = (BarRenderer) categoryPlot.getRenderer();
-//        renderer.setMaximumBarWidth(0.3);
-//        return ret;
-//    }
-    
+    @Override
+    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf, boolean colourfulLabels) {
+        seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
+        nfs.put(seriesIdx, nf);
+        colouredLabelledPointsOrBars = colourfulLabels;
+    }
     
 
     public JFreeChart createHistogramPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, SortedMap<Float, Float> dataPoints) {

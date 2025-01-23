@@ -44,6 +44,7 @@ import static vm.colour.StandardColours.getColor;
 import vm.datatools.DataTypeConvertor;
 import vm.datatools.Tools;
 import vm.plot.AbstractPlotter;
+import vm.plot.impl.auxiliary.MyBarPainter;
 import vm.plot.impl.auxiliary.MyBarRenderer;
 import vm.plot.impl.auxiliary.MyStandardXYItemLabelGenerator;
 import vm.plot.impl.auxiliary.MyXYLineAndShapeColourfulRenderer;
@@ -57,9 +58,10 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
 
     private final boolean linesVisible;
     private boolean isTimeSeries;
+    protected boolean colouredLabelledPointsOrBars;
 
-    private final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels = new TreeMap<>();
-    private final TreeMap<Integer, NumberFormat> nfs = new TreeMap<>();
+    protected final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels = new TreeMap<>();
+    protected final TreeMap<Integer, NumberFormat> nfs = new TreeMap<>();
 
     public LinesOrPointsPlotter() {
         this(true);
@@ -67,11 +69,13 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
 
     public LinesOrPointsPlotter(boolean linesVisible) {
         this.linesVisible = linesVisible;
+        colouredLabelledPointsOrBars = true;
     }
 
-    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf) {
+    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf, boolean colourfulPoints) {
         seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
         nfs.put(seriesIdx, nf);
+        colouredLabelledPointsOrBars = colourfulPoints;
     }
 
     @Override
@@ -210,7 +214,6 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         // x axis settings
         ValueAxis xAxis = plot.getDomainAxis();
         setTicksOfXNumericAxis(xAxis);
-//        xAxis.setUpperMargin(0.1);
         setLabelsOfAxis(xAxis);
         // y axis settings
         if (logY) {
@@ -224,6 +227,11 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             setLabelsOfAxis(yAxis);
             boolean onlyIntegerYValues = isOnlyIntegerYValues(traces);
             setTicksOfYNumericAxis(yAxis, onlyIntegerYValues);
+        }
+        if (!seriesToXToLabels.isEmpty()) {
+            plot.getRangeAxis().setUpperMargin(0.08);
+            xAxis.setLowerMargin(0.06);
+            xAxis.setUpperMargin(0.06);
         }
         //legend        
         setLegendFont(chart.getLegend());
@@ -266,7 +274,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                 }
                 lineAndShapeRenderer.setSeriesShapesVisible(i, true);
             }
-            setLinesColours(renderer, traces, barRenderer, tracesColours, i);
+            setColours(renderer, traces, barRenderer, tracesColours, i);
         }
         if (renderer != null) {
             renderer.setDefaultItemLabelFont(FONT_VALUES_LABELSS);
@@ -284,9 +292,10 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         return chart;
     }
 
-    private void setLinesColours(XYItemRenderer renderer, XYSeries[] traces, XYBarRenderer barRenderer, COLOUR_NAME[] tracesColours, int i) {
+    private void setColours(XYItemRenderer renderer, XYSeries[] traces, XYBarRenderer barRenderer, COLOUR_NAME[] tracesColours, int i) {
         Color darkColor = tracesColours == null ? StandardColours.COLOURS[i % StandardColours.COLOURS.length] : getColor(tracesColours[i], false);
         Color lightColor = tracesColours == null ? StandardColours.LIGHT_COLOURS[i % StandardColours.LIGHT_COLOURS.length] : getColor(tracesColours[i], true);
+        renderer.setSeriesOutlinePaint(i, darkColor);
         if (traces.length == 1 && barRenderer == null && tracesColours == null) {
             darkColor = BOX_BLACK;
             lightColor = LIGHT_BOX_BLACK;

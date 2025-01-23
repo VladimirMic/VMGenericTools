@@ -26,8 +26,8 @@ import vm.colour.StandardColours;
 import vm.colour.StandardColours.COLOUR_NAME;
 import static vm.colour.StandardColours.getColor;
 import vm.datatools.DataTypeConvertor;
-import vm.mathtools.Tools;
 import vm.plot.AbstractPlotter;
+import vm.plot.impl.auxiliary.MyBoxAndWhiskerRenderer;
 
 /**
  *

@@ -57,7 +57,7 @@ public abstract class AbstractPlotter {
 
     public static final Integer FONT_SIZE_AXIS_LABEL = 28;
     public static final Integer FONT_SIZE_AXIS_TICKS = 28;
-    public static final Integer FONT_SIZE_VALUES_LABELS = 24;
+    public static final Integer FONT_SIZE_VALUES_LABELS = 20;
 
     public static final Integer X_TICKS_IMPLICIT_NUMBER_FOR_SHORT_DESC = 12;
     public static final Integer X_TICKS_IMPLICIT_NUMBER_FOR_LONG_DESC = 8;

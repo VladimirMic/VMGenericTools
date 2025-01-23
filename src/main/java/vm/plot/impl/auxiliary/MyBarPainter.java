@@ -33,7 +33,7 @@
  * Contributor(s):   -;
  *
  */
-package vm.plot.impl;
+package vm.plot.impl.auxiliary;
 
 import java.awt.Color;
 import java.awt.GradientPaint;

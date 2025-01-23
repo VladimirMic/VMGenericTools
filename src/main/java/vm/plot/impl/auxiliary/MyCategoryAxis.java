@@ -1,4 +1,4 @@
-package vm.plot.impl;
+package vm.plot.impl.auxiliary;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;

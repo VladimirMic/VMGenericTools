@@ -18,6 +18,7 @@ import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import vm.colour.StandardColours.COLOUR_NAME;
 import vm.datatools.DataTypeConvertor;
 import vm.datatools.Tools;
+import vm.plot.impl.auxiliary.MyCategoryAxis;
 
 /**
  *

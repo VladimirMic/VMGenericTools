@@ -115,7 +115,7 @@ public class StandardColours {
         } else {
             paintScale = new LookupPaintScale(minValue, maxValue, Color.black);
             float interval = maxValue - minValue;
-            float step = interval / 20;
+            float step = interval / (StandardColours.RAINBOW_COLOURS.length - 2);
             int i = 0;
             while (minValue <= maxValue) {
                 paintScale.add(minValue, StandardColours.RAINBOW_COLOURS[i]);
