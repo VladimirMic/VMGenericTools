@@ -59,8 +59,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     private boolean isTimeSeries;
 
     private final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels = new TreeMap<>();
-
-    private NumberFormat nf = null;
+    private final TreeMap<Integer, NumberFormat> nfs = new TreeMap<>();
 
     public LinesOrPointsPlotter() {
         this(true);
@@ -70,12 +69,9 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         this.linesVisible = linesVisible;
     }
 
-    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels) {
+    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf) {
         seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
-    }
-
-    public void setNumberFormatLabels(NumberFormat nf) {
-        this.nf = nf;
+        nfs.put(seriesIdx, nf);
     }
 
     @Override
@@ -277,6 +273,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             for (Map.Entry<Integer, Map<Float, Float>> entry : seriesToXToLabels.entrySet()) {
                 int seriesIdx = entry.getKey();
                 Map<Float, Float> labelsMap = entry.getValue();
+                NumberFormat nf = nfs.get(seriesIdx);
                 MyStandardXYItemLabelGenerator<Float> generator = new MyStandardXYItemLabelGenerator(labelsMap, nf);
                 renderer.setSeriesItemLabelGenerator(seriesIdx, generator);
                 renderer.setSeriesItemLabelsVisible(seriesIdx, true);
