@@ -40,6 +40,7 @@ public class MyBarRenderer extends XYBarRenderer {
 
     private final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels;
     private final TreeMap<Integer, LookupPaintScale> rainboxPaintScale;
+    private final boolean logarithmic;
 
     public MyBarRenderer() {
         this(null);
@@ -50,15 +51,14 @@ public class MyBarRenderer extends XYBarRenderer {
     }
 
     public MyBarRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels, boolean logarithmic) {
+        this.logarithmic = logarithmic;
         this.seriesToXToLabels = seriesToXToLabels;
         rainboxPaintScale = new TreeMap<>();
         if (seriesToXToLabels != null) {
             Set<Integer> series = seriesToXToLabels.keySet();
             for (Integer sery : series) {
                 Map<Float, Float> labels = seriesToXToLabels.get(sery);
-                float min = (float) vm.mathtools.Tools.getMin(labels.values());
-                float max = (float) vm.mathtools.Tools.getMax(labels.values());
-                LookupPaintScale lookupPaintScale = StandardColours.createRainboxPaintScale(min, max, logarithmic);
+                LookupPaintScale lookupPaintScale = StandardColours.createRainboxPaintScale(labels.values(), logarithmic);
                 rainboxPaintScale.put(sery, lookupPaintScale);
             }
         }
@@ -268,6 +268,12 @@ public class MyBarRenderer extends XYBarRenderer {
         XYDataset dataset = getPlot().getDataset();
         double x = dataset.getXValue(seriesIdx, pointIdx);
         Float colourValue = xValueToColourValue.get((float) x);
+        if (logarithmic && colourValue != 0) {
+            colourValue = (float) Math.log(colourValue);
+        }
+        if (colourValue == null) {
+            String blah = "";
+        }
         return scale.getPaint(colourValue);
     }
 

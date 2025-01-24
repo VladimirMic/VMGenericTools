@@ -5,12 +5,11 @@
 package vm.colour;
 
 import java.awt.Color;
-import java.awt.Paint;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.TreeSet;
 import org.jfree.chart.renderer.LookupPaintScale;
 import vm.datatools.Tools;
 
@@ -103,49 +102,49 @@ public class StandardColours {
 
     private static final SortedMap<float[], LookupPaintScale> cache = new TreeMap<>(new Tools.FloatArraySameLengthsComparator());
 
-    public static Color getRainboxRelativeColour(float minValue, float maxValue, float value, boolean logarithmic) {
-        LookupPaintScale paintScale = createRainboxPaintScale(minValue, maxValue, logarithmic);
-        if (logarithmic) {
-            value = getLogarithm(minValue, maxValue, value);
-        }
-        Paint paint = paintScale.getPaint(value);
-        return (Color) paint;
-    }
-
-    public static LookupPaintScale createRainboxPaintScale(float minValue, float maxValue, boolean logarithmic) {
-        if (logarithmic) {
-            minValue = getLogarithm(minValue, maxValue, minValue);
-            maxValue = getLogarithm(minValue, maxValue, minValue);
-        }
-        float[] key = new float[]{minValue, maxValue};
-        LookupPaintScale paintScale;
-        if (cache.containsKey(key)) {
-            paintScale = cache.get(key);
-        } else {
-            if (minValue < maxValue) {
-                paintScale = new LookupPaintScale(minValue, maxValue, Color.black);
-                float interval = maxValue - minValue;
-                float step = interval / (StandardColours.RAINBOW_COLOURS.length - 2);
-                int i = 0;
-                while (minValue <= maxValue) {
-                    paintScale.add(minValue, StandardColours.RAINBOW_COLOURS[i]);
-                    i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
-                    minValue += step;
+    public static LookupPaintScale createRainboxPaintScale(Collection<Float> coll, boolean logarithmic) {
+        float minValue;
+        float maxValue;
+        if (coll != null && !coll.isEmpty()) {
+            TreeSet<Float> set = new TreeSet<>(coll);
+            if (logarithmic) {
+                set.remove(0f);
+                if (coll.isEmpty()) {
+                    return trivialPaintScale();
                 }
+                minValue = (float) Math.log(set.first());
+                maxValue = (float) Math.log(set.last());
             } else {
-                paintScale = new LookupPaintScale(0, 1000, Color.black);
+                minValue = set.first();
+                maxValue = set.last();
             }
-            cache.put(key, paintScale);
+            float[] key = new float[]{minValue, maxValue};
+            LookupPaintScale paintScale;
+            if (cache.containsKey(key)) {
+                paintScale = cache.get(key);
+            } else {
+                if (minValue < maxValue) {
+                    paintScale = new LookupPaintScale(minValue, maxValue, Color.black);
+                    float interval = maxValue - minValue;
+                    float step = interval / (StandardColours.RAINBOW_COLOURS.length - 2);
+                    int i = 0;
+                    while (minValue <= maxValue) {
+                        paintScale.add(minValue, StandardColours.RAINBOW_COLOURS[i]);
+                        i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
+                        minValue += step;
+                    }
+                } else {
+                    paintScale = new LookupPaintScale(0, 1000, Color.black);
+                }
+                cache.put(key, paintScale);
+            }
+            return paintScale;
         }
-        return paintScale;
+        return trivialPaintScale();
     }
 
-    private static float getLogarithm(float min, float max, float value) {
-        if (min > 0 && max > 0) {
-            return (float) Math.log(value);
-        }
-        Logger.getLogger(StandardColours.class.getName()).log(Level.WARNING, "Min max values do not allow logarithmic scale!{0}, {1}", new Object[]{min, max});
-        return value;
+    private static LookupPaintScale trivialPaintScale() {
+        return new LookupPaintScale(0, 1000, Color.black);
     }
 
 }
