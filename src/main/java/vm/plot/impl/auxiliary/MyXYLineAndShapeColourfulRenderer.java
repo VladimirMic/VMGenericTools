@@ -36,7 +36,7 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer {
             Set<Integer> series = seriesToXToLabels.keySet();
             for (Integer sery : series) {
                 Map<Float, Float> labels = seriesToXToLabels.get(sery);
-                LookupPaintScale lookupPaintScale = StandardColours.createRainboxPaintScale(labels.values(), logarithmicScale);
+                LookupPaintScale lookupPaintScale = StandardColours.createContinuousPaintScale(labels.values(), logarithmicScale);
                 rainboxPaintScale.put(sery, lookupPaintScale);
             }
         }

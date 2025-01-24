@@ -30,6 +30,7 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickMarkPosition;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.DateTickUnitType;
+import org.jfree.chart.axis.LogAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.TickUnits;
@@ -108,7 +109,7 @@ public abstract class AbstractPlotter {
 
     public abstract String getSimpleName();
 
-    protected double setAxisUnits(Double step, NumberAxis axis, Integer axisImplicitTicksNumber, boolean forceIntegerStep) {
+    protected double setAxisUnits(Double step, ValueAxis axis, Integer axisImplicitTicksNumber, boolean forceIntegerStep) {
         if (step == null && axisImplicitTicksNumber == null) {
             throw new IllegalArgumentException("At least one param, step and axisImplicitTicksNumber must be non-null");
         }
@@ -125,7 +126,14 @@ public abstract class AbstractPlotter {
         NumberTickUnit tickUnitNumber = new NumberTickUnit(step);
         tickUnits.add(tickUnitNumber);
         axis.setStandardTickUnits(tickUnits);
-        axis.setTickUnit(tickUnitNumber);
+        if (axis instanceof NumberAxis) {
+            NumberAxis a = (NumberAxis) axis;
+            a.setTickUnit(tickUnitNumber);
+        }
+        if (axis instanceof LogAxis) {
+            LogAxis a = (LogAxis) axis;
+            a.setTickUnit(tickUnitNumber);
+        }
         return step;
     }
 
@@ -512,7 +520,6 @@ public abstract class AbstractPlotter {
         nfBig.setMinimumFractionDigits(0);
         LOG.log(Level.INFO, "yStep: {0}, decimals: {1}", new Object[]{step, decimalsOfNext});
     }
-
 
     protected float[] minMaxY;
 

@@ -100,11 +100,27 @@ public class StandardColours {
         return StandardColours.LIGHT_COLOURS[idx];
     }
 
+    public static LookupPaintScale createContrastivePaintScale(Collection<Float> coll, boolean logarithmic) {
+        return createPaintScale(coll, false, logarithmic);
+    }
+
+    public static LookupPaintScale createContrastivePaintScale(Collection<Float> coll) {
+        return createPaintScale(coll, false, false);
+    }
+
+    public static LookupPaintScale createContinuousPaintScale(Collection<Float> coll, boolean logarithmic) {
+        return createPaintScale(coll, true, logarithmic);
+    }
+    public static LookupPaintScale createContinuousPaintScale(Collection<Float> coll) {
+        return createPaintScale(coll, true, false);
+    }
+
     private static final SortedMap<float[], LookupPaintScale> cache = new TreeMap<>(new Tools.FloatArraySameLengthsComparator());
 
-    public static LookupPaintScale createRainboxPaintScale(Collection<Float> coll, boolean logarithmic) {
+    public static LookupPaintScale createPaintScale(Collection<Float> coll, boolean continuous, boolean logarithmic) {
         float minValue;
         float maxValue;
+        Color[] colours = continuous ? StandardColours.RAINBOW_COLOURS : StandardColours.COLOURS;
         if (coll != null && !coll.isEmpty()) {
             TreeSet<Float> set = new TreeSet<>(coll);
             if (logarithmic) {
@@ -126,11 +142,11 @@ public class StandardColours {
                 if (minValue < maxValue) {
                     paintScale = new LookupPaintScale(minValue, maxValue, Color.black);
                     float interval = maxValue - minValue;
-                    float step = interval / (StandardColours.RAINBOW_COLOURS.length - 2);
+                    float step = continuous ? interval / (colours.length - 2) : interval / colours.length;
                     int i = 0;
                     while (minValue <= maxValue) {
-                        paintScale.add(minValue, StandardColours.RAINBOW_COLOURS[i]);
-                        i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
+                        paintScale.add(minValue, colours[i]);
+                        i = (i + 1) % colours.length;
                         minValue += step;
                     }
                 } else {

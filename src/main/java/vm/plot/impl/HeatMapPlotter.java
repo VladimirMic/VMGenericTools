@@ -163,9 +163,13 @@ public class HeatMapPlotter extends AbstractPlotter {
             for (Map.Entry<Object, Integer> x : xHeaders.entrySet()) {
                 double xValue = Double.parseDouble(x.getKey().toString());
                 int xIdx = x.getValue();
+                double zValue = yxzValues[yIdx][xIdx];
+                Float zValuef = (float) zValue;
                 extremes[0] = Math.min(extremes[0], xValue);
                 extremes[1] = Math.max(extremes[1], xValue);
-                double zValue = yxzValues[yIdx][xIdx];
+                if (zValuef.equals(Float.NaN)) {
+                    continue;
+                }
                 xValues[counter] = xValue;
                 yValues[counter] = yValue;
                 zValues[counter] = zValue;
@@ -324,7 +328,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         return ret;
 
     }
-    
+
     /**
      *
      * @param valuesOnTheAxis
