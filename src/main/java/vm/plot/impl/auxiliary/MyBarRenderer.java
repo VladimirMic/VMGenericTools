@@ -46,6 +46,10 @@ public class MyBarRenderer extends XYBarRenderer {
     }
 
     public MyBarRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels) {
+        this(seriesToXToLabels, false);
+    }
+
+    public MyBarRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels, boolean logarithmic) {
         this.seriesToXToLabels = seriesToXToLabels;
         rainboxPaintScale = new TreeMap<>();
         if (seriesToXToLabels != null) {
@@ -54,7 +58,7 @@ public class MyBarRenderer extends XYBarRenderer {
                 Map<Float, Float> labels = seriesToXToLabels.get(sery);
                 float min = (float) vm.mathtools.Tools.getMin(labels.values());
                 float max = (float) vm.mathtools.Tools.getMax(labels.values());
-                LookupPaintScale lookupPaintScale = StandardColours.createRainboxPaintScale(min, max);
+                LookupPaintScale lookupPaintScale = StandardColours.createRainboxPaintScale(min, max, logarithmic);
                 rainboxPaintScale.put(sery, lookupPaintScale);
             }
         }

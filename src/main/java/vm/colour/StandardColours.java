@@ -9,6 +9,8 @@ import java.awt.Paint;
 import java.util.Arrays;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jfree.chart.renderer.LookupPaintScale;
 import vm.datatools.Tools;
 
@@ -101,13 +103,20 @@ public class StandardColours {
 
     private static final SortedMap<float[], LookupPaintScale> cache = new TreeMap<>(new Tools.FloatArraySameLengthsComparator());
 
-    public static Color getRainboxRelativeColour(float minValue, float maxValue, float value) {
-        LookupPaintScale paintScale = createRainboxPaintScale(minValue, maxValue);
+    public static Color getRainboxRelativeColour(float minValue, float maxValue, float value, boolean logarithmic) {
+        LookupPaintScale paintScale = createRainboxPaintScale(minValue, maxValue, logarithmic);
+        if (logarithmic) {
+            value = getLogarithm(minValue, maxValue, value);
+        }
         Paint paint = paintScale.getPaint(value);
         return (Color) paint;
     }
 
-    public static LookupPaintScale createRainboxPaintScale(float minValue, float maxValue) {
+    public static LookupPaintScale createRainboxPaintScale(float minValue, float maxValue, boolean logarithmic) {
+        if (logarithmic) {
+            minValue = getLogarithm(minValue, maxValue, minValue);
+            maxValue = getLogarithm(minValue, maxValue, minValue);
+        }
         float[] key = new float[]{minValue, maxValue};
         LookupPaintScale paintScale;
         if (cache.containsKey(key)) {
@@ -130,4 +139,13 @@ public class StandardColours {
         }
         return paintScale;
     }
+
+    private static float getLogarithm(float min, float max, float value) {
+        if (min > 0 && max > 0) {
+            return (float) Math.log(value);
+        }
+        Logger.getLogger(StandardColours.class.getName()).log(Level.WARNING, "Min max values do not allow logarithmic scale!{0}, {1}", new Object[]{min, max});
+        return value;
+    }
+
 }

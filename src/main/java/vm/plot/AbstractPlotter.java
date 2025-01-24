@@ -79,7 +79,7 @@ public abstract class AbstractPlotter {
     public static final Stroke FULL_STROKE = new BasicStroke(GRID_STROKE);
 
     protected boolean logY = false;
-    protected boolean enforceInvolvingZeroToYAxis = false;
+    protected boolean includeZeroForYAxis = false;
     protected boolean verticalXLabels = false;
 
     private Boolean includeZeroForXAxis = null;
@@ -100,8 +100,8 @@ public abstract class AbstractPlotter {
         this.verticalXLabels = verticalXLabels;
     }
 
-    public void setEnforceInvolvingZeroToYAxis(boolean enforceInvolvingZeroToYAxis) {
-        this.enforceInvolvingZeroToYAxis = enforceInvolvingZeroToYAxis;
+    public void setIncludeZeroForYAxis(boolean includeZeroForYAxis) {
+        this.includeZeroForYAxis = includeZeroForYAxis;
     }
 
     public abstract JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object... data);
@@ -396,7 +396,7 @@ public abstract class AbstractPlotter {
     protected void setTicksOfYNumericAxis(NumberAxis yAxis, boolean forceIntegers) {
         String label = yAxis.getLabel();
         label = label.toLowerCase().trim();
-        if (enforceInvolvingZeroToYAxis) {
+        if (includeZeroForYAxis) {
             yAxis.setLowerBound(0);
         }
         if ("".equals(label)) {
@@ -408,7 +408,7 @@ public abstract class AbstractPlotter {
             NumberFormat nf = NumberFormat.getInstance(Locale.US);
             yAxis.setNumberFormatOverride(nf);
             yAxis.setUpperBound(1);
-            if (!enforceInvolvingZeroToYAxis) {
+            if (!includeZeroForYAxis) {
                 yAxis.setLowerBound(minRecall);
             }
             setAxisUnits(null, yAxis, Y_TICKS_IMPLICIT_NUMBER, forceIntegers);

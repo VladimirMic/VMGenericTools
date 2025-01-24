@@ -25,6 +25,10 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer {
     }
 
     public MyXYLineAndShapeColourfulRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels) {
+        this(seriesToXToLabels, false);
+    }
+
+    public MyXYLineAndShapeColourfulRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels, boolean logarithmicScale) {
         this.seriesToXToLabels = seriesToXToLabels;
         rainboxPaintScale = new TreeMap<>();
         if (seriesToXToLabels != null) {
@@ -33,7 +37,7 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer {
                 Map<Float, Float> labels = seriesToXToLabels.get(sery);
                 float min = (float) vm.mathtools.Tools.getMin(labels.values());
                 float max = (float) vm.mathtools.Tools.getMax(labels.values());
-                LookupPaintScale lookupPaintScale = StandardColours.createRainboxPaintScale(min, max);
+                LookupPaintScale lookupPaintScale = StandardColours.createRainboxPaintScale(min, max, logarithmicScale);
                 rainboxPaintScale.put(sery, lookupPaintScale);
             }
         }

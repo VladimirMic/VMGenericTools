@@ -59,6 +59,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     private final boolean linesVisible;
     private boolean isTimeSeries;
     protected boolean colouredLabelledPointsOrBars;
+    protected boolean logarithmicScaleOfColours;
 
     protected final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels = new TreeMap<>();
     protected final TreeMap<Integer, NumberFormat> nfs = new TreeMap<>();
@@ -70,6 +71,15 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     public LinesOrPointsPlotter(boolean linesVisible) {
         this.linesVisible = linesVisible;
         colouredLabelledPointsOrBars = true;
+        logarithmicScaleOfColours = false;
+    }
+
+    public boolean isLogarithmicScaleOfColours() {
+        return logarithmicScaleOfColours;
+    }
+
+    public void setLogarithmicScaleOfColours(boolean logarithmicScaleOfColours) {
+        this.logarithmicScaleOfColours = logarithmicScaleOfColours;
     }
 
     public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf, boolean colourfulPoints) {
@@ -247,12 +257,12 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         XYLineAndShapeRenderer lineAndShapeRenderer = null;
         XYBarRenderer barRenderer = null;
         if (renderer instanceof XYLineAndShapeRenderer) {
-            lineAndShapeRenderer = new MyXYLineAndShapeColourfulRenderer(seriesToXToLabels);
+            lineAndShapeRenderer = new MyXYLineAndShapeColourfulRenderer(seriesToXToLabels, logarithmicScaleOfColours);
             plot.setRenderer(lineAndShapeRenderer);
             renderer = lineAndShapeRenderer;
         }
         if (renderer instanceof XYBarRenderer) {
-            barRenderer = new MyBarRenderer(seriesToXToLabels);
+            barRenderer = new MyBarRenderer(seriesToXToLabels, logarithmicScaleOfColours);
             plot.setRenderer(barRenderer);
             renderer = barRenderer;
         }
