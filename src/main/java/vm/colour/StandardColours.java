@@ -100,19 +100,20 @@ public class StandardColours {
         return StandardColours.LIGHT_COLOURS[idx];
     }
 
-    public static LookupPaintScale createContrastivePaintScale(Collection<Float> coll, boolean logarithmic) {
-        return createPaintScale(coll, false, logarithmic);
-    }
-
     public static LookupPaintScale createContrastivePaintScale(Collection<Float> coll) {
         return createPaintScale(coll, false, false);
     }
 
-    public static LookupPaintScale createContinuousPaintScale(Collection<Float> coll, boolean logarithmic) {
-        return createPaintScale(coll, true, logarithmic);
+    public static LookupPaintScale createContrastivePaintScale(Collection<Float> coll, boolean logarithmic) {
+        return createPaintScale(coll, false, logarithmic);
     }
+
     public static LookupPaintScale createContinuousPaintScale(Collection<Float> coll) {
         return createPaintScale(coll, true, false);
+    }
+
+    public static LookupPaintScale createContinuousPaintScale(Collection<Float> coll, boolean logarithmic) {
+        return createPaintScale(coll, true, logarithmic);
     }
 
     private static final SortedMap<float[], LookupPaintScale> cache = new TreeMap<>(new Tools.FloatArraySameLengthsComparator());
