@@ -45,6 +45,7 @@ public class HeatMapPlotter extends AbstractPlotter {
     private Integer zColoursCount = null;
     private Double givenZStep = null;
     private Double givenXStep = null;
+    private float multiplicationOfXBasicStep = 1;
     private Double givenYStep = null;
 
     private boolean contrastiveColours;
@@ -92,6 +93,14 @@ public class HeatMapPlotter extends AbstractPlotter {
 
     public void setGivenZStep(Double givenZStep) {
         this.givenZStep = givenZStep;
+    }
+
+    public float getMultiplicationOfXBasicStep() {
+        return multiplicationOfXBasicStep;
+    }
+
+    public void setMultiplicationOfXBasicStep(float multiplicationOfXBasicStep) {
+        this.multiplicationOfXBasicStep = multiplicationOfXBasicStep;
     }
 
     public void setGivenXStep(Double givenXStep) {
@@ -168,13 +177,16 @@ public class HeatMapPlotter extends AbstractPlotter {
                 extremes[0] = Math.min(extremes[0], xValue);
                 extremes[1] = Math.max(extremes[1], xValue);
                 if (zValuef.equals(Float.NaN)) {
-                    continue;
+                    xValues[counter] = xValue;
+                    yValues[counter] = yValue;
+                    zValues[counter] = -Float.MAX_VALUE;
+                } else {
+                    xValues[counter] = xValue;
+                    yValues[counter] = yValue;
+                    zValues[counter] = zValue;
+                    extremes[4] = Math.min(extremes[4], zValue);
+                    extremes[5] = Math.max(extremes[5], zValue);
                 }
-                xValues[counter] = xValue;
-                yValues[counter] = yValue;
-                zValues[counter] = zValue;
-                extremes[4] = Math.min(extremes[4], zValue);
-                extremes[5] = Math.max(extremes[5], zValue);
                 counter++;
             }
         }
@@ -184,7 +196,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         dataset.addSeries(traceName, valuesArray);
 
         float xStep = DataTypeConvertor.doubleToPreciseFloat((extremes[1] - extremes[0]) / (xHeaders.size() - 1));
-        float yStep = DataTypeConvertor.doubleToPreciseFloat((extremes[3] - extremes[2]) / (yHeaders.size() - 1));;
+        float yStep = DataTypeConvertor.doubleToPreciseFloat((extremes[3] - extremes[2]) / (yHeaders.size() - 1));
         String xWidth = " (width: " + DataTypeConvertor.formatPossibleInt(xStep) + ")";
         String yWidth = " (width: " + DataTypeConvertor.formatPossibleInt(yStep) + ")";
         JFreeChart ret = datasetToChart(dataset, xAxisLabel + xWidth, yAxisLabel + yWidth, traceName, extremes, xStep, yStep);
@@ -341,7 +353,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         float min = (float) Tools.getMin(valuesOnTheAxis);
         float step;
         if (isXAxis) {
-            step = vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max);
+            step = vm.mathtools.Tools.computeBasicXIntervalForHistogram(min * multiplicationOfXBasicStep, max * multiplicationOfXBasicStep);
         } else {
             step = vm.mathtools.Tools.computeBasicYIntervalForHistogram(min, max);
         }

@@ -58,7 +58,7 @@ public class MyBarRenderer extends XYBarRenderer {
             Set<Integer> series = seriesToXToLabels.keySet();
             for (Integer sery : series) {
                 Map<Float, Float> labels = seriesToXToLabels.get(sery);
-                LookupPaintScale lookupPaintScale = StandardColours.createContinuousPaintScale(labels.values());
+                LookupPaintScale lookupPaintScale = StandardColours.createContinuousPaintScale(labels.values(), logarithmic);
                 rainboxPaintScale.put(sery, lookupPaintScale);
             }
         }

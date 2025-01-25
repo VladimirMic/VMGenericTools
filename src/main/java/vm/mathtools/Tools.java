@@ -588,8 +588,13 @@ public class Tools {
     }
 
     public static float computeBasicXIntervalForHistogram(Collection<Float> values) {
-        float max = (float) Tools.getMax(values);
-        float min = (float) Tools.getMin(values);
+        return computeBasicXIntervalForHistogram(values, 1);
+
+    }
+
+    public static float computeBasicXIntervalForHistogram(Collection<Float> values, float scale) {
+        float max = (float) Tools.getMax(values) * scale;
+        float min = (float) Tools.getMin(values) * scale;
         return computeBasicXIntervalForHistogram(min, max);
     }
 
