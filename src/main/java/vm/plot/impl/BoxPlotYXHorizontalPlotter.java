@@ -6,7 +6,6 @@ package vm.plot.impl;
 
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.Map;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -31,7 +30,7 @@ public class BoxPlotYXHorizontalPlotter extends BoxPlotXYPlotter {
     protected int getNumberOrderOfShownXLabel(int numberOfXLabels) {
         int preserveEachTh = 1;
         int countShown = numberOfXLabels;
-        while (countShown > Y_TICKS_IMPLICIT_NUMBER) {
+        while (countShown > yTicksCount) {
             preserveEachTh++;
             countShown = (int) Math.ceil(numberOfXLabels / ((float) preserveEachTh));
         }

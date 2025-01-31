@@ -55,11 +55,15 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer {
         }
         XYDataset dataset = getPlot().getDataset();
         double x = dataset.getXValue(seriesIdx, pointIdx);
+        Float colourValue1 = xValueToColourValue.get((float) x);
         if (logarithmic && x != 0) {
             x = Math.log(x);
         }
-        Float colourValue = xValueToColourValue.get((float) x);
-        return scale.getPaint(colourValue);
+        Float colourValue2 = xValueToColourValue.get((float) x);
+        if (colourValue2 == null && colourValue1 != null) {
+            return scale.getPaint(colourValue1);
+        }
+        return scale.getPaint(colourValue2);
     }
 
     @Override

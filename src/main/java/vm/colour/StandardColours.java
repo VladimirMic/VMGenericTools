@@ -126,7 +126,7 @@ public class StandardColours {
             TreeSet<Float> set = new TreeSet<>(coll);
             if (logarithmic) {
                 set.remove(0f);
-                if (coll.isEmpty()) {
+                if (set.isEmpty()) {
                     return trivialPaintScale();
                 }
                 minValue = (float) Math.log(set.first());

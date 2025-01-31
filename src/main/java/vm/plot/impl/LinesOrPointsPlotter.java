@@ -59,6 +59,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     private final boolean linesVisible;
     private boolean isTimeSeries;
     protected boolean colouredLabelledPointsOrBars;
+    protected boolean showPointLabels;
     protected boolean logarithmicScaleOfColours;
 
     protected final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels = new TreeMap<>();
@@ -72,6 +73,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         this.linesVisible = linesVisible;
         colouredLabelledPointsOrBars = true;
         logarithmicScaleOfColours = false;
+        showPointLabels = true;
     }
 
     public boolean isLogarithmicScaleOfColours() {
@@ -80,6 +82,14 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
 
     public void setLogarithmicScaleOfColours(boolean logarithmicScaleOfColours) {
         this.logarithmicScaleOfColours = logarithmicScaleOfColours;
+    }
+
+    public boolean isShowPointLabels() {
+        return showPointLabels;
+    }
+
+    public void setShowPointLabels(boolean showPointLabels) {
+        this.showPointLabels = showPointLabels;
     }
 
     public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf, boolean colourfulPoints) {
@@ -292,9 +302,11 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                 int seriesIdx = entry.getKey();
                 Map<Float, Float> labelsMap = entry.getValue();
                 NumberFormat nf = nfs.get(seriesIdx);
-                MyStandardXYItemLabelGenerator<Float> generator = new MyStandardXYItemLabelGenerator(labelsMap, nf);
-                renderer.setSeriesItemLabelGenerator(seriesIdx, generator);
-                renderer.setSeriesItemLabelsVisible(seriesIdx, true);
+                if (showPointLabels) {
+                    MyStandardXYItemLabelGenerator<Float> generator = new MyStandardXYItemLabelGenerator(labelsMap, nf);
+                    renderer.setSeriesItemLabelGenerator(seriesIdx, generator);
+                    renderer.setSeriesItemLabelsVisible(seriesIdx, true);
+                }
             }
         }
         plot.setBackgroundAlpha(0);

@@ -56,12 +56,12 @@ public abstract class AbstractPlotter {
 
     public static final Logger LOG = Logger.getLogger(AbstractPlotter.class.getName());
 
-    public static final Integer FONT_SIZE_AXIS_LABEL = 28;
-    public static final Integer FONT_SIZE_AXIS_TICKS = 28;
-    public static final Integer FONT_SIZE_VALUES_LABELS = 20;
+    protected static final Integer FONT_SIZE_AXIS_LABEL = 28;
+    protected static final Integer FONT_SIZE_AXIS_TICKS = 28;
+    protected static final Integer FONT_SIZE_VALUES_LABELS = 20;
 
-    public static final Integer X_TICKS_IMPLICIT_NUMBER_FOR_SHORT_DESC = 12;
-    public static final Integer X_TICKS_IMPLICIT_NUMBER_FOR_LONG_DESC = 8;
+    protected static final Integer X_TICKS_IMPLICIT_COUNT_FOR_SHORT_DESC = 12;
+    protected static final Integer X_TICKS_IMPLICIT_COUNT_FOR_LONG_DESC = 8;
     // 9 is too much // possibly create map for different lengths of descriptions. 8 for length 5
 
     public static final Integer Y_TICKS_IMPLICIT_NUMBER = 14;
@@ -88,9 +88,18 @@ public abstract class AbstractPlotter {
     protected DateFormat dateFormat = null;
     protected DateTickUnitType timeTickType = null;
     protected Integer timeUnitInterval = null;
+    protected Integer yTicksCount = Y_TICKS_IMPLICIT_NUMBER;
 
     public void setIncludeZeroForXAxis(Boolean includeZeroForXAxis) {
         this.includeZeroForXAxis = includeZeroForXAxis;
+    }
+
+    public Integer getyTicksCount() {
+        return yTicksCount;
+    }
+
+    public void setyTicksCount(Integer yTicksCount) {
+        this.yTicksCount = yTicksCount;
     }
 
     public void setLogY(boolean logY) {
@@ -347,7 +356,7 @@ public abstract class AbstractPlotter {
     private void setTicksForXNumberAxis(NumberAxis xAxis, Boolean includeZeroForXAxisLocal) {
         xAxis.setAutoRangeIncludesZero(includeZeroForXAxisLocal);
         NumberFormat nf = NumberFormat.getInstance(Locale.US);
-        Double xStep = setAxisUnits(null, xAxis, X_TICKS_IMPLICIT_NUMBER_FOR_SHORT_DESC, false);
+        Double xStep = setAxisUnits(null, xAxis, X_TICKS_IMPLICIT_COUNT_FOR_SHORT_DESC, false);
         if (xStep >= 120) {
             NumberFormat nfBig = new CompactNumberFormat(
                     "#,##0.##",
@@ -366,7 +375,7 @@ public abstract class AbstractPlotter {
         double lb = xAxis.getLowerBound();
         int maxTickLength = getMaxTickLabelLength(lb, ubShown, xStep, nf);
         if (maxTickLength >= 4) {
-            setAxisUnits(null, xAxis, X_TICKS_IMPLICIT_NUMBER_FOR_LONG_DESC, false);
+            setAxisUnits(null, xAxis, X_TICKS_IMPLICIT_COUNT_FOR_LONG_DESC, false);
         }
         setRotationOfValueAxisFont(xAxis, xStep, nf);
     }
@@ -419,13 +428,13 @@ public abstract class AbstractPlotter {
             if (!includeZeroForYAxis) {
                 yAxis.setLowerBound(minRecall);
             }
-            setAxisUnits(null, yAxis, Y_TICKS_IMPLICIT_NUMBER, forceIntegers);
+            setAxisUnits(null, yAxis, yTicksCount, forceIntegers);
             return;
         }
         if (label.equals("frr") || label.equals("false reject rate")) {
             yAxis.setUpperBound(1 - minRecall);
         }
-        double yStep = setAxisUnits(null, yAxis, Y_TICKS_IMPLICIT_NUMBER, forceIntegers);
+        double yStep = setAxisUnits(null, yAxis, yTicksCount, forceIntegers);
         if (yAxis.getUpperBound() >= 1000) {
             NumberFormat nfBig = new CompactNumberFormat(
                     "#,##0.##",
