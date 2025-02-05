@@ -89,6 +89,16 @@ public abstract class AbstractPlotter {
     protected DateTickUnitType timeTickType = null;
     protected Integer timeUnitInterval = null;
     protected Integer yTicksCount = Y_TICKS_IMPLICIT_NUMBER;
+    protected boolean xThousandDelimit = true;
+    protected boolean yThousandDelimit = true;
+
+    public void setxThousandDelimit(boolean xThousandDelimit) {
+        this.xThousandDelimit = xThousandDelimit;
+    }
+
+    public void setyThousandDelimit(boolean yThousandDelimit) {
+        this.yThousandDelimit = yThousandDelimit;
+    }
 
     public void setIncludeZeroForXAxis(Boolean includeZeroForXAxis) {
         this.includeZeroForXAxis = includeZeroForXAxis;
@@ -356,6 +366,7 @@ public abstract class AbstractPlotter {
     private void setTicksForXNumberAxis(NumberAxis xAxis, Boolean includeZeroForXAxisLocal) {
         xAxis.setAutoRangeIncludesZero(includeZeroForXAxisLocal);
         NumberFormat nf = NumberFormat.getInstance(Locale.US);
+        nf.setGroupingUsed(xThousandDelimit);
         Double xStep = setAxisUnits(null, xAxis, X_TICKS_IMPLICIT_COUNT_FOR_SHORT_DESC, false);
         if (xStep >= 120) {
             NumberFormat nfBig = new CompactNumberFormat(

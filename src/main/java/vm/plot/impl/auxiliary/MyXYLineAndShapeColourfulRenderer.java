@@ -46,7 +46,7 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer {
     @Override
     public Paint getItemPaint(int seriesIdx, int pointIdx) {
         if (seriesToXToLabels.isEmpty()) {
-            return StandardColours.BOX_BLACK;
+            return super.getItemPaint(seriesIdx, pointIdx);
         }
         Map<Float, Float> xValueToColourValue = seriesToXToLabels.get(seriesIdx);
         LookupPaintScale scale = rainboxPaintScale.get(seriesIdx);
@@ -70,6 +70,7 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer {
     protected void drawFirstPassShape(Graphics2D g2, int pass, int series, int item, Shape shape) {
         g2.setStroke(getItemStroke(series, item));
         g2.setPaint(StandardColours.BOX_BLACK);
+        g2.setPaint(getItemPaint(series, item));
         g2.draw(shape);
     }
 

@@ -110,10 +110,15 @@ public class Tools {
     }
 
     public static List<String[]> parseCsvRowOriented(String path, String delimiter) {
+        return parseCsvRowOriented(path, delimiter, "UTF8");
+    }
+
+    public static List<String[]> parseCsvRowOriented(String path, String delimiter, String encoding) {
         BufferedReader br = null;
         List<String[]> ret = new ArrayList<>();
         try {
-            br = new BufferedReader(new FileReader(path));
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(path), encoding);
+            br = new BufferedReader(isr);
             try {
                 String line = "";
                 while (line != null) {

@@ -31,6 +31,7 @@ public class SymbolicLinkCreator {
             String link = JOptionPane.showInputDialog("Folder name to new symbolic link?");
             System.err.println(link);
             File linkF = new File(link, sourceF.getName());
+            linkF.mkdirs();
             Files.createSymbolicLink(linkF.toPath(), sourceF.toPath());
         }
     }
