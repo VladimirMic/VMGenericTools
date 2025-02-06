@@ -33,6 +33,11 @@ import vm.datatools.DataTypeConvertor;
  */
 public class Tools {
 
+    public static enum LOGICAL_CONNECTION {
+        AND,
+        OR
+    }
+
     public static final Float MIN_ROUNDING_TOVALUE = 0.00001f;
 
     public static float round(float input, float toValue, boolean floor) {
