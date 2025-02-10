@@ -132,12 +132,17 @@ public class MyBarRenderer extends XYBarRenderer {
         Collections.sort(xValues);
         double barWidthReal = Double.MAX_VALUE;
         double translatedBarWidth = Double.MAX_VALUE;
-        for (int i = 1; i < xValues.size(); i++) {
-            barWidthReal = Math.min(barWidthReal, xValues.get(i) - xValues.get(i - 1));
-            double translatedDataWidth0 = domainAxis.valueToJava2D(xValues.get(i - 1), dataArea, location);
-            double translatedDataWidth1 = domainAxis.valueToJava2D(xValues.get(i), dataArea, location);
-            double diffCand = translatedDataWidth1 - translatedDataWidth0;
-            translatedBarWidth = Math.min(translatedBarWidth, diffCand);
+        if (xValues.size() <= 1) {
+            barWidthReal = 1;
+            translatedBarWidth = 1/8f;
+        } else {
+            for (int i = 1; i < xValues.size(); i++) {
+                barWidthReal = Math.min(barWidthReal, xValues.get(i) - xValues.get(i - 1));
+                double translatedDataWidth0 = domainAxis.valueToJava2D(xValues.get(i - 1), dataArea, location);
+                double translatedDataWidth1 = domainAxis.valueToJava2D(xValues.get(i), dataArea, location);
+                double diffCand = translatedDataWidth1 - translatedDataWidth0;
+                translatedBarWidth = Math.min(translatedBarWidth, diffCand);
+            }
         }
 
         double startX = intervalDataset.getXValue(series, item) - barWidthReal / 2;
