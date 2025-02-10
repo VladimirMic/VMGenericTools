@@ -968,20 +968,32 @@ public class Tools {
 
         @Override
         public int compare(Object[] o1, Object[] o2) {
-            if ((o1 == null && o2 != null) || (o1 != null && o2 == null)) {
+            if (o1 == null && o2 != null) {
                 return -1;
+            }
+            if (o1 != null && o2 == null) {
+                return 1;
             }
             if (o1 == null && o2 == null) {
                 return 0;
             }
             if (o1.length != o2.length) {
-                return -1;
+                return Integer.compare(o1.length, o2.length);
             }
             for (int i = 0; i < o1.length; i++) {
                 Object oi1 = o1[i];
                 Object oi2 = o2[i];
-                if (!oi1.equals(oi2)) {
+                if (oi1 == null && oi2 != null) {
+                    return 1;
+                }
+                if (oi2 == null && oi1 != null) {
                     return -1;
+                }
+                if (oi1 == null && oi2 == null) {
+                    continue;
+                }
+                if (!oi1.equals(oi2)) {
+                    return Integer.compare(oi1.hashCode(), oi2.hashCode());
                 }
             }
             return 0;
