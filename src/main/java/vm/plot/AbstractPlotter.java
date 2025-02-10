@@ -423,7 +423,11 @@ public abstract class AbstractPlotter {
 
     protected void setTicksOfYNumericAxis(NumberAxis yAxis, boolean forceIntegers) {
         String label = yAxis.getLabel();
-        label = label.toLowerCase().trim();
+        if (label == null) {
+            label = "NULL";
+        } else {
+            label = label.toLowerCase().trim();
+        }
         if (includeZeroForYAxis) {
             yAxis.setLowerBound(0);
         }
