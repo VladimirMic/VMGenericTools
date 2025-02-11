@@ -12,7 +12,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -431,7 +433,19 @@ public class DataTypeConvertor {
     }
 
     public static float doubleToPreciseFloat(double d) {
-        return Float.parseFloat(Double.toString(d));
+        String s = Double.toString(d);
+        float ret = Float.parseFloat(s);
+        if (s.contains("E")) {
+            String check = Float.toString(ret);
+            if (check.length() != s.length()) {
+                try {
+                    throw new RuntimeException("Consider restarting computer. Wrong memory state does not allow precise float rounding. This has no real impact on the results, but number formatting in outputs (and figures) can be damaged.");
+                } catch (RuntimeException ex) {
+                    Logger.getLogger(DataTypeConvertor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return ret;
     }
 
     public static TreeSet<Comparable> castCell(Collection<Comparable> cell) {
@@ -532,6 +546,17 @@ public class DataTypeConvertor {
             return Integer.toString(i);
         }
         return Float.toString(f);
+    }
+
+    public static final <X, Y> SortedSet<Y> degroupCollections(Map mapToCollectionOfY) {
+        SortedSet<Y> ret = new TreeSet<>();
+        Collection<Collection<Y>> values = mapToCollectionOfY.values();
+        List<Y> arrayList = new ArrayList<>();
+        for (Collection<Y> set : values) {
+            arrayList.addAll(set);
+        }
+        ret.addAll(arrayList);
+        return ret;
     }
 
 }

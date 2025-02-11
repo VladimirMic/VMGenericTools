@@ -529,15 +529,27 @@ public abstract class AbstractPlotter {
             while (currDouble > lb) {
                 currString = nfBig.format(currDouble);
                 double check = nfBig.parse(currString).doubleValue();
-                check = DataTypeConvertor.floatToPreciseDouble(Tools.round((float) check, step.floatValue(), false)); // problem with floats
+                float f = DataTypeConvertor.doubleToPreciseFloat(check);
+                f = Tools.round(f, step.floatValue(), false);
+                f = vm.mathtools.Tools.correctPossiblyCorruptedFloat(f);
+                check = DataTypeConvertor.floatToPreciseDouble(f); // problem with floats
                 if (currString.equals(prev) || check != currDouble) {
                     ok = false;
                     decimalsOfNext++;
-                    nfBig.setMaximumFractionDigits(decimalsOfNext);
-                    nfBig.setMinimumFractionDigits(decimalsOfNext);
-                    break;
+                    if (decimalsOfNext == 20) {
+                        decimalsOfNext = 1;
+                        nfBig.setMaximumFractionDigits(decimalsOfNext);
+                        ok = true;
+                    } else {
+                        nfBig.setMaximumFractionDigits(decimalsOfNext);
+                        nfBig.setMinimumFractionDigits(decimalsOfNext);
+                        break;
+                    }
                 }
-                currDouble = DataTypeConvertor.floatToPreciseDouble(Tools.round((float) (currDouble - step), step.floatValue(), false)); // problem with floats
+                f = (float) (currDouble - step);
+                f = Tools.round(f, step.floatValue(), false);
+                f = vm.mathtools.Tools.correctPossiblyCorruptedFloat(f);
+                currDouble = DataTypeConvertor.floatToPreciseDouble(f);// problem with floats
                 prev = currString;
             }
         } while (!ok);

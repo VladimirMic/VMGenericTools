@@ -88,7 +88,8 @@ public class Tools {
         long m = (inputL + additionL) / toValueL;
         m *= toValueL * sig;
         Double ret = m * Math.pow(10, -order);
-        return Tools.correctPossiblyCorruptedFloat(ret.floatValue());
+        float retFloat = DataTypeConvertor.doubleToPreciseFloat(ret);
+        return Tools.correctPossiblyCorruptedFloat(retFloat);
     }
 
     public static double roundDouble(double input, float toValue, boolean floor) {
@@ -813,6 +814,16 @@ public class Tools {
         if (f.equals(0f)) {
             return f;
         }
+        Integer power = null;
+        float m = 1;
+        if (f.toString().contains("E")) {
+            power = 1;
+            while (f.toString().contains("E")) {
+                f = (float) (f / Math.pow(10, power));
+                power++;
+            }
+            m = (float) Math.pow(10, power);
+        }
         Float f1 = Float.intBitsToFloat(Float.floatToIntBits(f) - 1);
         Float f2 = Float.intBitsToFloat(Float.floatToIntBits(f) + 1);
         Float f3 = Float.intBitsToFloat(Float.floatToIntBits(f));
@@ -840,7 +851,10 @@ public class Tools {
         if (l3 <= lMin && ((!e3 && !eMin) || (e3 && eMin))) {
             fMin = f3;
         }
-        return fMin;
+        if (power == null) {
+            return fMin;
+        }
+        return fMin * m;
     }
 
 }
