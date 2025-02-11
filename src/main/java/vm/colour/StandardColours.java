@@ -151,7 +151,7 @@ public class StandardColours {
                         minValue += step;
                     }
                 } else {
-                    paintScale = new LookupPaintScale(0, 1000, Color.black);
+                    paintScale = new LookupPaintScale(0, 1000, colours[colours.length - 1]);
                 }
                 cache.put(key, paintScale);
             }
