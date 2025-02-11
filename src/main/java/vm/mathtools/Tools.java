@@ -814,19 +814,20 @@ public class Tools {
         if (f.equals(0f)) {
             return f;
         }
+        Float fCopy = f;
         Integer power = null;
         float m = 1;
         if (f.toString().contains("E")) {
             power = 1;
-            while (f.toString().contains("E")) {
-                f = (float) (f / Math.pow(10, power));
+            while (fCopy.toString().contains("E")) {
+                fCopy = (float) (f / Math.pow(10, power));
                 power++;
             }
-            m = (float) Math.pow(10, power);
+            m = (float) Math.pow(10, power - 1);
         }
-        Float f1 = Float.intBitsToFloat(Float.floatToIntBits(f) - 1);
-        Float f2 = Float.intBitsToFloat(Float.floatToIntBits(f) + 1);
-        Float f3 = Float.intBitsToFloat(Float.floatToIntBits(f));
+        Float f1 = Float.intBitsToFloat(Float.floatToIntBits(fCopy) - 1);
+        Float f2 = Float.intBitsToFloat(Float.floatToIntBits(fCopy) + 1);
+        Float f3 = Float.intBitsToFloat(Float.floatToIntBits(fCopy));
         String s1 = f1.toString();
         String s2 = f2.toString();
         String s3 = f3.toString();

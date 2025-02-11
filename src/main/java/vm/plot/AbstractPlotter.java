@@ -339,7 +339,6 @@ public abstract class AbstractPlotter {
 
     private void setTicksForDateAxis(DateAxis xAxis) {
         xAxis.setDateFormatOverride(dateFormat);
-        xAxis.setVerticalTickLabels(false);
         xAxis.setTickMarkPosition(DateTickMarkPosition.START);
         xAxis.setTickUnit(new DateTickUnit(timeTickType, timeUnitInterval, dateFormat));
         xAxis.setVerticalTickLabels(verticalXLabels);

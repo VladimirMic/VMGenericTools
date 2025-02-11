@@ -229,7 +229,7 @@ public class HeatMapPlotter extends AbstractPlotter {
         if (minZ == maxZ) {
             maxZ += 1;
         }
-        LookupPaintScale paintScale = new LookupPaintScale(minZ, maxZ, Color.black);
+        LookupPaintScale paintScale = new LookupPaintScale(minZ, maxZ, Color.WHITE);
 
         NumberAxis zAxis = new NumberAxis(zAxisLabel);
         zAxis.setLowerBound(minZ);
