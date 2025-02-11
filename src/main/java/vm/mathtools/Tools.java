@@ -817,7 +817,7 @@ public class Tools {
         Float fCopy = f;
         Integer power = null;
         float m = 1;
-        if (f.toString().contains("E")) {
+        if (f.toString().contains("E") && !f.toString().contains("E-")) {
             power = 1;
             while (fCopy.toString().contains("E")) {
                 fCopy = (float) (f / Math.pow(10, power));

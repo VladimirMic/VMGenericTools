@@ -134,6 +134,9 @@ public abstract class AbstractPlotter {
         }
         if (step == null) {
             double diff = Math.abs(axis.getUpperBound() - axis.getLowerBound());
+            if (Double.isInfinite(diff)) {
+                Logger.getLogger(AbstractPlotter.class.getName()).log(Level.SEVERE, "Infinite diff on axis: {0}, {1}", new Object[]{axis.getUpperBound(), axis.getLowerBound()});
+            }
             float division = (float) (diff / axisImplicitTicksNumber);
             step = getStep(division);
             LOG.log(Level.INFO, "The step for the axis is set to {0}", step);
