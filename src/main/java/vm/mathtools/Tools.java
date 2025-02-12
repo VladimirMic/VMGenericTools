@@ -815,16 +815,16 @@ public class Tools {
             return f;
         }
         Float fCopy = f;
-        Integer power = null;
-        float m = 1;
-        if (f.toString().contains("E") && !f.toString().contains("E-")) {
-            power = 1;
-            while (fCopy.toString().contains("E")) {
-                fCopy = (float) (f / Math.pow(10, power));
-                power++;
-            }
-            m = (float) Math.pow(10, power - 1);
-        }
+//        Integer power = null;
+//        float m = 1;
+//        if (f.toString().contains("E") && !f.toString().contains("E-")) {
+//            power = 1;
+//            while (fCopy.toString().contains("E")) {
+//                fCopy = (float) (f / Math.pow(10, power));
+//                power++;
+//            }
+//            m = (float) Math.pow(10, power - 1);
+//        }
         Float f1 = Float.intBitsToFloat(Float.floatToIntBits(fCopy) - 1);
         Float f2 = Float.intBitsToFloat(Float.floatToIntBits(fCopy) + 1);
         Float f3 = Float.intBitsToFloat(Float.floatToIntBits(fCopy));
@@ -852,10 +852,10 @@ public class Tools {
         if (l3 <= lMin && ((!e3 && !eMin) || (e3 && eMin))) {
             fMin = f3;
         }
-        if (power == null) {
-            return fMin;
-        }
-        return fMin * m;
+//        if (power == null) {
+//            return fMin;
+//        }
+        return fMin;
     }
 
 }

@@ -437,9 +437,9 @@ public class DataTypeConvertor {
         float ret = Float.parseFloat(s);
         if (s.contains("E")) {
             String check = Float.toString(ret);
-            if (check.length() != s.length()) {
+            if (check.length() > s.length()) {
                 try {
-                    throw new RuntimeException("Consider restarting computer. Wrong memory state does not allow precise float rounding. This has no real impact on the results, but number formatting in outputs (and figures) can be damaged.");
+                    throw new RuntimeException("Wrong memory state does not allow precise float rounding. This has no real impact on the results, but number formatting in outputs (and figures) can be damaged. Returning " + ret + " instead of " + s);
                 } catch (RuntimeException ex) {
                     Logger.getLogger(DataTypeConvertor.class.getName()).log(Level.SEVERE, null, ex);
                 }
