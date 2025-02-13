@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.PaintScaleLegend;
 import org.jfree.chart.ui.GradientPaintTransformType;
 import org.jfree.chart.ui.RectangleEdge;
+import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.chart.ui.StandardGradientPaintTransformer;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
@@ -104,9 +106,10 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         this.showPointLabels = showPointLabels;
     }
 
-    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf) {
+    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf, String coloursAxisNameOrNull) {
         seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
         nfs.put(seriesIdx, nf);
+        coloursLabel = coloursAxisNameOrNull;
     }
 
     @Override
@@ -315,12 +318,14 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                     maxZ = Math.log10(maxZ);
                     zAxis.setNumberFormatOverride(new LogScaleZAxisFormatter());
                 }
+                zAxis.setLowerMargin(0);
+                zAxis.setUpperMargin(0);
                 zAxis.setLowerBound(minZ);
                 zAxis.setUpperBound(maxZ);
                 PaintScaleLegend psl = new PaintScaleLegend(paintScale, zAxis);
                 psl.setPosition(RectangleEdge.RIGHT);
                 psl.setAxisLocation(AxisLocation.TOP_OR_RIGHT);
-                psl.setMargin(50.0, 20.0, 80.0, 0.0);
+                psl.setMargin(25.0, 20.0, 25.0, 0.0);
                 double debug = setAxisUnits(null, psl.getAxis(), StandardColours.RAINBOW_COLOURS.length - 2, false); // todo - integers?
                 chart.addSubtitle(psl);
             }

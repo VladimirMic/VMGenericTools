@@ -269,14 +269,21 @@ public class MyBarRenderer extends XYBarRenderer implements ColourfulRendererInt
         }
         XYDataset dataset = getPlot().getDataset();
         double x = dataset.getXValue(seriesIdx, pointIdx);
-        Float colourValue = xValueToColourValue.get((float) x);
-        if (logarithmic && colourValue != 0) {
-            colourValue = (float) Math.log(colourValue);
+        Float colourValue1 = xValueToColourValue.get((float) x);
+        if (logarithmic && x != 0) {
+            x = Math.log10(x);
         }
-        if (colourValue == null) {
-            String blah = "";
+        Float colourValue2 = xValueToColourValue.get((float) x);
+        if (colourValue2 == null && colourValue1 != null) {
+            if (logarithmic && (scale.getLowerBound() > colourValue1 || scale.getUpperBound() < colourValue1)) {
+                colourValue1 = (float) Math.log10(colourValue1);
+            }
+            return scale.getPaint(colourValue1);
         }
-        return scale.getPaint(colourValue);
+        if (colourValue2 != null) {
+            return scale.getPaint(colourValue2);
+        }
+        return scale.getDefaultPaint();
     }
 
     @Override

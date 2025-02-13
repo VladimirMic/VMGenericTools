@@ -51,11 +51,11 @@ public class BarPlotter extends LinesOrPointsPlotter {
     }
 
     @Override
-    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf) {
+    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf, String coloursAxisNameOrNull) {
         seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
         nfs.put(seriesIdx, nf);
+        coloursLabel = coloursAxisNameOrNull;
     }
-    
 
     public JFreeChart createHistogramPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, SortedMap<Float, Float> dataPoints) {
         if (traceColour == null) {
