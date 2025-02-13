@@ -31,6 +31,7 @@ import org.jfree.chart.axis.DateTickMarkPosition;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.DateTickUnitType;
 import org.jfree.chart.axis.LogAxis;
+import org.jfree.chart.axis.LogTick;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.TickUnits;
@@ -138,7 +139,7 @@ public abstract class AbstractPlotter {
                 Logger.getLogger(AbstractPlotter.class.getName()).log(Level.SEVERE, "Infinite diff on axis: {0}, {1}", new Object[]{axis.getUpperBound(), axis.getLowerBound()});
             }
             float division = (float) (diff / axisImplicitTicksNumber);
-            step = getStep(division);
+            step = Tools.getNiceStepForAxis(division);
             LOG.log(Level.INFO, "The step for the axis is set to {0}", step);
         }
         if (forceIntegerStep) {
@@ -159,32 +160,6 @@ public abstract class AbstractPlotter {
         return step;
     }
 
-    private double getStep(float division) {
-        if (Float.isInfinite(division)) {
-            return 1;
-        }
-        int m = 0;
-        int d = 0;
-        while (division > 1) {
-            division /= 10;
-            d++;
-        }
-        while (division < 1) {
-            division *= 10;
-            m++;
-        }
-        int integer = (int) (division + 1);
-        double iDouble = integer;
-        double power = Math.pow(10, d - m);
-        double ret;
-        if (power < 1) { // numeric stupid precision - java is making errors without that
-            power = Math.pow(10, m - d);
-            ret = iDouble / power;
-        } else {
-            ret = iDouble * power;
-        }
-        return ret;
-    }
 
     private int getMaxTickLabelLength(double lb, double ubShown, Double xStep, NumberFormat nf) {
         double ubShownCopy = ubShown;

@@ -25,15 +25,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.LogAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.LookupPaintScale;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.title.PaintScaleLegend;
 import org.jfree.chart.ui.GradientPaintTransformType;
+import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.StandardGradientPaintTransformer;
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import vm.colour.StandardColours;
@@ -48,6 +53,8 @@ import vm.plot.impl.auxiliary.MyBarPainter;
 import vm.plot.impl.auxiliary.MyBarRenderer;
 import vm.plot.impl.auxiliary.MyStandardXYItemLabelGenerator;
 import vm.plot.impl.auxiliary.MyXYLineAndShapeColourfulRenderer;
+import vm.plot.impl.auxiliary.ColourfulRendererInterface;
+import vm.plot.impl.auxiliary.LogScaleZAxisFormatter;
 
 /**
  *
@@ -261,21 +268,54 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                 chart.removeLegend();
             }
         }
-
         // set traces strokes
         XYItemRenderer renderer = plot.getRenderer();
         XYLineAndShapeRenderer lineAndShapeRenderer = null;
         XYBarRenderer barRenderer = null;
-        if (renderer instanceof XYLineAndShapeRenderer) {
+        if (renderer instanceof XYLineAndShapeRenderer && colouredLabelledPointsOrBars) {
+            checkPointLabelsForColours(traces);
             lineAndShapeRenderer = new MyXYLineAndShapeColourfulRenderer(seriesToXToLabels, logarithmicScaleOfColours);
             plot.setRenderer(lineAndShapeRenderer);
             renderer = lineAndShapeRenderer;
         }
-        if (renderer instanceof XYBarRenderer) {
+        if (renderer instanceof XYBarRenderer && colouredLabelledPointsOrBars) {
+            checkPointLabelsForColours(traces);
             barRenderer = new MyBarRenderer(seriesToXToLabels, logarithmicScaleOfColours);
             plot.setRenderer(barRenderer);
             renderer = barRenderer;
         }
+
+        // legend of colours
+        if (colouredLabelledPointsOrBars) {
+            ColourfulRendererInterface cRend = (ColourfulRendererInterface) renderer;
+            int numberOfColourScales = cRend.getNumberOfColourScales();
+            for (int i = 0; i < numberOfColourScales; i++) {
+                Map<Float, Float> labels = seriesToXToLabels.get(i);
+                TreeSet<Float> colourValues = new TreeSet<>(labels.values());
+                LookupPaintScale paintScale = cRend.getColourScale(i);
+                NumberAxis zAxis = logarithmicScaleOfColours ? new NumberAxis("Colour scale") : new NumberAxis("Colour scale");
+                if (logarithmicScaleOfColours && colourValues.contains(0f)) {
+                    colourValues.remove(0f);
+                }
+                double minZ = colourValues.first();
+                double maxZ = colourValues.last();
+
+                if (logarithmicScaleOfColours) {
+                    minZ = Math.log10(minZ);
+                    maxZ = Math.log10(maxZ);
+                }
+                zAxis.setLowerBound(minZ);
+                zAxis.setUpperBound(maxZ);
+                zAxis.setNumberFormatOverride(new LogScaleZAxisFormatter());
+                PaintScaleLegend psl = new PaintScaleLegend(paintScale, zAxis);
+                psl.setPosition(RectangleEdge.RIGHT);
+                psl.setAxisLocation(AxisLocation.TOP_OR_RIGHT);
+                psl.setMargin(50.0, 20.0, 80.0, 0.0);
+                double stepDouble = setAxisUnits(null, psl.getAxis(), StandardColours.RAINBOW_COLOURS.length - 2, false); // todo - integers?
+                chart.addSubtitle(psl);
+            }
+        }
+
         AffineTransform resize = new AffineTransform();
         resize.scale(1000, 1000);
         if (barRenderer != null) {
@@ -405,6 +445,22 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         } catch (IOException ex) {
             Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void checkPointLabelsForColours(XYSeries[] traces) {
+        if (seriesToXToLabels.isEmpty()) {
+            for (int i = 0; i < traces.length; i++) {
+                XYSeries trace = traces[i];
+                TreeMap<Float, Float> map = new TreeMap<>();
+                int itemCount = trace.getItemCount();
+                for (int j = 0; j < itemCount; j++) {
+                    XYDataItem dataItem = trace.getDataItem(j);
+                    map.put(dataItem.getX().floatValue(), dataItem.getY().floatValue());
+                }
+                seriesToXToLabels.put(i, map);
+            }
+        }
+
     }
 
 }

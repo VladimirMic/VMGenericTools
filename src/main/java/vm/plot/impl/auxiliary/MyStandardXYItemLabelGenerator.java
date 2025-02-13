@@ -23,6 +23,9 @@ public class MyStandardXYItemLabelGenerator<T> extends StandardXYItemLabelGenera
 
     @Override
     public String generateLabel(XYDataset dataset, int series, int item) {
+        if (nf == null) {
+            return null;
+        }
         double x = dataset.getXValue(series, item);
         Object v = xValueToLabel.get((float) x);
         if (v == null) {

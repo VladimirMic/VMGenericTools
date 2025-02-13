@@ -858,4 +858,32 @@ public class Tools {
         return fMin;
     }
 
+    public static double getNiceStepForAxis(float implicitStep) {
+        if (Float.isInfinite(implicitStep)) {
+            return 1;
+        }
+        int m = 0;
+        int d = 0;
+        while (implicitStep > 1) {
+            implicitStep /= 10;
+            d++;
+        }
+        while (implicitStep < 1) {
+            implicitStep *= 10;
+            m++;
+        }
+        int integer = (int) (implicitStep + 1);
+        double iDouble = integer;
+        double power = Math.pow(10, d - m);
+        double ret;
+        if (power < 1) {
+            // numeric stupid precision - java is making errors without that
+            power = Math.pow(10, m - d);
+            ret = iDouble / power;
+        } else {
+            ret = iDouble * power;
+        }
+        return ret;
+    }
+
 }

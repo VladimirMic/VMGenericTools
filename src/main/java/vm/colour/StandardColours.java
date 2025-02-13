@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jfree.chart.renderer.LookupPaintScale;
 import vm.datatools.Tools;
 
@@ -129,8 +131,8 @@ public class StandardColours {
                 if (set.isEmpty()) {
                     return trivialPaintScale();
                 }
-                minValue = (float) Math.log(set.first());
-                maxValue = (float) Math.log(set.last());
+                minValue = (float) Math.log10(set.first());
+                maxValue = (float) Math.log10(set.last());
             } else {
                 minValue = set.first();
                 maxValue = set.last();
@@ -143,7 +145,10 @@ public class StandardColours {
                 if (minValue < maxValue) {
                     paintScale = new LookupPaintScale(minValue, maxValue, Color.black);
                     float interval = maxValue - minValue;
-                    float step = continuous ? interval / (colours.length - 2) : interval / colours.length;
+                    double step = continuous ? interval / (colours.length - 2) : interval / colours.length;
+                    step = vm.mathtools.Tools.getNiceStepForAxis((float) step);
+                    Logger.getLogger(StandardColours.class.getName()).log(Level.INFO, "Paint scale step defined to be: {0}", step);
+                    minValue = (float) (vm.mathtools.Tools.round(minValue, (float) step, false) - step);
                     int i = 0;
                     while (minValue <= maxValue) {
                         paintScale.add(minValue, colours[i]);

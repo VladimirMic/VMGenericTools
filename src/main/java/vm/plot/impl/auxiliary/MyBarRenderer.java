@@ -36,7 +36,7 @@ import vm.colour.StandardColours;
  * <br><br>
  * <img src="doc-files/XYBarRendererSample.png" alt="XYBarRendererSample.png">
  */
-public class MyBarRenderer extends XYBarRenderer {
+public class MyBarRenderer extends XYBarRenderer implements ColourfulRendererInterface {
 
     private final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels;
     private final TreeMap<Integer, LookupPaintScale> rainboxPaintScale;
@@ -134,7 +134,7 @@ public class MyBarRenderer extends XYBarRenderer {
         double translatedBarWidth = Double.MAX_VALUE;
         if (xValues.size() <= 1) {
             barWidthReal = 1;
-            translatedBarWidth = 1/8f;
+            translatedBarWidth = 1 / 8f;
         } else {
             for (int i = 1; i < xValues.size(); i++) {
                 barWidthReal = Math.min(barWidthReal, xValues.get(i) - xValues.get(i - 1));
@@ -280,6 +280,16 @@ public class MyBarRenderer extends XYBarRenderer {
             String blah = "";
         }
         return scale.getPaint(colourValue);
+    }
+
+    @Override
+    public int getNumberOfColourScales() {
+        return rainboxPaintScale.size();
+    }
+
+    @Override
+    public LookupPaintScale getColourScale(int seriesIndex) {
+        return rainboxPaintScale.get(seriesIndex);
     }
 
 }
