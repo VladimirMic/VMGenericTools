@@ -4,9 +4,7 @@
  */
 package vm.plot.impl.auxiliary;
 
-import java.text.AttributedCharacterIterator;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.FieldPosition;
 import vm.datatools.DataTypeConvertor;
 

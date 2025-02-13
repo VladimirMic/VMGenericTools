@@ -41,18 +41,12 @@ public class MyBarRenderer extends XYBarRenderer implements ColourfulRendererInt
     private final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels;
     private final TreeMap<Integer, LookupPaintScale> rainboxPaintScale;
     private final boolean logarithmic;
+    private final boolean colouredLabelledPointsOrBars;
 
-    public MyBarRenderer() {
-        this(null);
-    }
-
-    public MyBarRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels) {
-        this(seriesToXToLabels, false);
-    }
-
-    public MyBarRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels, boolean logarithmic) {
+    public MyBarRenderer(boolean colouredLabelledPointsOrBars, TreeMap<Integer, Map<Float, Float>> seriesToXToLabels, boolean logarithmic) {
+        this.colouredLabelledPointsOrBars = colouredLabelledPointsOrBars;
         this.logarithmic = logarithmic;
-        this.seriesToXToLabels = seriesToXToLabels;
+        this.seriesToXToLabels = new TreeMap<>(seriesToXToLabels);
         rainboxPaintScale = new TreeMap<>();
         if (seriesToXToLabels != null) {
             Set<Integer> series = seriesToXToLabels.keySet();
@@ -262,6 +256,9 @@ public class MyBarRenderer extends XYBarRenderer implements ColourfulRendererInt
 
     @Override
     public Paint getItemPaint(int seriesIdx, int pointIdx) {
+        if (!colouredLabelledPointsOrBars) {
+            return super.getItemPaint(seriesIdx, pointIdx);
+        }
         if (seriesToXToLabels.isEmpty()) {
             return StandardColours.BOX_BLACK;
         }

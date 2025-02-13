@@ -26,10 +26,14 @@ import vm.mathtools.Tools;
  *
  * @author au734419
  */
-public class BarsPlotter extends LinesOrPointsPlotter {
+public class BarPlotter extends LinesOrPointsPlotter {
 
-    public BarsPlotter() {
-        super(false);
+    public BarPlotter() {
+        this(false);
+    }
+
+    public BarPlotter(boolean coloursByValues) {
+        super(false, coloursByValues);
     }
 
     @Override
@@ -47,10 +51,9 @@ public class BarsPlotter extends LinesOrPointsPlotter {
     }
 
     @Override
-    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf, boolean colourfulLabels) {
+    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf) {
         seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
         nfs.put(seriesIdx, nf);
-        colouredLabelledPointsOrBars = colourfulLabels;
     }
     
 
@@ -70,7 +73,7 @@ public class BarsPlotter extends LinesOrPointsPlotter {
 
     public static SortedMap<Float, Float> createHistogramOfValuesWithPlot(List<Float> values, boolean absoluteValues, boolean logYScale, String xAxisLabel, String filePath, boolean storeAlsoPNG, boolean printLogMinMax) {
         String suf = logYScale ? "_log" : "";
-        BarsPlotter plotter = new BarsPlotter();
+        BarPlotter plotter = new BarPlotter();
         plotter.setLogY(logYScale);
         plotter.setIncludeZeroForXAxis(false);
         PrintStream err = System.err;
@@ -83,7 +86,7 @@ public class BarsPlotter extends LinesOrPointsPlotter {
                 System.setErr(new PrintStream(new FileOutputStream(new File(folder, "log.csv"), true)));
                 System.err.print(xAxisLabel + ";");
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(BarsPlotter.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BarPlotter.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         SortedMap<Float, Float> histogram = Tools.createHistogramOfValues(values, absoluteValues, printLogMinMax);

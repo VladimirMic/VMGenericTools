@@ -30,7 +30,7 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer im
     }
 
     public MyXYLineAndShapeColourfulRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels, boolean logarithmicScale) {
-        this.seriesToXToLabels = seriesToXToLabels;
+        this.seriesToXToLabels = new TreeMap<>(seriesToXToLabels);
         rainboxPaintScale = new TreeMap<>();
         if (seriesToXToLabels != null) {
             Set<Integer> series = seriesToXToLabels.keySet();
