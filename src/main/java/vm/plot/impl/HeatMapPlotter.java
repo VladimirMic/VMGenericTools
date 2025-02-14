@@ -229,42 +229,48 @@ public class HeatMapPlotter extends AbstractPlotter {
         if (minZ == maxZ) {
             maxZ += 1;
         }
-        LookupPaintScale paintScale = new LookupPaintScale(minZ, maxZ, Color.WHITE);
 
+        LookupPaintScale paintScale = StandardColours.createPaintScale((float) minZ, (float) maxZ, !contrastiveColours, Color.WHITE);
+
+//        LookupPaintScale paintScale = new LookupPaintScale(minZ, maxZ, Color.WHITE);
         NumberAxis zAxis = new NumberAxis(zAxisLabel);
+        zAxis.setLowerMargin(0);
+        zAxis.setUpperMargin(0);
         zAxis.setLowerBound(minZ);
         zAxis.setUpperBound(maxZ);
         PaintScaleLegend psl = new PaintScaleLegend(paintScale, zAxis);
         psl.setPosition(RectangleEdge.RIGHT);
         psl.setAxisLocation(AxisLocation.TOP_OR_RIGHT);
-        psl.setMargin(50.0, 20.0, 80.0, 0.0);
+        int count = contrastiveColours ? StandardColours.COLOURS.length : StandardColours.RAINBOW_COLOURS.length - 2;
+        double debug = setAxisUnits(null, psl.getAxis(), count, false); // todo - integers?
 
-        // step for z axis
-        double stepDouble = setAxisUnits(givenZStep, (NumberAxis) psl.getAxis(), zColoursCount, false); // todo - integers?
-        float zStep = (float) stepDouble;
-        minZ = vm.mathtools.Tools.round((float) minZ, zStep, true) - zStep;
-        if (Double.MAX_VALUE == minZ) {
-            paintScale.add(0, StandardColours.COLOURS[0]);
-            paintScale.add(1, StandardColours.LIGHT_COLOURS[0]);
-        } else {
-            if (contrastiveColours) {
-                for (int i = 0; minZ <= maxZ; i++) {
-                    int idx = i % StandardColours.COLOURS.length;
-                    minZ += zStep;
-                    paintScale.add(minZ, StandardColours.COLOURS[idx]);
-                    minZ += zStep;
-                    paintScale.add(minZ, StandardColours.LIGHT_COLOURS[idx]);
-                }
-            } else {
-                int i = 0;
-                while (minZ <= maxZ) {
-                    minZ += zStep;
-                    paintScale.add(minZ, StandardColours.RAINBOW_COLOURS[i]);
-                    i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
-                }
-            }
-        }
-
+//        psl.setMargin(50.0, 20.0, 80.0, 0.0);
+//
+//        // step for z axis
+//        double stepDouble = setAxisUnits(givenZStep, (NumberAxis) psl.getAxis(), zColoursCount, false); // todo - integers?
+//        float zStep = (float) stepDouble;
+//        minZ = vm.mathtools.Tools.round((float) minZ, zStep, true) - zStep;
+//        if (Double.MAX_VALUE == minZ) {
+//            paintScale.add(0, StandardColours.COLOURS[0]);
+////            paintScale.add(1, StandardColours.LIGHT_COLOURS[0]);
+//        } else {
+//            if (contrastiveColours) {
+//                for (int i = 0; minZ <= maxZ; i++) {
+//                    int idx = i % StandardColours.COLOURS.length;
+//                    minZ += zStep;
+//                    paintScale.add(minZ, StandardColours.COLOURS[idx]);
+//                    minZ += zStep;
+//                    paintScale.add(minZ, StandardColours.LIGHT_COLOURS[idx]);
+//                }
+//            } else {
+//                int i = 0;
+//                while (minZ <= maxZ) {
+//                    minZ += zStep;
+//                    paintScale.add(minZ, StandardColours.RAINBOW_COLOURS[i]);
+//                    i = (i + 1) % StandardColours.RAINBOW_COLOURS.length;
+//                }
+//            }
+//        }
         // finally a renderer and a plot       
         XYPlot plot = new XYPlot(dataset, xAxis, yAxis, new XYBlockRenderer());
         XYBlockRenderer renderer = ((XYBlockRenderer) plot.getRenderer());
@@ -288,11 +294,11 @@ public class HeatMapPlotter extends AbstractPlotter {
         yAxis.setLowerBound(yAxis.getLowerBound() - yStep / 2);
         yAxis.setUpperBound(yAxis.getUpperBound() + yStep / 2);
         // z axis
-        tickUnitNumber = new NumberTickUnit(zStep);
-        tickUnits = new TickUnits();
-        tickUnits.add(tickUnitNumber);
-        zAxis.setStandardTickUnits(tickUnits);
-        zAxis.setTickUnit(tickUnitNumber);
+//        tickUnitNumber = new NumberTickUnit(zStep);
+//        tickUnits = new TickUnits();
+//        tickUnits.add(tickUnitNumber);
+//        zAxis.setStandardTickUnits(tickUnits);
+//        zAxis.setTickUnit(tickUnitNumber);
         return chart;
     }
 
@@ -390,16 +396,15 @@ public class HeatMapPlotter extends AbstractPlotter {
         return chart;
     }
 
-    @Override
-    public void storePlotPDF(String path, JFreeChart plot, int width, int height) {
-        try {
-            super.storePlotPDF(path, plot, IMPLICIT_WIDTH_FOR_HEAT_MAP_PLOT, IMPLICIT_HEIGHT_FOR_HEAT_MAP_PLOT);
-        } catch (Throwable e) {// ignore - just at attempt.
-            Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.SEVERE, "For some reason, the library cannot store heatmaps in a vector format. Storing png instead.");
-            storePlotPNG(path, plot);
-        }
-    }
-
+//    @Override
+//    public void storePlotPDF(String path, JFreeChart plot, int width, int height) {
+//        try {
+//            super.storePlotPDF(path, plot, IMPLICIT_WIDTH_FOR_HEAT_MAP_PLOT, IMPLICIT_HEIGHT_FOR_HEAT_MAP_PLOT);
+//        } catch (Throwable e) {// ignore - just at attempt.
+//            Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.SEVERE, "For some reason, the library cannot store heatmaps in a vector format. Storing png instead.");
+//            storePlotPNG(path, plot);
+//        }
+//    }
     @Override
     public void storePlotPNG(String path, JFreeChart plot) {
         storePlotPNG(path, plot, IMPLICIT_WIDTH_FOR_HEAT_MAP_PLOT, IMPLICIT_HEIGHT_FOR_HEAT_MAP_PLOT);

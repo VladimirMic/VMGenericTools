@@ -123,7 +123,6 @@ public class StandardColours {
     public static LookupPaintScale createPaintScale(Collection<Float> coll, boolean continuous, boolean logarithmic) {
         float minValue;
         float maxValue;
-        Color[] colours = continuous ? StandardColours.RAINBOW_COLOURS : StandardColours.COLOURS;
         if (coll != null && !coll.isEmpty()) {
             TreeSet<Float> set = new TreeSet<>(coll);
             if (logarithmic) {
@@ -137,32 +136,37 @@ public class StandardColours {
                 minValue = set.first();
                 maxValue = set.last();
             }
-            float[] key = new float[]{minValue, maxValue};
-            LookupPaintScale paintScale;
-            if (cache.containsKey(key)) {
-                paintScale = cache.get(key);
-            } else {
-                if (minValue < maxValue) {
-                    paintScale = new LookupPaintScale(minValue, maxValue, Color.black);
-                    float interval = maxValue - minValue;
-                    double step = continuous ? interval / (colours.length - 2) : interval / colours.length;
-                    step = vm.mathtools.Tools.getNiceStepForAxis((float) step);
-                    Logger.getLogger(StandardColours.class.getName()).log(Level.INFO, "Paint scale step defined to be: {0}", step);
-                    minValue = (float) (vm.mathtools.Tools.round(minValue, (float) step, false) - step);
-                    int i = 0;
-                    while (minValue <= maxValue) {
-                        paintScale.add(minValue, colours[i]);
-                        i = (i + 1) % colours.length;
-                        minValue += step;
-                    }
-                } else {
-                    paintScale = new LookupPaintScale(0, 1000, colours[colours.length - 1]);
-                }
-                cache.put(key, paintScale);
-            }
-            return paintScale;
+            return createPaintScale(minValue, maxValue, continuous, Color.black);
         }
         return trivialPaintScale();
+    }
+
+    public static LookupPaintScale createPaintScale(float minValue, float maxValue, boolean continuous, Color implicit) {
+        float[] key = new float[]{minValue, maxValue};
+        LookupPaintScale paintScale;
+        Color[] colours = continuous ? StandardColours.RAINBOW_COLOURS : StandardColours.COLOURS;
+        if (cache.containsKey(key)) {
+            paintScale = cache.get(key);
+        } else {
+            if (minValue < maxValue) {
+                paintScale = new LookupPaintScale(minValue, maxValue, implicit);
+                float interval = maxValue - minValue;
+                double step = continuous ? interval / (colours.length - 2) : interval / colours.length;
+                step = vm.mathtools.Tools.getNiceStepForAxis((float) step);
+                Logger.getLogger(StandardColours.class.getName()).log(Level.INFO, "Paint scale step defined to be: {0}", step);
+                minValue = (float) (vm.mathtools.Tools.round(minValue, (float) step, false) - step);
+                int i = 0;
+                while (minValue <= maxValue) {
+                    paintScale.add(minValue, colours[i]);
+                    i = (i + 1) % colours.length;
+                    minValue += step;
+                }
+            } else {
+                paintScale = new LookupPaintScale(0, 1000, colours[colours.length - 1]);
+            }
+            cache.put(key, paintScale);
+        }
+        return paintScale;
     }
 
     private static LookupPaintScale trivialPaintScale() {

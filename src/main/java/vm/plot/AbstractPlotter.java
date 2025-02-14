@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,6 +42,7 @@ import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.title.PaintScaleLegend;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
@@ -160,7 +162,6 @@ public abstract class AbstractPlotter {
         return step;
     }
 
-
     private int getMaxTickLabelLength(double lb, double ubShown, Double xStep, NumberFormat nf) {
         double ubShownCopy = ubShown;
         int ret = 0;
@@ -185,7 +186,8 @@ public abstract class AbstractPlotter {
         storePlotPDF(path, plot, IMPLICIT_WIDTH, IMPLICIT_HEIGHT);
     }
 
-    public void storePlotPDF(String path, JFreeChart plot, int width, int height) {
+    public final void storePlotPDF(String path, JFreeChart plot, int width, int height) {
+        setMarginsForPaintScaleLegent(plot, height);
         if (!path.endsWith(".svg")) {
             path += ".svg";
         }
@@ -229,7 +231,8 @@ public abstract class AbstractPlotter {
         storePlotPDF(file.getAbsolutePath(), plot, width, height);
     }
 
-    public void storePlotPNG(String path, JFreeChart plot, int width, int height) {
+    public final void storePlotPNG(String path, JFreeChart plot, int width, int height) {
+        setMarginsForPaintScaleLegent(plot, height);
         if (!path.endsWith(".png")) {
             path += ".png";
         }
@@ -555,6 +558,19 @@ public abstract class AbstractPlotter {
             minMaxY[1] *= 0.9;
         } else {
             minMaxY[1] *= 1.1;
+        }
+    }
+
+    private void setMarginsForPaintScaleLegent(JFreeChart plot, int height) {
+        List subtitles = plot.getSubtitles();
+        if (subtitles != null && !subtitles.isEmpty()) {
+            double margin = (0.1 * height) / 2;
+            for (Object subtitle : subtitles) {
+                if (subtitle instanceof PaintScaleLegend) {
+                    PaintScaleLegend psl = (PaintScaleLegend) subtitle;
+                    psl.setMargin(margin, 0, margin, 0);
+                }
+            }
         }
     }
 }
