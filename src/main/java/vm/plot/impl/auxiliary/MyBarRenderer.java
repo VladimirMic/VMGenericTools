@@ -274,8 +274,8 @@ public class MyBarRenderer extends XYBarRenderer implements ColourfulRendererInt
             x = Math.log10(x);
         }
         Float colourValue2 = xValueToColourValue.get((float) x);
-        if (colourValue2 == null && colourValue1 != null) {
-            if (logarithmic && (scale.getLowerBound() > colourValue1 || scale.getUpperBound() < colourValue1)) {
+        if ((colourValue2 == null && colourValue1 != null) || (x == 0)) {
+            if (logarithmic && (scale.getLowerBound() > colourValue1 || scale.getUpperBound() < colourValue1 || x == 0)) {
                 colourValue1 = (float) Math.log10(colourValue1);
             }
             return scale.getPaint(colourValue1);

@@ -287,14 +287,10 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             renderer = lineAndShapeRenderer;
         }
         if (renderer instanceof XYBarRenderer) {
-            if (colouredLabelledPointsOrBars) {
                 deleteSeriesToXToLabels = checkPointLabelsForColours(traces, yAxisLabel);
                 barRenderer = new MyBarRenderer(colouredLabelledPointsOrBars, seriesToXToLabels, logarithmicScaleOfColours);
                 plot.setRenderer(barRenderer);
                 renderer = barRenderer;
-            } else {
-                barRenderer = (XYBarRenderer) renderer;
-            }
         }
 
         // legend of colours
