@@ -32,7 +32,6 @@ import org.jfree.chart.axis.DateTickMarkPosition;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.DateTickUnitType;
 import org.jfree.chart.axis.LogAxis;
-import org.jfree.chart.axis.LogTick;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.TickUnits;
@@ -564,7 +563,7 @@ public abstract class AbstractPlotter {
     private void setMarginsForPaintScaleLegent(JFreeChart plot, int height) {
         List subtitles = plot.getSubtitles();
         if (subtitles != null && !subtitles.isEmpty()) {
-            double margin = (0.1 * height) / 2;
+            double margin = (0.05 * height) / 2;
             for (Object subtitle : subtitles) {
                 if (subtitle instanceof PaintScaleLegend) {
                     PaintScaleLegend psl = (PaintScaleLegend) subtitle;
