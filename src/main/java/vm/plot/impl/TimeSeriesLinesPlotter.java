@@ -5,10 +5,14 @@
 package vm.plot.impl;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateTickUnitType;
 import vm.colour.StandardColours.COLOUR_NAME;
+import vm.datatools.DataTypeConvertor;
 
 /**
  *
@@ -27,4 +31,14 @@ public class TimeSeriesLinesPlotter extends LinesOrPointsPlotter {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, tracesXValues, tracesYValues);
     }
 
+    public void setLabels(int seriesIdx, Map<Date, Float> mapOfXValuesToLabels, String coloursAxisNameOrNull) {
+        Map<Float, Float> map = new TreeMap<>();
+        for (Map.Entry<? extends Object, Float> entry : mapOfXValuesToLabels.entrySet()) {
+            Date date = (Date) entry.getKey();
+            float dateToFloat = DataTypeConvertor.dateToFloat(date);
+            map.put(dateToFloat, entry.getValue());
+        }
+        seriesToXToLabels.put(seriesIdx, map);
+        coloursLabel = coloursAxisNameOrNull;
+    }
 }

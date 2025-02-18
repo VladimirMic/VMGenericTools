@@ -8,9 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,12 +48,12 @@ public class BarPlotter extends LinesOrPointsPlotter {
         return setAppearence(chart, traces, tracesColours, xAxisLabel, yAxisLabel);
     }
 
-    @Override
-    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf, String coloursAxisNameOrNull) {
-        seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
-        nfs.put(seriesIdx, nf);
-        coloursLabel = coloursAxisNameOrNull;
-    }
+//    @Override
+//    public void setLabels(int seriesIdx, Map<Object, Float> mapOfXValuesToLabels, NumberFormat nf, String coloursAxisNameOrNull) {
+//        seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
+//        nfs.put(seriesIdx, nf);
+//        coloursLabel = coloursAxisNameOrNull;
+//    }
 
     public JFreeChart createHistogramPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, SortedMap<Float, Float> dataPoints) {
         if (traceColour == null) {

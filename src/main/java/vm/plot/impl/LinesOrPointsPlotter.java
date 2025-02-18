@@ -61,7 +61,6 @@ import vm.plot.impl.auxiliary.LogScaleZAxisFormatter;
  * @author au734419
  */
 public class LinesOrPointsPlotter extends AbstractPlotter {
-//plot.mapDatasetToRangeAxis(1, 1)
 
     private final boolean linesVisible;
     private boolean isTimeSeries;
@@ -142,12 +141,10 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             tracesXValues = (float[][]) data[2];
             isTimeSeries = false;
         } else if (data[2] instanceof Date[][]) {
-            long[][] tmp = DataTypeConvertor.datesArrayToLongs((Date[][]) data[2]);
-            tracesXValues = DataTypeConvertor.longsArrayToFloats(tmp);
+            tracesXValues = DataTypeConvertor.datesArrayToFloats((Date[][]) data[2]);
             isTimeSeries = true;
         } else if (data[2] instanceof Date[]) {
-            long[] tmp = DataTypeConvertor.datesArrayToLongs((Date[]) data[2]);
-            float[] tmp2 = DataTypeConvertor.longsArrayToFloats(tmp);
+            float[] tmp2 = DataTypeConvertor.datesArrayToFloats((Date[]) data[2]);
             tracesXValues = DataTypeConvertor.objectToSingularArray(tmp2);
             isTimeSeries = true;
         } else { // assumes float[]
@@ -285,10 +282,10 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             renderer = lineAndShapeRenderer;
         }
         if (renderer instanceof XYBarRenderer) {
-                deleteSeriesToXToLabels = checkPointLabelsForColours(traces, yAxisLabel);
-                barRenderer = new MyBarRenderer(colouredLabelledPointsOrBars, seriesToXToLabels, logarithmicScaleOfColours);
-                plot.setRenderer(barRenderer);
-                renderer = barRenderer;
+            deleteSeriesToXToLabels = checkPointLabelsForColours(traces, yAxisLabel);
+            barRenderer = new MyBarRenderer(colouredLabelledPointsOrBars, seriesToXToLabels, logarithmicScaleOfColours);
+            plot.setRenderer(barRenderer);
+            renderer = barRenderer;
         }
 
         // legend of colours
@@ -303,6 +300,9 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                 setLabelsOfAxis(zAxis);
                 if (logarithmicScaleOfColours && colourValues.contains(0f)) {
                     colourValues.remove(0f);
+                }
+                if (colourValues.isEmpty()) {
+                    continue;
                 }
                 double minZ = colourValues.first();
                 double maxZ = colourValues.last();
@@ -364,6 +364,14 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             seriesToXToLabels.clear();
         }
         return chart;
+    }
+
+    public boolean isColouredLabelledPointsOrBars() {
+        return colouredLabelledPointsOrBars;
+    }
+
+    public void setColouredLabelledPointsOrBars(boolean colouredLabelledPointsOrBars) {
+        this.colouredLabelledPointsOrBars = colouredLabelledPointsOrBars;
     }
 
     private void setColours(XYItemRenderer renderer, XYSeries[] traces, XYBarRenderer barRenderer, COLOUR_NAME[] tracesColours, int i) {

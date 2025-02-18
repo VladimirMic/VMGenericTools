@@ -465,12 +465,22 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static float dateToFloat(Date date) {
+        return date.getTime();
+    }
+
     public static long[][] datesArrayToLongs(Date[][] datesArray) {
         long[][] ret = new long[datesArray.length][];
         for (int rowID = 0; rowID < datesArray.length; rowID++) {
             Date[] row = datesArray[rowID];
             ret[rowID] = DataTypeConvertor.datesArrayToLongs(row);
         }
+        return ret;
+    }
+
+    public static float[][] datesArrayToFloats(Date[][] datesArray) {
+        long[][] tmp = DataTypeConvertor.datesArrayToLongs(datesArray);
+        float[][] ret = DataTypeConvertor.longsArrayToFloats(tmp);
         return ret;
     }
 
@@ -482,6 +492,12 @@ public class DataTypeConvertor {
             }
         }
         return ret;
+    }
+
+    public static float[] datesArrayToFloats(Date[] dates) {
+        long[] tmp = DataTypeConvertor.datesArrayToLongs(dates);
+        float[] tmp2 = DataTypeConvertor.longsArrayToFloats(tmp);
+        return tmp2;
     }
 
     public static <T> String arrayToString(T[] array) {
