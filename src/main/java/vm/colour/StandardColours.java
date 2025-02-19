@@ -125,6 +125,7 @@ public class StandardColours {
         float maxValue;
         if (coll != null && !coll.isEmpty()) {
             TreeSet<Float> set = new TreeSet<>(coll);
+            set.remove(Float.NaN);
             if (logarithmic) {
                 set.remove(0f);
                 if (set.isEmpty()) {

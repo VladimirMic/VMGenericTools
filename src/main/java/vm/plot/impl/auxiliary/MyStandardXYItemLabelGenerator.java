@@ -1,6 +1,7 @@
 package vm.plot.impl.auxiliary;
 
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Map;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.data.xy.XYDataset;
@@ -12,24 +13,23 @@ import org.jfree.data.xy.XYDataset;
  */
 public class MyStandardXYItemLabelGenerator<T> extends StandardXYItemLabelGenerator {
 
-    private final Map<Float, T> xValueToLabel;
+    private final List<T> xValueToLabel;
     private final NumberFormat nf;
 
-    public MyStandardXYItemLabelGenerator(Map<Float, T> xValueToLabel, NumberFormat nf) {
+    public MyStandardXYItemLabelGenerator(List<T> labels, NumberFormat nf) {
         super();
-        this.xValueToLabel = xValueToLabel;
+        this.xValueToLabel = labels;
         this.nf = nf;
     }
 
     @Override
     public String generateLabel(XYDataset dataset, int series, int item) {
-        if (nf == null) {
-            return null;
-        }
-        double x = dataset.getXValue(series, item);
-        Object v = xValueToLabel.get((float) x);
+        Object v = xValueToLabel.get(item);
         if (v == null) {
             return null;
+        }
+        if (nf == null) {
+            return v.toString();
         }
         return nf.format(v);
     }

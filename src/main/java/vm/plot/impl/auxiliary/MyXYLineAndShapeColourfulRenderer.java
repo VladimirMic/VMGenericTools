@@ -3,12 +3,11 @@ package vm.plot.impl.auxiliary;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import org.jfree.chart.renderer.LookupPaintScale;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.xy.XYDataset;
 import vm.colour.StandardColours;
 
 /**
@@ -17,7 +16,7 @@ import vm.colour.StandardColours;
  */
 public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer implements ColourfulRendererInterface {
 
-    private final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels;
+    private final TreeMap<Integer, List<Float>> pointsToLabels;
     private final TreeMap<Integer, LookupPaintScale> rainboxPaintScale;
     private final boolean logarithmic;
 
@@ -25,18 +24,18 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer im
         this(null);
     }
 
-    public MyXYLineAndShapeColourfulRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels) {
-        this(seriesToXToLabels, false);
+    public MyXYLineAndShapeColourfulRenderer(TreeMap<Integer, List<Float>> pointsToLabels) {
+        this(pointsToLabels, false);
     }
 
-    public MyXYLineAndShapeColourfulRenderer(TreeMap<Integer, Map<Float, Float>> seriesToXToLabels, boolean logarithmicScale) {
-        this.seriesToXToLabels = new TreeMap<>(seriesToXToLabels);
+    public MyXYLineAndShapeColourfulRenderer(TreeMap<Integer, List<Float>> pointsToLabels, boolean logarithmicScale) {
+        this.pointsToLabels = new TreeMap<>(pointsToLabels);
         rainboxPaintScale = new TreeMap<>();
-        if (seriesToXToLabels != null) {
-            Set<Integer> series = seriesToXToLabels.keySet();
+        if (pointsToLabels != null) {
+            Set<Integer> series = pointsToLabels.keySet();
             for (Integer s : series) {
-                Map<Float, Float> labels = seriesToXToLabels.get(s);
-                LookupPaintScale lookupPaintScale = StandardColours.createContinuousPaintScale(labels.values(), logarithmicScale);
+                List<Float> labels = pointsToLabels.get(s);
+                LookupPaintScale lookupPaintScale = StandardColours.createContinuousPaintScale(labels, logarithmicScale);
                 rainboxPaintScale.put(s, lookupPaintScale);
             }
         }
@@ -45,29 +44,20 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer im
 
     @Override
     public Paint getItemPaint(int seriesIdx, int pointIdx) {
-        if (seriesToXToLabels.isEmpty()) {
+        if (pointsToLabels.isEmpty()) {
             return super.getItemPaint(seriesIdx, pointIdx);
         }
-        Map<Float, Float> xValueToColourValue = seriesToXToLabels.get(seriesIdx);
+        List<Float> pointsToColourValue = pointsToLabels.get(seriesIdx);
         LookupPaintScale scale = rainboxPaintScale.get(seriesIdx);
-        if (xValueToColourValue == null || xValueToColourValue.isEmpty() || scale == null) {
+        if (pointsToColourValue == null || pointsToColourValue.isEmpty() || scale == null) {
             return StandardColours.BOX_BLACK;
         }
-        XYDataset dataset = getPlot().getDataset();
-        double x = dataset.getXValue(seriesIdx, pointIdx);
-        Float colourValue1 = xValueToColourValue.get((float) x);
-        if (logarithmic && x != 0) {
-            x = Math.log10(x);
-        }
-        Float colourValue2 = xValueToColourValue.get((float) x);
-        if ((colourValue2 == null && colourValue1 != null) || (x == 0)) {
-            if (logarithmic && (scale.getLowerBound() > colourValue1 || scale.getUpperBound() < colourValue1 || x == 0)) {
+        Float colourValue1 = pointsToColourValue.get(pointIdx);
+        if (colourValue1 != null && !Float.isNaN(colourValue1)) {
+            if (logarithmic && (scale.getLowerBound() > colourValue1 || scale.getUpperBound() < colourValue1)) {
                 colourValue1 = (float) Math.log10(colourValue1);
             }
             return scale.getPaint(colourValue1);
-        }
-        if (colourValue2 != null) {
-            return scale.getPaint(colourValue2);
         }
         return scale.getDefaultPaint();
     }

@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.text.NumberFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,13 +70,13 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     protected boolean showPointLabels;
     protected boolean logarithmicScaleOfColours;
 
-    protected final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels = new TreeMap<>();
+    protected final TreeMap<Integer, List<Float>> pointsToLabels = new TreeMap<>();
     protected String coloursLabel = null;
     protected final TreeMap<Integer, NumberFormat> nfs = new TreeMap<>();
 
-    public LinesOrPointsPlotter(boolean linesVisible, boolean coloursByValues) {
+    public LinesOrPointsPlotter(boolean linesVisible, boolean colouredLabelledPointsOrBars) {
         this.linesVisible = linesVisible;
-        colouredLabelledPointsOrBars = coloursByValues;
+        this.colouredLabelledPointsOrBars = colouredLabelledPointsOrBars;
         logarithmicScaleOfColours = false;
         showPointLabels = true;
     }
@@ -103,10 +105,19 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         this.showPointLabels = showPointLabels;
     }
 
-    public void setLabels(int seriesIdx, Map<Float, Float> mapOfXValuesToLabels, NumberFormat nf, String coloursAxisNameOrNull) {
-        seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
-        nfs.put(seriesIdx, nf);
+    public void setLabelsAndPointColours(int seriesIdx, List<Float> labelsAndcoloursList, String coloursAxisNameOrNull) {
+        if (pointsToLabels.containsKey(seriesIdx)) {
+            pointsToLabels.remove(pointsToLabels);
+        }
+        pointsToLabels.put(seriesIdx, labelsAndcoloursList);
         coloursLabel = coloursAxisNameOrNull;
+    }
+
+    public void setNumberFormatForTraceLabel(int seriesIdx, NumberFormat nf) {
+        if (nfs.containsKey(seriesIdx)) {
+            nfs.remove(seriesIdx);
+        }
+        nfs.put(seriesIdx, nf);
     }
 
     @Override
@@ -257,7 +268,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             boolean onlyIntegerYValues = isOnlyIntegerYValues(traces);
             setTicksOfYNumericAxis(yAxis, onlyIntegerYValues);
         }
-        if (!seriesToXToLabels.isEmpty()) {
+        if (!pointsToLabels.isEmpty()) {
             plot.getRangeAxis().setUpperMargin(0.08);
             xAxis.setLowerMargin(0.06);
             xAxis.setUpperMargin(0.06);
@@ -277,13 +288,13 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         boolean deleteSeriesToXToLabels = false;
         if (renderer instanceof XYLineAndShapeRenderer) {
             deleteSeriesToXToLabels = checkPointLabelsForColours(traces, yAxisLabel);
-            lineAndShapeRenderer = new MyXYLineAndShapeColourfulRenderer(seriesToXToLabels, logarithmicScaleOfColours);
+            lineAndShapeRenderer = new MyXYLineAndShapeColourfulRenderer(pointsToLabels, logarithmicScaleOfColours);
             plot.setRenderer(lineAndShapeRenderer);
             renderer = lineAndShapeRenderer;
         }
         if (renderer instanceof XYBarRenderer) {
             deleteSeriesToXToLabels = checkPointLabelsForColours(traces, yAxisLabel);
-            barRenderer = new MyBarRenderer(colouredLabelledPointsOrBars, seriesToXToLabels, logarithmicScaleOfColours);
+            barRenderer = new MyBarRenderer(colouredLabelledPointsOrBars, pointsToLabels, logarithmicScaleOfColours);
             plot.setRenderer(barRenderer);
             renderer = barRenderer;
         }
@@ -293,8 +304,8 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             ColourfulRendererInterface cRend = (ColourfulRendererInterface) renderer;
             int numberOfColourScales = cRend.getNumberOfColourScales();
             for (int i = 0; i < numberOfColourScales; i++) {
-                Map<Float, Float> labels = seriesToXToLabels.get(i);
-                TreeSet<Float> colourValues = new TreeSet<>(labels.values());
+                List<Float> labels = pointsToLabels.get(i);
+                TreeSet<Float> colourValues = new TreeSet<>(labels);
                 LookupPaintScale paintScale = cRend.getColourScale(i);
                 NumberAxis zAxis = logarithmicScaleOfColours ? new NumberAxis(coloursLabel) : new NumberAxis(coloursLabel);
                 setLabelsOfAxis(zAxis);
@@ -347,12 +358,12 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         }
         if (renderer != null) {
             renderer.setDefaultItemLabelFont(FONT_VALUES_LABELSS);
-            for (Map.Entry<Integer, Map<Float, Float>> entry : seriesToXToLabels.entrySet()) {
+            for (Map.Entry<Integer, List<Float>> entry : pointsToLabels.entrySet()) {
                 int seriesIdx = entry.getKey();
-                Map<Float, Float> labelsMap = entry.getValue();
+                List<Float> labels = entry.getValue();
                 NumberFormat nf = nfs.get(seriesIdx);
                 if (showPointLabels) {
-                    MyStandardXYItemLabelGenerator<Float> generator = new MyStandardXYItemLabelGenerator(labelsMap, nf);
+                    MyStandardXYItemLabelGenerator<Float> generator = new MyStandardXYItemLabelGenerator(labels, nf);
                     renderer.setSeriesItemLabelGenerator(seriesIdx, generator);
                     renderer.setSeriesItemLabelsVisible(seriesIdx, true);
                 }
@@ -361,7 +372,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         plot.setBackgroundAlpha(0);
         plot.setRenderer(renderer);
         if (deleteSeriesToXToLabels) {
-            seriesToXToLabels.clear();
+            pointsToLabels.clear();
         }
         return chart;
     }
@@ -423,9 +434,9 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                 List<Float> xValues = new ArrayList<>();
                 List<Float> yValues = new ArrayList<>();
                 List<Float> labels = new ArrayList<>();
-                Map<Float, Float> labelsMap = null;
-                if (seriesToXToLabels.containsKey(sIdx)) {
-                    labelsMap = seriesToXToLabels.get(sIdx);
+                List<Float> labelsMap = null;
+                if (pointsToLabels.containsKey(sIdx)) {
+                    labelsMap = pointsToLabels.get(sIdx);
                 }
                 int itemCount = cast.getItemCount();
                 for (int i = 0; i < itemCount; i++) {
@@ -433,8 +444,8 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                     float y = vm.mathtools.Tools.correctPossiblyCorruptedFloat(cast.getY(i).floatValue());
                     xValues.add(x);
                     yValues.add(y);
-                    if (labelsMap != null && labelsMap.containsKey(x)) {
-                        Float label = labelsMap.get(x);
+                    if (labelsMap != null) {
+                        Float label = labelsMap.get(i);
                         labels.add(label);
                     }
                 }
@@ -468,18 +479,18 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     }
 
     private boolean checkPointLabelsForColours(XYSeries[] traces, String yAxisLabel) {
-        boolean ret = seriesToXToLabels.isEmpty() && colouredLabelledPointsOrBars;
+        boolean ret = pointsToLabels.isEmpty() && colouredLabelledPointsOrBars;
         if (ret) {
             coloursLabel = yAxisLabel;
             for (int i = 0; i < traces.length; i++) {
                 XYSeries trace = traces[i];
-                TreeMap<Float, Float> map = new TreeMap<>();
+                List<Float> listOfColours = new ArrayList<>();
                 int itemCount = trace.getItemCount();
                 for (int j = 0; j < itemCount; j++) {
                     XYDataItem dataItem = trace.getDataItem(j);
-                    map.put(dataItem.getX().floatValue(), dataItem.getY().floatValue());
+                    listOfColours.add(dataItem.getY().floatValue());
                 }
-                seriesToXToLabels.put(i, map);
+                pointsToLabels.put(i, listOfColours);
             }
         }
         return ret;

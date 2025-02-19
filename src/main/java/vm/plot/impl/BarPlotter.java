@@ -49,7 +49,7 @@ public class BarPlotter extends LinesOrPointsPlotter {
     }
 
 //    @Override
-//    public void setLabels(int seriesIdx, Map<Object, Float> mapOfXValuesToLabels, NumberFormat nf, String coloursAxisNameOrNull) {
+//    public void setLabelsAndPointColours(int seriesIdx, Map<Object, Float> mapOfXValuesToLabels, NumberFormat nf, String coloursAxisNameOrNull) {
 //        seriesToXToLabels.put(seriesIdx, mapOfXValuesToLabels);
 //        nfs.put(seriesIdx, nf);
 //        coloursLabel = coloursAxisNameOrNull;

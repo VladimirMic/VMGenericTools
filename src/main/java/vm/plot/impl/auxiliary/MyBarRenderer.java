@@ -6,7 +6,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -38,21 +37,21 @@ import vm.colour.StandardColours;
  */
 public class MyBarRenderer extends XYBarRenderer implements ColourfulRendererInterface {
 
-    private final TreeMap<Integer, Map<Float, Float>> seriesToXToLabels;
+    private final TreeMap<Integer, List<Float>> pointsToLabels;
     private final TreeMap<Integer, LookupPaintScale> rainboxPaintScale;
     private final boolean logarithmic;
     private final boolean colouredLabelledPointsOrBars;
 
-    public MyBarRenderer(boolean colouredLabelledPointsOrBars, TreeMap<Integer, Map<Float, Float>> seriesToXToLabels, boolean logarithmic) {
+    public MyBarRenderer(boolean colouredLabelledPointsOrBars, TreeMap<Integer, List<Float>> coloursValues, boolean logarithmic) {
         this.colouredLabelledPointsOrBars = colouredLabelledPointsOrBars;
         this.logarithmic = logarithmic;
-        this.seriesToXToLabels = new TreeMap<>(seriesToXToLabels);
+        this.pointsToLabels = new TreeMap<>(coloursValues);
         rainboxPaintScale = new TreeMap<>();
-        if (seriesToXToLabels != null) {
-            Set<Integer> series = seriesToXToLabels.keySet();
+        if (coloursValues != null) {
+            Set<Integer> series = coloursValues.keySet();
             for (Integer sery : series) {
-                Map<Float, Float> labels = seriesToXToLabels.get(sery);
-                LookupPaintScale lookupPaintScale = StandardColours.createContinuousPaintScale(labels.values(), logarithmic);
+                List<Float> labels = coloursValues.get(sery);
+                LookupPaintScale lookupPaintScale = StandardColours.createContinuousPaintScale(labels, logarithmic);
                 rainboxPaintScale.put(sery, lookupPaintScale);
             }
         }
@@ -259,29 +258,20 @@ public class MyBarRenderer extends XYBarRenderer implements ColourfulRendererInt
         if (!colouredLabelledPointsOrBars) {
             return super.getItemPaint(seriesIdx, pointIdx);
         }
-        if (seriesToXToLabels.isEmpty()) {
+        if (pointsToLabels.isEmpty()) {
             return StandardColours.BOX_BLACK;
         }
-        Map<Float, Float> xValueToColourValue = seriesToXToLabels.get(seriesIdx);
+        List<Float> pointsToColourValue = pointsToLabels.get(seriesIdx);
         LookupPaintScale scale = rainboxPaintScale.get(seriesIdx);
-        if (xValueToColourValue.isEmpty() || scale == null) {
+        if (pointsToColourValue.isEmpty() || scale == null) {
             return StandardColours.BOX_BLACK;
         }
-        XYDataset dataset = getPlot().getDataset();
-        double x = dataset.getXValue(seriesIdx, pointIdx);
-        Float colourValue1 = xValueToColourValue.get((float) x);
-        if (logarithmic && x != 0) {
-            x = Math.log10(x);
-        }
-        Float colourValue2 = xValueToColourValue.get((float) x);
-        if ((colourValue2 == null && colourValue1 != null) || (x == 0)) {
-            if (logarithmic && (scale.getLowerBound() > colourValue1 || scale.getUpperBound() < colourValue1 || x == 0)) {
+        Float colourValue1 = pointsToColourValue.get(pointIdx);
+        if (colourValue1 != null && !Float.isNaN(colourValue1)) {
+            if (logarithmic && (scale.getLowerBound() > colourValue1 || scale.getUpperBound() < colourValue1)) {
                 colourValue1 = (float) Math.log10(colourValue1);
             }
             return scale.getPaint(colourValue1);
-        }
-        if (colourValue2 != null) {
-            return scale.getPaint(colourValue2);
         }
         return scale.getDefaultPaint();
     }

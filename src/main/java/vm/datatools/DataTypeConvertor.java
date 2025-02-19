@@ -469,6 +469,10 @@ public class DataTypeConvertor {
         return date.getTime();
     }
 
+    public static double dateToDouble(Date date) {
+        return date.getTime();
+    }
+
     public static long[][] datesArrayToLongs(Date[][] datesArray) {
         long[][] ret = new long[datesArray.length][];
         for (int rowID = 0; rowID < datesArray.length; rowID++) {
