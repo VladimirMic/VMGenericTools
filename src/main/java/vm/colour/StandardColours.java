@@ -133,6 +133,8 @@ public class StandardColours {
                 }
                 minValue = (float) Math.log10(set.first());
                 maxValue = (float) Math.log10(set.last());
+            } else if (set.isEmpty()) {
+                return trivialPaintScale();
             } else {
                 minValue = set.first();
                 maxValue = set.last();

@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,7 +16,6 @@ import java.text.NumberFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +65,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     private final boolean linesVisible;
     private boolean isTimeSeries;
     protected boolean colouredLabelledPointsOrBars;
-    protected boolean showPointLabels;
+    protected boolean pointLabelsVisible;
     protected boolean logarithmicScaleOfColours;
 
     protected final TreeMap<Integer, List<Float>> pointsToLabels = new TreeMap<>();
@@ -78,7 +76,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         this.linesVisible = linesVisible;
         this.colouredLabelledPointsOrBars = colouredLabelledPointsOrBars;
         logarithmicScaleOfColours = false;
-        showPointLabels = true;
+        pointLabelsVisible = true;
     }
 
     public LinesOrPointsPlotter(boolean linesVisible) {
@@ -98,16 +96,16 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     }
 
     public boolean isShowPointLabels() {
-        return showPointLabels;
+        return pointLabelsVisible;
     }
 
-    public void setShowPointLabels(boolean showPointLabels) {
-        this.showPointLabels = showPointLabels;
+    public void setPointLabelsVisible(boolean pointLabelsVisible) {
+        this.pointLabelsVisible = pointLabelsVisible;
     }
 
     public void setLabelsAndPointColours(int seriesIdx, List<Float> labelsAndcoloursList, String coloursAxisNameOrNull) {
         if (pointsToLabels.containsKey(seriesIdx)) {
-            pointsToLabels.remove(pointsToLabels);
+            pointsToLabels.remove(seriesIdx);
         }
         pointsToLabels.put(seriesIdx, labelsAndcoloursList);
         coloursLabel = coloursAxisNameOrNull;
@@ -362,7 +360,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                 int seriesIdx = entry.getKey();
                 List<Float> labels = entry.getValue();
                 NumberFormat nf = nfs.get(seriesIdx);
-                if (showPointLabels) {
+                if (pointLabelsVisible) {
                     MyStandardXYItemLabelGenerator<Float> generator = new MyStandardXYItemLabelGenerator(labels, nf);
                     renderer.setSeriesItemLabelGenerator(seriesIdx, generator);
                     renderer.setSeriesItemLabelsVisible(seriesIdx, true);
