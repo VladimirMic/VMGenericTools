@@ -634,7 +634,7 @@ public class Tools {
 
     private static float computeBasicXIntervalForHistogram(float min, float max, int minCount, int maxCount, boolean xAxis) {
         int exp = 0;
-        if (Math.abs(min) == Float.MAX_VALUE || Math.abs(max) == Float.MAX_VALUE) {
+        if (Math.abs(min) == Float.MAX_VALUE || Math.abs(max) == Float.MAX_VALUE || Float.isNaN(min) || Float.isNaN(max)) {
             return 1;
         }
         float diff = max - min;
