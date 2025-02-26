@@ -19,7 +19,6 @@ import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
-import org.jfree.data.Range;
 import org.jfree.data.statistics.BoxAndWhiskerItem;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import vm.colour.StandardColours;
@@ -155,15 +154,14 @@ public class BoxPlotPlotter extends AbstractPlotter {
         // y axis settings
         NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
         DefaultBoxAndWhiskerCategoryDataset dataset = (DefaultBoxAndWhiskerCategoryDataset) plot.getDataset();
-        Range rangeBounds = dataset.getRangeBounds(true);
         double axisBound = yAxis.getUpperBound();
-        double dataBound = rangeBounds.getUpperBound();
+        double dataBound = dataset.getRangeUpperBound(true);
         double range = yAxis.getUpperBound() - yAxis.getLowerBound();
         if (axisBound < dataBound) {
             yAxis.setUpperBound(dataBound + 0.03 * range);
         }
         axisBound = yAxis.getLowerBound();
-        dataBound = rangeBounds.getLowerBound();
+        dataBound = dataset.getRangeLowerBound(true);
         if (axisBound > dataBound) {
             yAxis.setLowerBound(dataBound + 0.03 * range);
         }

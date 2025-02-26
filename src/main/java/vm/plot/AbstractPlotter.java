@@ -146,6 +146,9 @@ public abstract class AbstractPlotter {
         if (forceIntegerStep) {
             step = Math.ceil(step);
         }
+        if (step == 0) {
+            step = Math.abs(axis.getUpperBound() - axis.getLowerBound());
+        }
         TickUnits tickUnits = new TickUnits();
         NumberTickUnit tickUnitNumber = new NumberTickUnit(step);
         tickUnits.add(tickUnitNumber);
@@ -333,9 +336,11 @@ public abstract class AbstractPlotter {
         Double lowerBound = axis.getLowerBound();
         double upperBound = axis.getUpperBound();
         float curr = Tools.round(lowerBound.floatValue(), Float.parseFloat(Double.toString(step)), false);
-        while (curr < upperBound) {
+        int counter = 0;
+        while (curr < upperBound && counter < 10000) {
             maxLength = Math.max(maxLength, nf.format(curr).length());
             curr += step;
+            counter++;
         }
         if (maxLength >= 3) {
             axis.setVerticalTickLabels(true);

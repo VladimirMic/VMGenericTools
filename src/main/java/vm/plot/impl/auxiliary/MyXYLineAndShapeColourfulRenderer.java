@@ -57,7 +57,11 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer im
             if (logarithmic && (scale.getLowerBound() > colourValue1 || scale.getUpperBound() < colourValue1)) {
                 colourValue1 = (float) Math.log10(colourValue1);
             }
-            return scale.getPaint(colourValue1);
+            Paint paint = scale.getPaint(colourValue1);
+//            if (paint.equals(Color.BLACK)) {
+//                String s = "";
+//            }
+            return paint;
         }
         return scale.getDefaultPaint();
     }
