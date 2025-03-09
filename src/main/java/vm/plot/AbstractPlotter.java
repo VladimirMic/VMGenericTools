@@ -58,8 +58,8 @@ public abstract class AbstractPlotter {
 
     public static final Logger LOG = Logger.getLogger(AbstractPlotter.class.getName());
 
-    protected static final Integer FONT_SIZE_AXIS_LABEL = 28;
-    protected static final Integer FONT_SIZE_AXIS_TICKS = 28;
+    protected static final Integer FONT_SIZE_AXIS_LABEL = 18;
+    protected static final Integer FONT_SIZE_AXIS_TICKS = FONT_SIZE_AXIS_LABEL;
     protected static final Integer FONT_SIZE_VALUES_LABELS = 20;
 
     protected static final Integer X_TICKS_IMPLICIT_COUNT_FOR_SHORT_DESC = 12;
@@ -81,6 +81,8 @@ public abstract class AbstractPlotter {
     public static final Stroke DASHED_STROKE = new BasicStroke(GRID_STROKE, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3, 3}, 0);
     public static final Stroke FULL_STROKE = new BasicStroke(GRID_STROKE);
 
+    private int xTicksForShort = X_TICKS_IMPLICIT_COUNT_FOR_SHORT_DESC;
+
     protected boolean logY = false;
     protected boolean includeZeroForYAxis = false;
     protected boolean verticalXLabels = false;
@@ -97,6 +99,12 @@ public abstract class AbstractPlotter {
     public void setxThousandDelimit(boolean xThousandDelimit) {
         this.xThousandDelimit = xThousandDelimit;
     }
+
+    public void setxTicksMaxCountForShort(int xTicksForShort) {
+        this.xTicksForShort = xTicksForShort;
+    }
+    
+    
 
     public void setyThousandDelimit(boolean yThousandDelimit) {
         this.yThousandDelimit = yThousandDelimit;
@@ -351,7 +359,7 @@ public abstract class AbstractPlotter {
         xAxis.setAutoRangeIncludesZero(includeZeroForXAxisLocal);
         NumberFormat nf = NumberFormat.getInstance(Locale.US);
         nf.setGroupingUsed(xThousandDelimit);
-        Double xStep = setAxisUnits(null, xAxis, X_TICKS_IMPLICIT_COUNT_FOR_SHORT_DESC, false);
+        Double xStep = setAxisUnits(null, xAxis, xTicksForShort, false);
         if (xStep >= 120) {
             NumberFormat nfBig = new CompactNumberFormat(
                     "#,##0.##",
