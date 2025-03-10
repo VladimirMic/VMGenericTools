@@ -37,11 +37,11 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
         this(false);
     }
 
-    public Float getGivenXStep() {
+    public Float getXStep() {
         return givenXStep;
     }
 
-    public void setGivenXStep(Float givenXStep) {
+    public void setXStep(Float givenXStep) {
         this.givenXStep = givenXStep;
     }
 

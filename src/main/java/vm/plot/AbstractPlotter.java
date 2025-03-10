@@ -58,7 +58,7 @@ public abstract class AbstractPlotter {
 
     public static final Logger LOG = Logger.getLogger(AbstractPlotter.class.getName());
 
-    protected static final Integer FONT_SIZE_AXIS_LABEL = 18;
+    protected static final Integer FONT_SIZE_AXIS_LABEL = 28;
     protected static final Integer FONT_SIZE_AXIS_TICKS = FONT_SIZE_AXIS_LABEL;
     protected static final Integer FONT_SIZE_VALUES_LABELS = 20;
 
@@ -86,6 +86,7 @@ public abstract class AbstractPlotter {
     protected boolean logY = false;
     protected boolean includeZeroForYAxis = false;
     protected boolean verticalXLabels = false;
+    protected boolean forceHorizontalXLabels = false;
 
     private Boolean includeZeroForXAxis = null;
 
@@ -103,8 +104,6 @@ public abstract class AbstractPlotter {
     public void setxTicksMaxCountForShort(int xTicksForShort) {
         this.xTicksForShort = xTicksForShort;
     }
-    
-    
 
     public void setyThousandDelimit(boolean yThousandDelimit) {
         this.yThousandDelimit = yThousandDelimit;
@@ -128,6 +127,15 @@ public abstract class AbstractPlotter {
 
     public void setVerticalXLabels(boolean verticalXLabels) {
         this.verticalXLabels = verticalXLabels;
+    }
+
+    public boolean isForceHorizontalXLabels() {
+        return forceHorizontalXLabels;
+    }
+
+    public void setForceHorizontalXLabels(boolean forceHorizontalXLabels) {
+        this.forceHorizontalXLabels = forceHorizontalXLabels;
+        verticalXLabels = false;
     }
 
     public void setIncludeZeroForYAxis(boolean includeZeroForYAxis) {
@@ -388,7 +396,9 @@ public abstract class AbstractPlotter {
         for (Object groupName : groupsNames) {
             maxLength = Math.max(maxLength, groupName.toString().length());
         }
-        if (maxLength >= 3 * tracesPerGroup) {
+        if (forceHorizontalXLabels) {
+            xAxis.setCategoryLabelPositions(CategoryLabelPositions.STANDARD);
+        } else if (maxLength >= 3 * tracesPerGroup) {
             xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
         }
     }
