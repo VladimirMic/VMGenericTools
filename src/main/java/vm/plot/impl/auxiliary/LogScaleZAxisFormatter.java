@@ -24,7 +24,7 @@ public class LogScaleZAxisFormatter extends DecimalFormat {
     public StringBuffer format(double number, StringBuffer result, FieldPosition fieldPosition) {
         float f = DataTypeConvertor.doubleToPreciseFloat(number);
         f = vm.mathtools.Tools.correctPossiblyCorruptedFloat(f);
-        return new StringBuffer("1E" + f);
+        return new StringBuffer("1e" + f);
     }
 
 }

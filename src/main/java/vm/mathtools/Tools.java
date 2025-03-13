@@ -595,7 +595,6 @@ public class Tools {
 
     public static float computeBasicXIntervalForHistogram(Collection<Float> values) {
         return computeBasicXIntervalForHistogram(values, 1);
-
     }
 
     public static float computeBasicXIntervalForHistogram(Collection<Float> values, float scale) {
