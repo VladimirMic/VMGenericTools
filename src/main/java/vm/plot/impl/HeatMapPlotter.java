@@ -9,8 +9,11 @@ import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -231,8 +234,6 @@ public class HeatMapPlotter extends AbstractPlotter {
         }
 
         LookupPaintScale paintScale = StandardColours.createPaintScale((float) minZ, (float) maxZ, !contrastiveColours, Color.WHITE);
-
-//        LookupPaintScale paintScale = new LookupPaintScale(minZ, maxZ, Color.WHITE);
         NumberAxis zAxis = new NumberAxis(zAxisLabel);
         zAxis.setLowerMargin(0);
         zAxis.setUpperMargin(0);
@@ -388,6 +389,11 @@ public class HeatMapPlotter extends AbstractPlotter {
     }
 
     private JFreeChart setAppearence(JFreeChart chart, XYPlot plot, NumberAxis xAxis, NumberAxis yAxis, NumberAxis zAxis) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.###", symbols);
+        xAxis.setNumberFormatOverride(decimalFormat);
+        yAxis.setNumberFormatOverride(decimalFormat);
+        zAxis.setNumberFormatOverride(decimalFormat);
         setLabelsOfAxis(xAxis);
         setLabelsOfAxis(yAxis);
         setLabelsOfAxis(zAxis);

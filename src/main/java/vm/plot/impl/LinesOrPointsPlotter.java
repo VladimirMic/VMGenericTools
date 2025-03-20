@@ -12,12 +12,15 @@ import java.awt.geom.AffineTransform;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -271,6 +274,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             xAxis.setLowerMargin(0.06);
             xAxis.setUpperMargin(0.06);
         }
+//        plot.getRangeAxis().setLabel(null);
         //legend        
         setLegendFont(chart.getLegend());
         if (traces.length == 1) {
@@ -306,6 +310,9 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
                 TreeSet<Float> colourValues = new TreeSet<>(labels);
                 LookupPaintScale paintScale = cRend.getColourScale(i);
                 NumberAxis zAxis = logarithmicScaleOfColours ? new NumberAxis(coloursLabel) : new NumberAxis(coloursLabel);
+                DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+                DecimalFormat decimalFormat = new DecimalFormat("#,##0.###", symbols);
+                zAxis.setNumberFormatOverride(decimalFormat);
                 setLabelsOfAxis(zAxis);
                 if (logarithmicScaleOfColours && colourValues.contains(0f)) {
                     colourValues.remove(0f);
