@@ -75,7 +75,7 @@ public class Tools {
     }
 
     public static void sleepSeconds(long seconds) {
-        LOG.log(Level.INFO, "Going to sleep for {0} seconds, which is {1} minutes", new Object[]{seconds, seconds / 60f});
+        LOG.log(Level.INFO, "Going to sleep for {0} seconds, which is approx {1} minutes", new Object[]{seconds, seconds / 60});
         try {
             Thread.sleep(seconds * 1000);
         } catch (InterruptedException ex) {
