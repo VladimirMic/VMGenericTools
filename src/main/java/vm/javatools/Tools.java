@@ -3,15 +3,10 @@ package vm.javatools;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -23,16 +18,47 @@ import java.util.logging.Logger;
  */
 public class Tools {
 
+    private static boolean sleepDuringTheNight = true;
 //    public static final Integer PARALELISATION = 1;
     public static final Integer PARALELISATION = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
     public static final Logger LOG = Logger.getLogger(Tools.class.getName());
     public static final DateFormat DF_DDMMYYYY_HHMM = new SimpleDateFormat("dd.MM.YYYY HH:mm");
+    public static final int[] HOURS_OF_PAUSE = new int[]{21, 10};
+
+    public static boolean isSleepDuringTheNight() {
+        return sleepDuringTheNight;
+    }
+
+    public static void setSleepDuringTheNight(boolean sleepDuringTheNight) {
+        Tools.sleepDuringTheNight = sleepDuringTheNight;
+    }
 
     public static ExecutorService initExecutor(Integer paralelism) {
         if (paralelism == null || paralelism <= 0) {
             return initExecutor();
         }
         return Executors.newFixedThreadPool(paralelism);
+    }
+
+    public static void sleepDuringTheNight() {
+        LOG.log(Level.INFO, "Sleeping during the night is set to {0}", sleepDuringTheNight);
+        if (!sleepDuringTheNight) {
+            return;
+        }
+        LOG.log(Level.INFO, "Sleeping between {0} to {1} (hours)", new Object[]{HOURS_OF_PAUSE[0], HOURS_OF_PAUSE[1]});
+        Calendar now = new GregorianCalendar();
+        int h = now.get(Calendar.HOUR_OF_DAY);
+        if (h >= HOURS_OF_PAUSE[0] || h < HOURS_OF_PAUSE[1]) {
+            Calendar until = new GregorianCalendar();
+            until.set(Calendar.HOUR_OF_DAY, HOURS_OF_PAUSE[1]);
+            until.clear(Calendar.MINUTE);
+            until.clear(Calendar.SECOND);
+            if (now.after(until)) {
+                until.add(Calendar.DATE, 1);
+            }
+            long sleep = until.getTimeInMillis() - now.getTimeInMillis();
+            sleepSeconds(sleep / 1000);
+        }
     }
 
     public static ExecutorService initExecutor() {
@@ -49,7 +75,7 @@ public class Tools {
     }
 
     public static void sleepSeconds(long seconds) {
-        LOG.log(Level.INFO, "Going to sleep for {0} seconds", seconds);
+        LOG.log(Level.INFO, "Going to sleep for {0} seconds, which is {1} minutes", new Object[]{seconds, seconds / 60f});
         try {
             Thread.sleep(seconds * 1000);
         } catch (InterruptedException ex) {
@@ -81,7 +107,6 @@ public class Tools {
     public static String getCurrDateAndTime() {
         return DF_DDMMYYYY_HHMM.format(new Date());
     }
-
 
     public static class ArrayIterator<T> implements Iterator<T> {
 
