@@ -172,8 +172,8 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, tracesNames, tracesColours, tracesXValues, tracesYValues);
     }
 
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, float[] tracesXValues, float[] tracesYValues) {
-        return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, tracesXValues, tracesYValues);
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, float[] traceXValues, float[] traceYValues) {
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, traceXValues, traceYValues);
     }
 
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map<Float, Float> xToYMap) {
@@ -190,7 +190,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, traceColour, xValues, yValues);
     }
 
-    protected JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object[] tracesNames, COLOUR_NAME[] tracesColours, float[][] tracesXValues, float[][] tracesYValues) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object[] tracesNames, COLOUR_NAME[] tracesColours, float[][] tracesXValues, float[][] tracesYValues) {
         XYSeries[] traces = transformCoordinatesIntoTraces(tracesNames, tracesXValues, tracesYValues);
         XYSeriesCollection dataset = new XYSeriesCollection();
         for (XYSeries trace : traces) {
@@ -241,7 +241,7 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         }
         int[] ret = new int[traceXValues.length];
         Iterator<Map.Entry<Integer, Float>> it = set.iterator();
-        for (int i = 0; i < ret.length; i++) {
+        for (int i = 0; i < ret.length && it.hasNext(); i++) {
             ret[i] = it.next().getKey();
         }
         return ret;
