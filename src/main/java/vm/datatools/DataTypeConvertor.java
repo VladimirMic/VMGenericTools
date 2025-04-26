@@ -432,13 +432,16 @@ public class DataTypeConvertor {
         return Double.parseDouble(Float.toString(f));
     }
 
+    private static boolean printed = false;
+
     public static float doubleToPreciseFloat(double d) {
         String s = Double.toString(d);
         float ret = Float.parseFloat(s);
         if (s.contains("E")) {
             String check = Float.toString(ret);
-            if (check.length() > s.length()) {
+            if (check.length() > s.length() && !printed) {
                 try {
+                    printed = true;
                     throw new RuntimeException("Wrong memory state does not allow precise float rounding. This has no real impact on the results, but number formatting in outputs (and figures) can be damaged. Returning " + ret + " instead of " + s);
                 } catch (RuntimeException ex) {
                     Logger.getLogger(DataTypeConvertor.class.getName()).log(Level.SEVERE, null, ex);

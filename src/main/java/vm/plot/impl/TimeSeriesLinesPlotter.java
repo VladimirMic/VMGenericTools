@@ -4,16 +4,13 @@
  */
 package vm.plot.impl;
 
-import java.awt.geom.Point2D;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateTickUnitType;
 import vm.colour.StandardColours.COLOUR_NAME;
-import vm.datatools.DataTypeConvertor;
 
 /**
  *
@@ -32,8 +29,54 @@ public class TimeSeriesLinesPlotter extends LinesOrPointsPlotter {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, tracesXValues, tracesYValues);
     }
 
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, Date[][] tracesXValues, float[][] tracesYValues) {
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, null, traceColour, tracesXValues, tracesYValues);
+    }
+
     public void setLabels(int seriesIdx, List<Float> coloursList, String coloursAxisNameOrNull) {
         pointsToLabels.put(seriesIdx, coloursList);
         coloursLabel = coloursAxisNameOrNull;
     }
+
+    @Override
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map xToYMap) {
+        transformMapToArrays(xToYMap);
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceColour, dates, yValues);
+    }
+
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesName, COLOUR_NAME[] traceColours, Map<Date, Float>[] xToYMaps) {
+        Date[][] xValues = new Date[xToYMaps.length][];
+        float[][] yValuesArray = new float[xToYMaps.length][];
+        int i = 0;
+        for (Map<Date, Float> xToYMap : xToYMaps) {
+            TimeSeriesLinesPlotter.transformMapToArrays(xToYMap);
+            xValues[i] = TimeSeriesLinesPlotter.getDates();
+            yValuesArray[i] = TimeSeriesLinesPlotter.getyValues();
+            i++;
+        }
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, tracesName, traceColours, xValues, yValuesArray);
+    }
+
+    private static Date[] dates;
+    private static float[] yValues;
+
+    public static void transformMapToArrays(Map<Date, Float> xToYMap) {
+        dates = new Date[xToYMap.size()];
+        yValues = new float[xToYMap.size()];
+        int i = 0;
+        for (Map.Entry entry : xToYMap.entrySet()) {
+            dates[i] = (Date) entry.getKey();
+            yValues[i] = (float) entry.getValue();
+            i++;
+        }
+    }
+
+    public static Date[] getDates() {
+        return dates;
+    }
+
+    public static float[] getyValues() {
+        return yValues;
+    }
+
 }
