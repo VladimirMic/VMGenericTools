@@ -226,7 +226,7 @@ public class DataTypeConvertor {
         return ret;
     }
 
-    public static String floatMatrixToCsvString(float[][] array, String columnDelimiter) {
+    public static String floatMatrixToCsvString(float[][] array, String columnDelimiter, String rowDelimiter) {
         if (array == null || array.length == 0) {
             return "";
         }
@@ -236,13 +236,16 @@ public class DataTypeConvertor {
         try {
             ret.append(DataTypeConvertor.floatsToString(array[0], columnDelimiter));
             for (int i = 1; i < array.length; i++) {
-                ret.append("\n").append(DataTypeConvertor.floatsToString(array[i], columnDelimiter));
+                ret.append(rowDelimiter).append(DataTypeConvertor.floatsToString(array[i], columnDelimiter));
             }
             return ret.toString();
         } catch (java.lang.OutOfMemoryError ex) {
             LOG.log(Level.WARNING, "Unsufficient memory to store the matrix: {0} * {1}", new Object[]{array.length, array[0].length});
         }
-        return "";
+        return "";        
+    }
+    public static String floatMatrixToCsvString(float[][] array, String columnDelimiter) {
+        return floatMatrixToCsvString(array, columnDelimiter, "\n");
     }
 
     public static double[][] floatMatrixToDoubleMatrix(float[][] matrix) {
