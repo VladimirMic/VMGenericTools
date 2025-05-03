@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
@@ -18,22 +19,23 @@ import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import vm.colour.StandardColours.COLOUR_NAME;
 import vm.datatools.DataTypeConvertor;
 import vm.datatools.Tools;
+import static vm.plot.AbstractPlotter.LOG;
 import vm.plot.impl.auxiliary.MyCategoryAxis;
 
 /**
  *
  * @author au734419
  */
-public class BoxPlotXYPlotter extends BoxPlotPlotter {
+public class BoxPlotXCategoryPlotter extends BoxPlotXValuesPlotter {
 
     protected final boolean isHorizontal;
     private Float givenXStep = null;
 
-    protected BoxPlotXYPlotter(boolean isHorizontal) {
+    protected BoxPlotXCategoryPlotter(boolean isHorizontal) {
         this.isHorizontal = isHorizontal;
     }
 
-    public BoxPlotXYPlotter() {
+    public BoxPlotXCategoryPlotter() {
         this(false);
     }
 
@@ -56,7 +58,13 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
             String s = Integer.toString(tracesNames.length);
             throw new IllegalArgumentException("Number of traces descriptions does not match the values or is null when more traces are specified: " + s + ", " + values.length);
         }
-        Float[] groupNumbers = DataTypeConvertor.objectsToObjectFloats(xValues);
+        Float[] groupNumbers;
+        try {
+            groupNumbers = DataTypeConvertor.objectsToObjectFloats(xValues);
+        } catch (java.lang.NumberFormatException e) {
+            LOG.log(Level.SEVERE, "Use cathegorical box plot instead! This class is for x axis with numbers!");
+            throw e;
+        }
         float max = vm.mathtools.Tools.getMax(groupNumbers);
         float min = vm.mathtools.Tools.getMin(groupNumbers);
         float xStep = givenXStep == null ? (float) vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max) : givenXStep;
@@ -79,7 +87,7 @@ public class BoxPlotXYPlotter extends BoxPlotPlotter {
                     previousKey = vm.mathtools.Tools.correctPossiblyCorruptedFloat(previousKey);
                     iValue = Tools.parseInteger(previousKey);
                     keyString = iValue == null ? previousKey.toString() : iValue.toString();
-                    dataset.add(new BoxPlotPlotter.DummyBoxAndWhiskerItem(), tracesNames[traceID], keyString);
+                    dataset.add(new BoxPlotXValuesPlotter.DummyBoxAndWhiskerItem(), tracesNames[traceID], keyString);
                 }
                 // check if it is an integer (if float than ok
                 iValue = Tools.parseInteger(groupName);

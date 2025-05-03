@@ -15,7 +15,7 @@ import vm.colour.StandardColours.COLOUR_NAME;
  *
  * @author au734419
  */
-public class BoxPlotYXHorizontalPlotter extends BoxPlotXYPlotter {
+public class BoxPlotYXHorizontalPlotter extends BoxPlotXCategoryPlotter {
 
     public BoxPlotYXHorizontalPlotter() {
         super(true);

@@ -32,17 +32,17 @@ import vm.plot.impl.auxiliary.MyBoxAndWhiskerRenderer;
  *
  * @author au734419
  */
-public class BoxPlotPlotter extends AbstractPlotter {
+public class BoxPlotXValuesPlotter extends AbstractPlotter {
 
     @Override
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object... data) {
-        if (this instanceof BoxPlotXYPlotter && data.length >= 3
+        if (this instanceof BoxPlotXCategoryPlotter && data.length >= 3
                 && (data[0] == null || data[0] instanceof String)
                 && (data[1] == null || data[1] instanceof COLOUR_NAME)
                 && data[2] instanceof Map) {
             Map map = (Map) data[2];
             Iterator<Map.Entry> it = map.entrySet().iterator();
-            BoxPlotXYPlotter xy = (BoxPlotXYPlotter) this;
+            BoxPlotXCategoryPlotter xy = (BoxPlotXCategoryPlotter) this;
             if (it.hasNext()) {
                 Object v = it.next().getValue();
                 if (!(v instanceof Collection)) {
@@ -69,7 +69,11 @@ public class BoxPlotPlotter extends AbstractPlotter {
     }
 
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] groupsNames, List<Float>[][] values) {
-        groupsNames = vm.mathtools.Tools.correctPossiblyCorruptedFloats(DataTypeConvertor.objectsToObjectFloats(groupsNames));
+        try {
+            groupsNames = vm.mathtools.Tools.correctPossiblyCorruptedFloats(DataTypeConvertor.objectsToObjectFloats(groupsNames));
+        } catch (java.lang.NumberFormatException e) {
+// ignore
+        }
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
         if (tracesNames == null) {
             tracesNames = new String[]{""};
