@@ -41,11 +41,10 @@ public class Tools {
     }
 
     public static void sleepDuringTheNight() {
-        LOG.log(Level.INFO, "Sleeping during the night is set to {0}", sleepDuringTheNight);
+//        LOG.log(Level.INFO, "Sleeping during the night is set to {0}", sleepDuringTheNight);
         if (!sleepDuringTheNight) {
             return;
         }
-        LOG.log(Level.INFO, "Sleeping between {0} to {1} (hours)", new Object[]{HOURS_OF_PAUSE[0], HOURS_OF_PAUSE[1]});
         Calendar now = new GregorianCalendar();
         int h = now.get(Calendar.HOUR_OF_DAY);
         if (h >= HOURS_OF_PAUSE[0] || h < HOURS_OF_PAUSE[1]) {
@@ -57,6 +56,7 @@ public class Tools {
                 until.add(Calendar.DATE, 1);
             }
             long sleep = until.getTimeInMillis() - now.getTimeInMillis();
+            LOG.log(Level.INFO, "Sleeping between {0} to {1} (hours)", new Object[]{HOURS_OF_PAUSE[0], HOURS_OF_PAUSE[1]});
             sleepSeconds(sleep / 1000);
         }
     }
