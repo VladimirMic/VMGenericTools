@@ -393,8 +393,10 @@ public abstract class AbstractPlotter {
 
     protected void setRotationOfXAxisCategoriesFont(CategoryAxis xAxis, Object[] groupsNames, int tracesPerGroup) {
         int maxLength = 0;
-        for (Object groupName : groupsNames) {
-            maxLength = Math.max(maxLength, groupName.toString().length());
+        if (groupsNames != null) {
+            for (Object groupName : groupsNames) {
+                maxLength = Math.max(maxLength, groupName.toString().length());
+            }
         }
         if (forceHorizontalXLabels) {
             xAxis.setCategoryLabelPositions(CategoryLabelPositions.STANDARD);

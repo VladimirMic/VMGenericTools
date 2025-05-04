@@ -71,7 +71,7 @@ public class BoxPlotXValuesPlotter extends AbstractPlotter {
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] groupsNames, List<Float>[][] values) {
         try {
             groupsNames = vm.mathtools.Tools.correctPossiblyCorruptedFloats(DataTypeConvertor.objectsToObjectFloats(groupsNames));
-        } catch (java.lang.NumberFormatException e) {
+        } catch (java.lang.Exception e) {
 // ignore
         }
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
@@ -87,7 +87,9 @@ public class BoxPlotXValuesPlotter extends AbstractPlotter {
         }
         for (int traceID = 0; traceID < values.length; traceID++) {
             List<Float>[] valuesForGroups = values[traceID];
-            if (groupsNames.length != valuesForGroups.length) {
+            boolean error = groupsNames == null && valuesForGroups.length != 1;
+            error = error || (groupsNames != null && groupsNames.length != valuesForGroups.length);
+            if (error) {
                 throw new IllegalArgumentException("Number of groups descriptions does not match the values" + tracesNames.length + ", " + valuesForGroups.length);
             }
             for (int groupId = 0; groupId < valuesForGroups.length; groupId++) {
@@ -149,7 +151,7 @@ public class BoxPlotXValuesPlotter extends AbstractPlotter {
 
     protected JFreeChart setAppearence(JFreeChart chart, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] groupsNames) {
         lastTracesCount = tracesNames.length;
-        lastGroupCount = groupsNames.length;
+        lastGroupCount = groupsNames == null ? 1 : groupsNames.length;
 
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
         // chart colours
@@ -187,7 +189,8 @@ public class BoxPlotXValuesPlotter extends AbstractPlotter {
             xAxis.setTickMarkOutsideLength(0);
             xAxis.setTickMarksVisible(false);
         }
-        setSpacingOfCategoriesAndTraces(plot, renderer, xAxis, tracesNames.length, groupsNames.length);
+        int length = groupsNames == null ? 1 : groupsNames.length;
+        setSpacingOfCategoriesAndTraces(plot, renderer, xAxis, tracesNames.length, length);
         //legend        
         setLegendFont(chart.getLegend());
         if (tracesNames.length == 1 && (tracesNames[0] == null

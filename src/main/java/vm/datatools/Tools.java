@@ -831,6 +831,9 @@ public class Tools {
     }
 
     public static boolean isParseableToFloats(Object[] array) {
+        if (array == null) {
+            return false;
+        }
         for (Object o : array) {
             if (o == null) {
                 return false;
