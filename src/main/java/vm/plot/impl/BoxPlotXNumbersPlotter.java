@@ -26,16 +26,16 @@ import vm.plot.impl.auxiliary.MyCategoryAxis;
  *
  * @author au734419
  */
-public class BoxPlotXCategoryPlotter extends BoxPlotXValuesPlotter {
+public class BoxPlotXNumbersPlotter extends BoxPlotXCategoriesPlotter {
 
     protected final boolean isHorizontal;
     private Float givenXStep = null;
 
-    protected BoxPlotXCategoryPlotter(boolean isHorizontal) {
+    protected BoxPlotXNumbersPlotter(boolean isHorizontal) {
         this.isHorizontal = isHorizontal;
     }
 
-    public BoxPlotXCategoryPlotter() {
+    public BoxPlotXNumbersPlotter() {
         this(false);
     }
 
@@ -87,7 +87,7 @@ public class BoxPlotXCategoryPlotter extends BoxPlotXValuesPlotter {
                     previousKey = vm.mathtools.Tools.correctPossiblyCorruptedFloat(previousKey);
                     iValue = Tools.parseInteger(previousKey);
                     keyString = iValue == null ? previousKey.toString() : iValue.toString();
-                    dataset.add(new BoxPlotXValuesPlotter.DummyBoxAndWhiskerItem(), tracesNames[traceID], keyString);
+                    dataset.add(new BoxPlotXCategoriesPlotter.DummyBoxAndWhiskerItem(), tracesNames[traceID], keyString);
                 }
                 // check if it is an integer (if float than ok
                 iValue = Tools.parseInteger(groupName);

@@ -96,6 +96,8 @@ public abstract class AbstractPlotter {
     protected Integer yTicksCount = Y_TICKS_IMPLICIT_NUMBER;
     protected boolean xThousandDelimit = true;
     protected boolean yThousandDelimit = true;
+    private float[] yBounds = null;
+    private Double yStep = null;
 
     public void setxThousandDelimit(boolean xThousandDelimit) {
         this.xThousandDelimit = xThousandDelimit;
@@ -145,6 +147,14 @@ public abstract class AbstractPlotter {
     public abstract JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object... data);
 
     public abstract String getSimpleName();
+
+    public void setYBounds(float min, float max) {
+        yBounds = new float[]{min, max};
+    }
+
+    public void setYStep(Double yStep) {
+        this.yStep = yStep;
+    }
 
     protected double setAxisUnits(Double step, ValueAxis axis, Integer axisImplicitTicksNumber, boolean forceIntegerStep) {
         if (step == null && axisImplicitTicksNumber == null) {
@@ -400,6 +410,8 @@ public abstract class AbstractPlotter {
         }
         if (forceHorizontalXLabels) {
             xAxis.setCategoryLabelPositions(CategoryLabelPositions.STANDARD);
+        } else if (verticalXLabels) {
+            xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
         } else if (maxLength >= 3 * tracesPerGroup) {
             xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
         }
@@ -447,9 +459,20 @@ public abstract class AbstractPlotter {
             if (!includeZeroForYAxis) {
                 yAxis.setLowerBound(minRecall);
             }
-            setAxisUnits(null, yAxis, yTicksCount, forceIntegers);
+            setAxisUnits(yStep, yAxis, yTicksCount, forceIntegers);
             return;
         }
+        if (yBounds != null) {
+            NumberFormat nf = NumberFormat.getInstance(Locale.US);
+            yAxis.setNumberFormatOverride(nf);
+            yAxis.setUpperBound(yBounds[1]);
+            if (!includeZeroForYAxis) {
+                yAxis.setLowerBound(yBounds[0]);
+            }
+            setAxisUnits(yStep, yAxis, yTicksCount, forceIntegers);
+            return;
+        }
+
         if (label.equals("frr") || label.equals("false reject rate")) {
             yAxis.setUpperBound(1 - minRecall);
         }

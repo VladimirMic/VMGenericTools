@@ -6,6 +6,9 @@ package vm.plot.impl;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,18 +16,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.statistics.BoxAndWhiskerItem;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import vm.colour.StandardColours;
 import vm.colour.StandardColours.COLOUR_NAME;
 import static vm.colour.StandardColours.getColor;
 import vm.datatools.DataTypeConvertor;
+import vm.datatools.Tools;
 import vm.plot.AbstractPlotter;
 import vm.plot.impl.auxiliary.MyBoxAndWhiskerRenderer;
 
@@ -32,25 +39,27 @@ import vm.plot.impl.auxiliary.MyBoxAndWhiskerRenderer;
  *
  * @author au734419
  */
-public class BoxPlotXValuesPlotter extends AbstractPlotter {
+public class BoxPlotXCategoriesPlotter extends AbstractPlotter {
 
     @Override
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object... data) {
-        if (this instanceof BoxPlotXCategoryPlotter && data.length >= 3
+        boolean instances = data.length >= 3
                 && (data[0] == null || data[0] instanceof String)
                 && (data[1] == null || data[1] instanceof COLOUR_NAME)
-                && data[2] instanceof Map) {
+                && data[2] instanceof Map;
+        if (instances) {
             Map map = (Map) data[2];
             Iterator<Map.Entry> it = map.entrySet().iterator();
-            BoxPlotXCategoryPlotter xy = (BoxPlotXCategoryPlotter) this;
-            if (it.hasNext()) {
-                Object v = it.next().getValue();
-                if (!(v instanceof Collection)) {
-                    Map quantisedMap = xy.quantiseMapToBoxPlotValues(map);
-                    return xy.createPlot(mainTitle, xAxisLabel, yAxisLabel, (String) data[0], (COLOUR_NAME) data[1], quantisedMap);
+            if (this instanceof BoxPlotXNumbersPlotter xy) {
+                if (it.hasNext()) {
+                    Object v = it.next().getValue();
+                    if (!(v instanceof Collection)) {
+                        Map quantisedMap = xy.quantiseMapToBoxPlotValues(map);
+                        return xy.createPlot(mainTitle, xAxisLabel, yAxisLabel, (String) data[0], (COLOUR_NAME) data[1], quantisedMap);
+                    }
                 }
             }
-            return xy.createPlot(mainTitle, xAxisLabel, yAxisLabel, (String) data[0], (COLOUR_NAME) data[1], (Map) data[2]);
+            return createPlot(mainTitle, xAxisLabel, yAxisLabel, (String) data[0], (COLOUR_NAME) data[1], (Map) data[2]);
         } else {
             String[] tracesNames = (String[]) data[0];
             COLOUR_NAME[] tracesColours = (COLOUR_NAME[]) data[1];
@@ -69,11 +78,14 @@ public class BoxPlotXValuesPlotter extends AbstractPlotter {
     }
 
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] groupsNames, List<Float>[][] values) {
-        try {
+        boolean ints = Tools.isParseableToIntegers(groupsNames);
+        boolean floats = Tools.isParseableToFloats(groupsNames);
+        if (ints) {
+            groupsNames = DataTypeConvertor.objectsToIntegers(groupsNames);
+        } else if (floats) {
             groupsNames = vm.mathtools.Tools.correctPossiblyCorruptedFloats(DataTypeConvertor.objectsToObjectFloats(groupsNames));
-        } catch (java.lang.Exception e) {
-// ignore
         }
+
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
         if (tracesNames == null) {
             tracesNames = new String[]{""};
@@ -148,6 +160,11 @@ public class BoxPlotXValuesPlotter extends AbstractPlotter {
 
     protected int lastTracesCount;
     protected int lastGroupCount;
+    private float boxWidthScale = 1f;
+
+    public void setBoxWidthScale(float boxWidthScale) {
+        this.boxWidthScale = boxWidthScale;
+    }
 
     protected JFreeChart setAppearence(JFreeChart chart, String[] tracesNames, COLOUR_NAME[] tracesColours, Object[] groupsNames) {
         lastTracesCount = tracesNames.length;
@@ -162,7 +179,7 @@ public class BoxPlotXValuesPlotter extends AbstractPlotter {
         DefaultBoxAndWhiskerCategoryDataset dataset = (DefaultBoxAndWhiskerCategoryDataset) plot.getDataset();
         double axisBound = yAxis.getUpperBound();
         double dataBound = dataset.getRangeUpperBound(true);
-        double range = yAxis.getUpperBound() - yAxis.getLowerBound();
+        double range = axisBound - yAxis.getLowerBound();
         if (axisBound < dataBound) {
             yAxis.setUpperBound(dataBound + 0.03 * range);
         }
@@ -174,7 +191,8 @@ public class BoxPlotXValuesPlotter extends AbstractPlotter {
         setLabelsOfAxis(yAxis);
         setTicksOfYNumericAxis(yAxis, false); // todo integers
 
-        BoxAndWhiskerRenderer renderer = new MyBoxAndWhiskerRenderer();
+        MyBoxAndWhiskerRenderer renderer = new MyBoxAndWhiskerRenderer();
+        renderer.adjustBoxWidth(boxWidthScale);
         renderer.setMaxOutlierVisible(true);
         renderer.setMinOutlierVisible(true);
         // x axis settings
@@ -230,8 +248,83 @@ public class BoxPlotXValuesPlotter extends AbstractPlotter {
     }
 
     @Override
-    protected void storeCsvRawData(String path, JFreeChart plot) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    protected void storeCsvRawData(String path, JFreeChart chart) {
+        CategoryPlot plot = (CategoryPlot) chart.getPlot();
+        DefaultBoxAndWhiskerCategoryDataset dataset = (DefaultBoxAndWhiskerCategoryDataset) plot.getDataset();
+        List columnKeys = dataset.getColumnKeys();
+        List rowKeys = dataset.getRowKeys();
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(path))) {
+            for (int rowIdx = 0; rowIdx < rowKeys.size(); rowIdx++) {
+                String groupName = rowKeys.get(rowIdx).toString();
+                w.write("GroupName;" + groupName);
+                w.newLine();
+                for (int columnIdx = 0; columnIdx < columnKeys.size(); columnIdx++) {
+                    BoxAndWhiskerItem item = dataset.getItem(rowIdx, columnIdx);
+                    double q1 = item.getQ1().doubleValue();
+                    double median = item.getMedian().doubleValue();
+                    double q3 = item.getQ3().doubleValue();
+                    List<Number> outliers = item.getOutliers();
+                    List<Float> floats = DataTypeConvertor.numbersToFloats(outliers);
+                    double min = outliers.isEmpty() ? q1 : vm.mathtools.Tools.getMin(floats);
+                    double max = outliers.isEmpty() ? q3 : vm.mathtools.Tools.getMax(floats);
+                    double mean = item.getMean().doubleValue();
+                    min = Math.min(q1, min);
+                    max = Math.max(q3, max);
+                    String traceName = columnKeys.get(columnIdx).toString();
+                    if (traceName.isBlank()) {
+                        traceName = plot.getRangeAxis().getLabel();
+                    }
+                    w.write("Trace;" + traceName);
+                    w.write(";min;" + min);
+                    w.write(";q1;" + q1);
+                    w.write(";median;" + median);
+                    w.write(";q3;" + q3);
+                    w.write(";max;" + max);
+                    w.write(";;mean;" + mean);
+                    w.write(";IQD;" + (q3 - q1));
+                    w.newLine();
+                }
+                w.newLine();
+            }
+//            for (int sIdx = 0; sIdx < columnKeys.size(); sIdx++) {
+//                XYSeries cast = (XYSeries) columnKeys.get(sIdx);
+//                List<Float> xValues = new ArrayList<>();
+//                List<Float> yValues = new ArrayList<>();
+//                List<Float> labels = new ArrayList<>();
+//                int itemCount = cast.getItemCount();
+//                for (int i = 0; i < itemCount; i++) {
+//                    float x = vm.mathtools.Tools.correctPossiblyCorruptedFloat(cast.getX(i).floatValue());
+//                    float y = vm.mathtools.Tools.correctPossiblyCorruptedFloat(cast.getY(i).floatValue());
+//                    xValues.add(x);
+//                    yValues.add(y);
+//                }
+//                w.write("Trace;");
+//                String traceName = dataset.getSeriesKey(sIdx).toString();
+//                if (traceName.isBlank()) {
+//                    traceName = plot.getRangeAxis().getLabel();
+//                }
+//                w.write(traceName + ";X:");
+//                for (Float xValue : xValues) {
+//                    w.write(";" + xValue);
+//                }
+//                w.newLine();
+//                w.write("Trace;");
+//                w.write(traceName + ";Y:");
+//                for (Float yValue : yValues) {
+//                    w.write(";" + yValue);
+//                }
+//                w.newLine();
+//                w.write("Labels:;");
+//                w.write(traceName + ";of X:");
+//                for (Float label : labels) {
+//                    w.write(";" + label);
+//                }
+//                w.newLine();
+//            }
+            w.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(BoxPlotXCategoriesPlotter.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static class DummyBoxAndWhiskerItem extends BoxAndWhiskerItem {

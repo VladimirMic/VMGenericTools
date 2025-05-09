@@ -31,9 +31,16 @@ import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
  */
 public class MyBoxAndWhiskerRenderer extends BoxAndWhiskerRenderer {
 
-    public static Integer GAP_TRACES = 28;
-    public static Integer GAP_GROUPS = 28;
-    public static Integer Y_WIDTH = 160;
+//    public static final Integer GAP_TRACES = 28;
+//    public static final Integer GAP_GROUPS = 28;
+//    public static final Integer Y_WIDTH = 160;
+    private int seriesGap = 30;
+    private int barWidth = 28;
+
+    public void adjustBoxWidth(float scale) {
+        seriesGap *= scale;
+        barWidth *= scale;
+    }
 
     private Double outlierRadius;
 
@@ -60,8 +67,7 @@ public class MyBoxAndWhiskerRenderer extends BoxAndWhiskerRenderer {
         int seriesCount = getRowCount();
 //        int categoryCount = getColumnCount();
 
-        double seriesGap = 30;
-        state.setBarWidth(28);
+        state.setBarWidth(barWidth);
 //        double seriesGap = dataArea.getWidth() * getItemMargin() / (categoryCount * (seriesCount - 1));
 
         if (seriesCount > 1) {

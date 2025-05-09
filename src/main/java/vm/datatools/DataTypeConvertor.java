@@ -242,8 +242,9 @@ public class DataTypeConvertor {
         } catch (java.lang.OutOfMemoryError ex) {
             LOG.log(Level.WARNING, "Unsufficient memory to store the matrix: {0} * {1}", new Object[]{array.length, array[0].length});
         }
-        return "";        
+        return "";
     }
+
     public static String floatMatrixToCsvString(float[][] array, String columnDelimiter) {
         return floatMatrixToCsvString(array, columnDelimiter, "\n");
     }
@@ -396,6 +397,18 @@ public class DataTypeConvertor {
                 ret[i] = null;
             } else {
                 ret[i] = Float.valueOf(objects[i].toString());
+            }
+        }
+        return ret;
+    }
+
+    public static Integer[] objectsToIntegers(Object[] objects) {
+        Integer[] ret = new Integer[objects.length];
+        for (int i = 0; i < objects.length; i++) {
+            if (objects[i] == null) {
+                ret[i] = null;
+            } else {
+                ret[i] = Integer.valueOf(objects[i].toString());
             }
         }
         return ret;
@@ -582,6 +595,22 @@ public class DataTypeConvertor {
             arrayList.addAll(set);
         }
         ret.addAll(arrayList);
+        return ret;
+    }
+
+    public static int[] integerListToInts(List<Integer> integers) {
+        int[] ret = new int[integers.size()];
+        for (int i = 0; i < integers.size(); i++) {
+            ret[i] = integers.get(i);
+        }
+        return ret;
+    }
+
+    public static List<Float> numbersToFloats(List<Number> values) {
+        List<Float> ret = new ArrayList<>();
+        for (Number value : values) {
+            ret.add(vm.mathtools.Tools.correctPossiblyCorruptedFloat(value.floatValue()));
+        }
         return ret;
     }
 

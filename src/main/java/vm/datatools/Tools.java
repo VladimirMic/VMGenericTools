@@ -1,5 +1,6 @@
 package vm.datatools;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
@@ -30,6 +33,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -860,6 +864,20 @@ public class Tools {
         return parseFloat(object.toString());
     }
 
+    public static BufferedImage loadImageFromUrl(URL url) throws MalformedURLException, IOException {
+        return ImageIO.read(url);
+    }
+
+    public static boolean storeImage(BufferedImage image, File destFile) throws IOException {
+        LOG.log(Level.INFO, "Storing image ({0} x {1}) to file {2}", new Object[]{image.getWidth(), image.getHeight(), destFile.getCanonicalPath()});
+        return ImageIO.write(image, "png", destFile);
+    }
+
+    public static boolean storeImage(BufferedImage image, String path) throws IOException {
+        File outputfile = new File(path);
+        return storeImage(image, outputfile);
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;
@@ -873,6 +891,19 @@ public class Tools {
                 }
             }
             return 0;
+        }
+
+    }
+
+    public static class MapByFloatArrayValueComparator<T extends Comparable> implements Comparator<Map.Entry<T, float[]>> {
+
+        private Comparator<float[]> comparator = new Tools.FloatArraySameLengthsComparator();
+
+        @Override
+        public int compare(Map.Entry<T, float[]> o1, Map.Entry<T, float[]> o2) {
+            float[] val1 = o1.getValue();
+            float[] val2 = o2.getValue();
+            return comparator.compare(val1, val2);
         }
 
     }

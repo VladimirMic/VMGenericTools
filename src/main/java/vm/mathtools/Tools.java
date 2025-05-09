@@ -292,6 +292,14 @@ public class Tools {
         return new Percentile(25).evaluate(DataTypeConvertor.floatsToDoubles(values));
     }
 
+    public static double getIQD(float[] values) {
+        return getQuartile3(values) - getQuartile1(values);
+    }
+
+    public static double getIQD(double[] values) {
+        return getQuartile3(values) - getQuartile1(values);
+    }
+
     public static double getQuartile1(double[] values) {
         return new Percentile(25).evaluate(values);
     }
