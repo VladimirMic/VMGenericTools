@@ -33,6 +33,33 @@ import vm.datatools.DataTypeConvertor;
  */
 public class Tools {
 
+    public static int roundIntUp(int multiplier, int integer) {
+        if (multiplier < 0) {
+            return integer;
+        }
+        if (integer % multiplier == 0) {
+            return integer;
+        }
+        int d = integer / multiplier;
+        d = d + 1;
+        return d * multiplier;
+    }
+
+    public static String byteToHex(byte byteB) {
+        byte[] bytes = new byte[]{byteB};
+        return bytesToHex(bytes);
+    }
+
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int i = 0; i < bytes.length; i++) {
+            int v = bytes[i] & 255;
+            hexChars[i * 2] = Character.forDigit((v >>> 4) & 15, 16);
+            hexChars[i * 2 + 1] = Character.forDigit(v & 15, 16);
+        }
+        return new String(hexChars);
+    }
+
     public static enum LOGICAL_CONNECTION {
         AND,
         OR

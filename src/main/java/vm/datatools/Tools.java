@@ -158,7 +158,7 @@ public class Tools {
                     String line = br.readLine();
                     String[] split = line.split(";");
                     if (split.length == 2) {
-                        ret.put(split[0], split[1]);
+                        ret.put(removeQuotes(split[0]), removeQuotes(split[1]));
                     }
                 }
             } catch (NullPointerException e) {
@@ -371,14 +371,39 @@ public class Tools {
         printArray(array, true);
     }
 
+    public static void printArray(byte[] array) {
+        printArray(array, true);
+    }
+
     public static void printArray(float[] array, String separator, boolean newline, PrintStream ps) {
         for (int i = 0; i < array.length; i++) {
-            float val = array[i];
-            ps.print(val + separator);
+            ps.print(array[i] + separator);
         }
         if (newline) {
             ps.println();
         }
+    }
+
+    public static void printArray(long[] array, String separator, boolean newline, PrintStream ps) {
+        for (int i = 0; i < array.length; i++) {
+            ps.print(array[i] + separator);
+        }
+        if (newline) {
+            ps.println();
+        }
+    }
+
+    public static void printArray(byte[] array, String separator, boolean newline, PrintStream ps) {
+        for (int i = 0; i < array.length; i++) {
+            ps.print(array[i] + separator);
+        }
+        if (newline) {
+            ps.println();
+        }
+    }
+
+    public static void printArray(byte[] array, boolean newline) {
+        Tools.printArray(array, ";", newline, System.err);
     }
 
     public static void printArray(float[] array, boolean newline) {
@@ -819,7 +844,7 @@ public class Tools {
         if (string.startsWith("\"") && string.endsWith("\"")) {
             return string.substring(1, string.length() - 1);
         }
-        return string;
+        return string.trim();
     }
 
     public static Float parseFloat(String string) {
