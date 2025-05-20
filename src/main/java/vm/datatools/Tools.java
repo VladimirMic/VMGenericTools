@@ -876,6 +876,9 @@ public class Tools {
     }
 
     public static boolean isParseableToIntegers(Object[] array) {
+        if (array == null) {
+            return false;
+        }
         for (Object o : array) {
             Integer iValue = parseInteger(o);
             if (iValue == null) {
