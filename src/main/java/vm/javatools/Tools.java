@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class Tools {
 
-    private static boolean sleepDuringTheNight = true;
+    private static boolean sleepDuringTheNight = false;
 //    public static final Integer PARALELISATION = 1;
     public static final Integer PARALELISATION = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
     public static final Logger LOG = Logger.getLogger(Tools.class.getName());
