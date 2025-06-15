@@ -98,7 +98,7 @@ public abstract class AbstractPlotter {
     protected boolean yThousandDelimit = true;
     private float[] yBounds = null;
     private Double yStep = null;
-    private Double xStep = null;
+    protected Double xStep = null;
 
     public void setxThousandDelimit(boolean xThousandDelimit) {
         this.xThousandDelimit = xThousandDelimit;

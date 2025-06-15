@@ -29,7 +29,6 @@ import vm.plot.impl.auxiliary.MyCategoryAxis;
 public class BoxPlotXNumbersPlotter extends BoxPlotXCategoriesPlotter {
 
     protected final boolean isHorizontal;
-    private Float givenXStep = null;
 
     protected BoxPlotXNumbersPlotter(boolean isHorizontal) {
         this.isHorizontal = isHorizontal;
@@ -37,14 +36,6 @@ public class BoxPlotXNumbersPlotter extends BoxPlotXCategoriesPlotter {
 
     public BoxPlotXNumbersPlotter() {
         this(false);
-    }
-
-    public Float getXStep() {
-        return givenXStep;
-    }
-
-    public void setXStep(Float givenXStep) {
-        this.givenXStep = givenXStep;
     }
 
     @Override
@@ -67,9 +58,9 @@ public class BoxPlotXNumbersPlotter extends BoxPlotXCategoriesPlotter {
         }
         float max = vm.mathtools.Tools.getMax(groupNumbers);
         float min = vm.mathtools.Tools.getMin(groupNumbers);
-        float xStep = givenXStep == null ? (float) vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max) : givenXStep;
-        if (Float.isNaN(xStep)) {
-            xStep = 1;
+        float xStepNew = xStep == null ? (float) vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max) : xStep.floatValue();
+        if (Float.isNaN(xStepNew)) {
+            xStepNew = 1;
         }
         for (int traceID = 0; traceID < values.length; traceID++) {
             List<Float>[] valuesForGroups = values[traceID];
@@ -82,8 +73,8 @@ public class BoxPlotXNumbersPlotter extends BoxPlotXCategoriesPlotter {
             for (int groupId = 0; groupId < valuesForGroups.length; groupId++) {
                 List<Float> valuesForGroupAndTrace = valuesForGroups[groupId];
                 Float groupName = Float.valueOf(groupNumbers[groupId].toString());
-                while (previousKey != null && groupName > previousKey + xStep * 1.5f) {// othewise damages the floating point numbers
-                    previousKey += xStep;
+                while (previousKey != null && groupName > previousKey + xStepNew * 1.5f) {// othewise damages the floating point numbers
+                    previousKey += xStepNew;
                     previousKey = vm.mathtools.Tools.correctPossiblyCorruptedFloat(previousKey);
                     iValue = Tools.parseInteger(previousKey);
                     keyString = iValue == null ? previousKey.toString() : iValue.toString();
@@ -101,7 +92,7 @@ public class BoxPlotXNumbersPlotter extends BoxPlotXCategoriesPlotter {
         }
         JFreeChart chart;
         if (isHorizontal) {
-            String stepString = ((int) xStep) == xStep ? Integer.toString((int) xStep) : Float.toString(xStep);
+            String stepString = ((int) xStepNew) == xStepNew ? Integer.toString((int) xStepNew) : Float.toString(xStepNew);
             chart = ChartFactory.createBoxAndWhiskerChart(mainTitle, yAxisLabel + " (width: " + stepString + ")", xAxisLabel, dataset, true);
         } else {
             chart = ChartFactory.createBoxAndWhiskerChart(mainTitle, xAxisLabel, yAxisLabel, dataset, true);
@@ -158,16 +149,16 @@ public class BoxPlotXNumbersPlotter extends BoxPlotXCategoriesPlotter {
         Float[] groupNumbers = keySet.toArray(Float[]::new);
         float max = vm.mathtools.Tools.getMax(groupNumbers);
         float min = vm.mathtools.Tools.getMin(groupNumbers);
-        float xStep = vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max);
-        if (givenXStep != null) {
-            xStep = vm.mathtools.Tools.round(xStep, givenXStep, false);
-            if (xStep == 0) {
-                xStep = givenXStep;
+        float xStepNew = vm.mathtools.Tools.computeBasicXIntervalForHistogram(min, max);
+        if (xStep != null) {
+            xStepNew = vm.mathtools.Tools.round(xStepNew,  xStep.floatValue(), false);
+            if (xStepNew == 0) {
+                xStepNew = xStep.floatValue();
             }
         }
         Map<Float, List<Float>> ret = new TreeMap<>();
         for (Map.Entry<Float, Float> entry : xToYMap.entrySet()) {
-            float key = vm.mathtools.Tools.round(entry.getKey(), xStep, false);
+            float key = vm.mathtools.Tools.round(entry.getKey(), xStepNew, false);
             if (!ret.containsKey(key)) {
                 ret.put(key, new ArrayList<>());
             }
