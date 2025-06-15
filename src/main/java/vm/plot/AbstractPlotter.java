@@ -98,6 +98,7 @@ public abstract class AbstractPlotter {
     protected boolean yThousandDelimit = true;
     private float[] yBounds = null;
     private Double yStep = null;
+    private Double xStep = null;
 
     public void setxThousandDelimit(boolean xThousandDelimit) {
         this.xThousandDelimit = xThousandDelimit;
@@ -154,6 +155,10 @@ public abstract class AbstractPlotter {
 
     public void setYStep(Double yStep) {
         this.yStep = yStep;
+    }
+
+    public void setXStep(Double xStep) {
+        this.xStep = xStep;
     }
 
     protected double setAxisUnits(Double step, ValueAxis axis, Integer axisImplicitTicksNumber, boolean forceIntegerStep) {
@@ -377,15 +382,15 @@ public abstract class AbstractPlotter {
         xAxis.setAutoRangeIncludesZero(includeZeroForXAxisLocal);
         NumberFormat nf = NumberFormat.getInstance(Locale.US);
         nf.setGroupingUsed(xThousandDelimit);
-        Double xStep = setAxisUnits(null, xAxis, xTicksForShort, false);
-        if (xStep >= 120) {
+        Double xStepNew = setAxisUnits(xStep, xAxis, xTicksForShort, false);
+        if (xStepNew >= 120) {
             NumberFormat nfBig = new CompactNumberFormat(
                     "#,##0.##",
                     DecimalFormatSymbols.getInstance(Locale.US),
                     new String[]{"", "", "", "0K", "00K", "000K", "0M", "00M", "000M", "0B", "00B", "000B", "0T", "00T", "000T"});
             nf = nfBig;
             try {
-                setDecimalsForShortExpressionOfYTicks(nf, xStep, xAxis);
+                setDecimalsForShortExpressionOfYTicks(nf, xStepNew, xAxis);
             } catch (ParseException ex) {
                 Logger.getLogger(AbstractPlotter.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -394,11 +399,11 @@ public abstract class AbstractPlotter {
 
         double ubShown = calculateHighestVisibleTickValue(xAxis);
         double lb = xAxis.getLowerBound();
-        int maxTickLength = getMaxTickLabelLength(lb, ubShown, xStep, nf);
+        int maxTickLength = getMaxTickLabelLength(lb, ubShown, xStepNew, nf);
         if (maxTickLength >= 4) {
             setAxisUnits(null, xAxis, X_TICKS_IMPLICIT_COUNT_FOR_LONG_DESC, false);
         }
-        setRotationOfValueAxisFont(xAxis, xStep, nf);
+        setRotationOfValueAxisFont(xAxis, xStepNew, nf);
     }
 
     protected void setRotationOfXAxisCategoriesFont(CategoryAxis xAxis, Object[] groupsNames, int tracesPerGroup) {

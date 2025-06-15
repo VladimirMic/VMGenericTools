@@ -19,19 +19,13 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer im
     private final TreeMap<Integer, List<Float>> pointsToLabels;
     private final TreeMap<Integer, LookupPaintScale> rainboxPaintScale;
     private final boolean logarithmic;
+    private final StandardColours.COLOUR_NAME[] implicitColors;
 
-    public MyXYLineAndShapeColourfulRenderer() {
-        this(null);
-    }
-
-    public MyXYLineAndShapeColourfulRenderer(TreeMap<Integer, List<Float>> pointsToLabels) {
-        this(pointsToLabels, false);
-    }
-
-    public MyXYLineAndShapeColourfulRenderer(TreeMap<Integer, List<Float>> pointsToLabels, boolean logarithmicScale) {
+    public MyXYLineAndShapeColourfulRenderer(TreeMap<Integer, List<Float>> pointsToLabels, boolean logarithmicScale, StandardColours.COLOUR_NAME[] implicitColors) {
         this.pointsToLabels = new TreeMap<>(pointsToLabels);
+        this.implicitColors = implicitColors;
         rainboxPaintScale = new TreeMap<>();
-        if (pointsToLabels != null) {
+        if (pointsToLabels != null && implicitColors == null) {
             Set<Integer> series = pointsToLabels.keySet();
             for (Integer s : series) {
                 List<Float> labels = pointsToLabels.get(s);
@@ -50,7 +44,7 @@ public class MyXYLineAndShapeColourfulRenderer extends XYLineAndShapeRenderer im
         List<Float> pointsToColourValue = pointsToLabels.get(seriesIdx);
         LookupPaintScale scale = rainboxPaintScale.get(seriesIdx);
         if (pointsToColourValue == null || pointsToColourValue.isEmpty() || scale == null) {
-            return StandardColours.BOX_BLACK;
+            return implicitColors == null ? StandardColours.BOX_BLACK : StandardColours.getColor(implicitColors[seriesIdx], false);
         }
         Float colourValue1 = pointsToColourValue.get(pointIdx);
         if (colourValue1 != null && !Float.isNaN(colourValue1)) {

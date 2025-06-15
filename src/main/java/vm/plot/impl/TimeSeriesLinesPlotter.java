@@ -44,14 +44,15 @@ public class TimeSeriesLinesPlotter extends LinesOrPointsPlotter {
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceColour, dates, yValues);
     }
 
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesName, COLOUR_NAME[] traceColours, Map<Date, Float>[] xToYMaps) {
+    @Override
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesName, COLOUR_NAME[] traceColours, Map[] xToYMaps) {
         Date[][] xValues = new Date[xToYMaps.length][];
         float[][] yValuesArray = new float[xToYMaps.length][];
         int i = 0;
         for (Map<Date, Float> xToYMap : xToYMaps) {
             TimeSeriesLinesPlotter.transformMapToArrays(xToYMap);
-            xValues[i] = TimeSeriesLinesPlotter.getDates();
-            yValuesArray[i] = TimeSeriesLinesPlotter.getyValues();
+            xValues[i] = dates;
+            yValuesArray[i] = yValues;
             i++;
         }
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, tracesName, traceColours, xValues, yValuesArray);
@@ -60,7 +61,7 @@ public class TimeSeriesLinesPlotter extends LinesOrPointsPlotter {
     private static Date[] dates;
     private static float[] yValues;
 
-    public static void transformMapToArrays(Map<Date, Float> xToYMap) {
+    private static void transformMapToArrays(Map<Date, Float> xToYMap) {
         dates = new Date[xToYMap.size()];
         yValues = new float[xToYMap.size()];
         int i = 0;
@@ -69,14 +70,6 @@ public class TimeSeriesLinesPlotter extends LinesOrPointsPlotter {
             yValues[i] = (float) entry.getValue();
             i++;
         }
-    }
-
-    public static Date[] getDates() {
-        return dates;
-    }
-
-    public static float[] getyValues() {
-        return yValues;
     }
 
 }

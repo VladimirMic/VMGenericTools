@@ -17,6 +17,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -114,6 +115,11 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         coloursLabel = coloursAxisNameOrNull;
     }
 
+    public void setLabelsAndPointColours(int seriesIdx, Collection<Float> labelsAndcoloursList, String coloursAxisNameOrNull) {
+        ArrayList<Float> arrayList = new ArrayList<>(labelsAndcoloursList);
+        setLabelsAndPointColours(seriesIdx, arrayList, coloursAxisNameOrNull);
+    }
+
     public void setNumberFormatForTraceLabel(int seriesIdx, NumberFormat nf) {
         if (nfs.containsKey(seriesIdx)) {
             nfs.remove(seriesIdx);
@@ -177,17 +183,21 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
     }
 
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, COLOUR_NAME traceColour, Map<Float, Float> xToYMap) {
-        float[] xValues = new float[xToYMap.size()];
-        float[] yValues = new float[xToYMap.size()];
-        Iterator<Map.Entry<Float, Float>> it = xToYMap.entrySet().iterator();
-        for (int i = 0; it.hasNext(); i++) {
-            Map.Entry<Float, Float> entry = it.next();
-            xValues[i] = entry.getKey();
-            yValues[i] = entry.getValue();
-        }
-        xValues = vm.mathtools.Tools.correctPossiblyCorruptedFloats(xValues);
-        yValues = vm.mathtools.Tools.correctPossiblyCorruptedFloats(yValues);
+        transformMap(xToYMap);
         return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, traceColour, xValues, yValues);
+    }
+
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String[] tracesName, COLOUR_NAME[] traceColours, Map<Float, Float>[] xToYMaps) {
+        float[][] xValuesArray = new float[xToYMaps.length][];
+        float[][] yValuesArray = new float[xToYMaps.length][];
+        int i = 0;
+        for (Map<Float, Float> xToYMap : xToYMaps) {
+            transformMap(xToYMap);
+            xValuesArray[i] = xValues;
+            yValuesArray[i] = yValues;
+            i++;
+        }
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, tracesName, traceColours, xValuesArray, yValuesArray);
     }
 
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object[] tracesNames, COLOUR_NAME[] tracesColours, float[][] tracesXValues, float[][] tracesYValues) {
@@ -290,7 +300,8 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         boolean deleteSeriesToXToLabels = false;
         if (renderer instanceof XYLineAndShapeRenderer) {
             deleteSeriesToXToLabels = checkPointLabelsForColours(traces, yAxisLabel);
-            lineAndShapeRenderer = new MyXYLineAndShapeColourfulRenderer(pointsToLabels, logarithmicScaleOfColours);
+            COLOUR_NAME[] c = deleteSeriesToXToLabels ? null : tracesColours;
+            lineAndShapeRenderer = new MyXYLineAndShapeColourfulRenderer(pointsToLabels, logarithmicScaleOfColours, c);
             plot.setRenderer(lineAndShapeRenderer);
             renderer = lineAndShapeRenderer;
         }
@@ -499,6 +510,22 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
             }
         }
         return ret;
+    }
+
+    private static float[] xValues;
+    private static float[] yValues;
+
+    private static void transformMap(Map<Float, Float> xToYMap) {
+        xValues = new float[xToYMap.size()];
+        yValues = new float[xToYMap.size()];
+        int i = 0;
+        for (Map.Entry entry : xToYMap.entrySet()) {
+            xValues[i] = (float) entry.getKey();
+            yValues[i] = (float) entry.getValue();
+            i++;
+        }
+        xValues = vm.mathtools.Tools.correctPossiblyCorruptedFloats(xValues);
+        yValues = vm.mathtools.Tools.correctPossiblyCorruptedFloats(yValues);
     }
 
 }
