@@ -97,8 +97,10 @@ public abstract class AbstractPlotter {
     protected boolean xThousandDelimit = true;
     protected boolean yThousandDelimit = true;
     private float[] yBounds = null;
+    private float[] xBounds = null;
     private Double yStep = null;
     protected Double xStep = null;
+    protected boolean showLegend = true;
 
     public void setxThousandDelimit(boolean xThousandDelimit) {
         this.xThousandDelimit = xThousandDelimit;
@@ -220,7 +222,7 @@ public abstract class AbstractPlotter {
     }
 
     public final void storePlotPDF(String path, JFreeChart plot, int width, int height) {
-        setMarginsForPaintScaleLegent(plot, height);
+        setMarginsForPaintScaleLegend(plot, height);
         if (!path.endsWith(".svg")) {
             path += ".svg";
         }
@@ -265,7 +267,7 @@ public abstract class AbstractPlotter {
     }
 
     public final void storePlotPNG(String path, JFreeChart plot, int width, int height) {
-        setMarginsForPaintScaleLegent(plot, height);
+        setMarginsForPaintScaleLegend(plot, height);
         if (!path.endsWith(".png")) {
             path += ".png";
         }
@@ -318,27 +320,32 @@ public abstract class AbstractPlotter {
 
     protected abstract void storeCsvRawData(String path, JFreeChart plot);
 
-    private Double xAxisUpperBound = Double.NaN;
-
-    public void setXAxisUpperBound(double value) {
-        xAxisUpperBound = value;
+    public void setXBounds(float min, float max) {
+        xBounds = new float[]{min, max};
     }
 
     protected void setTicksOfXNumericAxis(ValueAxis xAxis) {
-        if (!xAxisUpperBound.equals(Double.NaN)) {
-            xAxis.setUpperBound(xAxisUpperBound);
+        if (xBounds != null) {
+            xAxis.setUpperBound(xBounds[1]);
+            if (!includeZeroForYAxis) {
+                xAxis.setLowerBound(xBounds[0]);
+            } else {
+                xAxis.setLowerBound(xBounds[0]);
+            }
         }
         Boolean includeZeroForXAxisLocal = includeZeroForXAxis;
         try {
             boolean coversZero = xAxis.getLowerBound() <= 0 && xAxis.getUpperBound() >= 0;
             if (coversZero) {
                 includeZeroForXAxisLocal = true;
-            } else if (includeZeroForXAxisLocal == null) {
+            } else if (includeZeroForXAxisLocal == null && xBounds == null) {
                 LOG.log(Level.WARNING, "Asking for involving zero to x axis");
                 Object[] options = new String[]{"Yes", "No"};
                 String question = "Do you want to involve ZERO to the X axis for all the plots being produced?";
                 int add = JOptionPane.showOptionDialog(null, question, "Involve zero to the axis?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, JOptionPane.NO_OPTION);
                 includeZeroForXAxisLocal = add == 0;
+            } else if (xBounds != null) {
+                includeZeroForXAxisLocal = false;
             }
         } catch (Throwable e) {
             includeZeroForXAxisLocal = true;
@@ -506,6 +513,10 @@ public abstract class AbstractPlotter {
         axis.setAxisLineVisible(false); // doubles lines next to axes
     }
 
+    public void setShowLegend(boolean showLegend) {
+        this.showLegend = showLegend;
+    }
+
     protected void setLegendFont(LegendTitle legend) {
         if (legend != null) {
             legend.setItemFont(FONT_AXIS_MARKERS);
@@ -613,16 +624,20 @@ public abstract class AbstractPlotter {
         }
     }
 
-    private void setMarginsForPaintScaleLegent(JFreeChart plot, int height) {
-        List subtitles = plot.getSubtitles();
-        if (subtitles != null && !subtitles.isEmpty()) {
-            double margin = (0.05 * height) / 2;
-            for (Object subtitle : subtitles) {
-                if (subtitle instanceof PaintScaleLegend) {
-                    PaintScaleLegend psl = (PaintScaleLegend) subtitle;
-                    psl.setMargin(margin, 0, margin, 0);
+    private void setMarginsForPaintScaleLegend(JFreeChart plot, int height) {
+        if (showLegend) {
+            List subtitles = plot.getSubtitles();
+            if (subtitles != null && !subtitles.isEmpty()) {
+                double margin = (0.05 * height) / 2;
+                for (Object subtitle : subtitles) {
+                    if (subtitle instanceof PaintScaleLegend) {
+                        PaintScaleLegend psl = (PaintScaleLegend) subtitle;
+                        psl.setMargin(margin, 0, margin, 0);
+                    }
                 }
             }
+        } else {
+            plot.removeLegend();
         }
     }
 }
