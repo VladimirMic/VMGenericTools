@@ -1,5 +1,11 @@
 package vm.javatools;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -108,6 +114,35 @@ public class Tools {
         return DF_DDMMYYYY_HHMM.format(new Date());
     }
 
+    private static final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+    public static void copyCtrlC(String string) {
+        StringSelection stringSelection = new StringSelection(string);
+        try {
+            clipboard.setContents(stringSelection, stringSelection);
+        } catch (java.lang.IllegalStateException e) {
+            LOG.log(Level.WARNING, "Error in copy");
+        }
+    }
+
+    public static BufferedImage resizeImage(BufferedImage img, int maxWidth, int maxHeight) {
+        int width = img.getWidth();
+        int height = img.getHeight();
+        float rW = width / (float) maxWidth;
+        float rH = height / (float) maxHeight;
+        float r = Math.max(rW, rH);
+        width = (int) (width / r);
+        height = (int) (height / r);
+        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return dimg;
+    }
+
     public static class ArrayIterator<T> implements Iterator<T> {
 
         private final T[] array;
@@ -135,6 +170,10 @@ public class Tools {
             return array[currPos - 1];
         }
 
+    }
+
+    public static void beep() {
+        Toolkit.getDefaultToolkit().beep();
     }
 
 }

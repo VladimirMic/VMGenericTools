@@ -671,7 +671,34 @@ public class Tools {
         } catch (Exception e) {
         }
         return null;
+    }
 
+    public static int getNumberOfDigitsInString(String string) {
+        int ret = 0;
+        if (string == null) {
+            return ret;
+        }
+        for (int i = 0; i < string.length(); i++) {
+            char charAt = string.charAt(i);
+            if (Character.isDigit(charAt)) {
+                ret++;
+            }
+        }
+        return ret;
+    }
+
+    public static long getDigitsFromString(String string) {
+        long ret = 0;
+        if (string == null) {
+            return ret;
+        }
+        for (int i = 0; i < string.length(); i++) {
+            char charAt = string.charAt(i);
+            if (Character.isDigit(charAt)) {
+                ret = 10 * ret + Integer.parseInt(Character.toString(charAt));
+            }
+        }
+        return ret;
     }
 
     public static boolean isInArray(Object[] array, Object obj) {
