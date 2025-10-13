@@ -262,8 +262,8 @@ public class BoxPlotXCategoriesPlotter extends AbstractPlotter {
                     double q3 = item.getQ3().doubleValue();
                     List<Number> outliers = item.getOutliers();
                     List<Float> floats = DataTypeConvertor.numbersToFloats(outliers);
-                    double min = outliers.isEmpty() ? q1 : vm.mathtools.Tools.getMin(floats);
-                    double max = outliers.isEmpty() ? q3 : vm.mathtools.Tools.getMax(floats);
+                    double min = item.getMinOutlier().floatValue();
+                    double max = item.getMaxOutlier().floatValue();
                     double mean = item.getMean().doubleValue();
                     min = Math.min(q1, min);
                     max = Math.max(q3, max);
