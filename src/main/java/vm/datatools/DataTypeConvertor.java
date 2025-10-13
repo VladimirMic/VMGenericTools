@@ -374,6 +374,14 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static double[] longsArrayToDoubles(long[] array) {
+        double[] ret = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            ret[i] = Double.parseDouble(Long.toString(array[i]));
+        }
+        return ret;
+    }
+
     public static float[] intsArrayToFloats(int[] array) {
         float[] ret = new float[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -610,6 +618,28 @@ public class DataTypeConvertor {
         List<Float> ret = new ArrayList<>();
         for (Number value : values) {
             ret.add(vm.mathtools.Tools.correctPossiblyCorruptedFloat(value.floatValue()));
+        }
+        return ret;
+    }
+
+    public static float[][] swapRowsAndColumns(float[][] data) {
+        int length = data[0].length;
+        float[][] ret = new float[length][data.length];
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < length; j++) {
+                ret[j][i] = data[i][j];
+            }
+        }
+        return ret;
+    }
+
+    public static double[][] swapRowsAndColumns(double[][] data) {
+        int length = data[0].length;
+        double[][] ret = new double[length][data.length];
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < length; j++) {
+                ret[j][i] = data[i][j];
+            }
         }
         return ret;
     }
