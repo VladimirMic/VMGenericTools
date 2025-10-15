@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -46,10 +47,10 @@ public class HeatMapPlotter extends AbstractPlotter {
     public static final Integer IMPLICIT_Z_COLOUR_COUNT = 20;
 
     private Integer zColoursCount = null;
-    private Double givenZStep = null;
+    private Float givenZStep = null;
     private Double givenXStep = null;
-    private float multiplicationOfXBasicStep = 1;
     private Double givenYStep = null;
+    private float multiplicationOfXBasicStep = 1;
 
     private boolean contrastiveColours;
 
@@ -75,7 +76,7 @@ public class HeatMapPlotter extends AbstractPlotter {
     }
 
     public HeatMapPlotter(int zColoursCount, boolean contrastiveColours) {
-        this.zColoursCount = zColoursCount + 1;
+        this.zColoursCount = zColoursCount;
         this.contrastiveColours = contrastiveColours;
     }
 
@@ -84,17 +85,17 @@ public class HeatMapPlotter extends AbstractPlotter {
      *
      * @param zStep
      */
-    public HeatMapPlotter(Double zStep) {
+    public HeatMapPlotter(Float zStep) {
         this(zStep, true);
     }
 
-    public HeatMapPlotter(Double zStep, boolean contrastiveColours) {
+    public HeatMapPlotter(Float zStep, boolean contrastiveColours) {
         this.zColoursCount = IMPLICIT_Z_COLOUR_COUNT;
         this.givenZStep = zStep;
         this.contrastiveColours = contrastiveColours;
     }
 
-    public void setGivenZStep(Double givenZStep) {
+    public void setGivenZStep(Float givenZStep) {
         this.givenZStep = givenZStep;
     }
 
@@ -108,6 +109,7 @@ public class HeatMapPlotter extends AbstractPlotter {
 
     public void setGivenXStep(Double givenXStep) {
         this.givenXStep = givenXStep;
+        zColoursCount = null;
     }
 
     public void setGivenYStep(Double givenYStep) {
@@ -141,6 +143,41 @@ public class HeatMapPlotter extends AbstractPlotter {
     }
 
     /**
+     * see @createPlot with float arrays
+     *
+     * @param mainTitle
+     * @param xAxisLabel
+     * @param yAxisLabel
+     * @param traceName
+     * @param yxzValues
+     * @param yHeaders
+     * @param xHeaders
+     * @return
+     */
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, float[][] yxzValues, Map<Object, Integer> yHeaders, Map<Object, Integer> xHeaders) {
+        double[][] valuesFloat = DataTypeConvertor.floatMatrixToDoubleMatrix(yxzValues);
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, valuesFloat, yHeaders, xHeaders);
+    }
+
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, float[][] yxzValues) {
+        Map<Object, Integer> yHeaders = createTrivialMapping(yxzValues.length);
+        Map<Object, Integer> xHeaders = createTrivialMapping(yxzValues[0].length);
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, yxzValues, yHeaders, xHeaders);
+    }
+
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, int[][] yxzValues) {
+        Map<Object, Integer> yHeaders = createTrivialMapping(yxzValues.length);
+        Map<Object, Integer> xHeaders = createTrivialMapping(yxzValues[0].length);
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, yxzValues, yHeaders, xHeaders);
+    }
+
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, double[][] yxzValues) {
+        Map<Object, Integer> yHeaders = createTrivialMapping(yxzValues.length);
+        Map<Object, Integer> xHeaders = createTrivialMapping(yxzValues[0].length);
+        return createPlot(mainTitle, xAxisLabel, yAxisLabel, traceName, yxzValues, yHeaders, xHeaders);
+    }
+
+    /**
      *
      * @param mainTitle title of the plot (up)
      * @param xAxisLabel xAxisLabel (can be null to hide)
@@ -154,7 +191,7 @@ public class HeatMapPlotter extends AbstractPlotter {
      * @values
      * @return
      */
-    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, float[][] yxzValues, Map<Object, Integer> yHeaders, Map<Object, Integer> xHeaders) {
+    public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, String traceName, double[][] yxzValues, Map<Object, Integer> yHeaders, Map<Object, Integer> xHeaders) {
         int size = yHeaders.size() * xHeaders.size();
         double[] xValues = new double[size];
         double[] yValues = new double[size];
@@ -233,7 +270,7 @@ public class HeatMapPlotter extends AbstractPlotter {
             maxZ += 1;
         }
 
-        LookupPaintScale paintScale = StandardColours.createPaintScale((float) minZ, (float) maxZ, !contrastiveColours, Color.WHITE);
+        LookupPaintScale paintScale = StandardColours.createPaintScale(givenZStep, (float) minZ, (float) maxZ, !contrastiveColours, Color.WHITE);
         NumberAxis zAxis = new NumberAxis(zAxisLabel);
         zAxis.setLowerMargin(0);
         zAxis.setUpperMargin(0);
@@ -243,8 +280,8 @@ public class HeatMapPlotter extends AbstractPlotter {
         psl.setPosition(RectangleEdge.RIGHT);
         psl.setAxisLocation(AxisLocation.TOP_OR_RIGHT);
         int count = contrastiveColours ? StandardColours.COLOURS.length : StandardColours.RAINBOW_COLOURS.length - 2;
-        double debug = setAxisUnits(null, psl.getAxis(), count, false); // todo - integers?
-
+//        double debug = setAxisUnits(null, psl.getAxis(), count, false); // todo - integers?
+//
 //        psl.setMargin(50.0, 20.0, 80.0, 0.0);
 //
 //        // step for z axis
@@ -513,6 +550,14 @@ public class HeatMapPlotter extends AbstractPlotter {
             }
         }
         return extremes;
+    }
+
+    private Map<Object, Integer> createTrivialMapping(int length) {
+        Map<Object, Integer> ret = new HashMap<>();
+        for (int i = 0; i < length; i++) {
+            ret.put(i, i);
+        }
+        return ret;
     }
 
 }

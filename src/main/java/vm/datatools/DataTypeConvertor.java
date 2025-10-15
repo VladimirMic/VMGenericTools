@@ -633,12 +633,11 @@ public class DataTypeConvertor {
         return ret;
     }
 
-    public static double[][] swapRowsAndColumns(double[][] data) {
-        int length = data[0].length;
-        double[][] ret = new double[length][data.length];
-        for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < length; j++) {
-                ret[j][i] = data[i][j];
+    public static Double[][] doublesMatrixToDoublesMatrix(double[][] corrs) {
+        Double[][] ret = new Double[corrs.length][corrs[0].length];
+        for (int i = 0; i < corrs.length; i++) {
+            for (int j = 0; j < corrs[i].length; j++) {
+                ret[i][j] = corrs[i][j];
             }
         }
         return ret;

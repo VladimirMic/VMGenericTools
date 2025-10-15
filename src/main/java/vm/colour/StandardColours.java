@@ -103,24 +103,24 @@ public class StandardColours {
     }
 
     public static LookupPaintScale createContrastivePaintScale(Collection<Float> coll) {
-        return createPaintScale(coll, false, false);
+        return createPaintScale(null, coll, false, false);
     }
 
     public static LookupPaintScale createContrastivePaintScale(Collection<Float> coll, boolean logarithmic) {
-        return createPaintScale(coll, false, logarithmic);
+        return createPaintScale(null, coll, false, logarithmic);
     }
 
     public static LookupPaintScale createContinuousPaintScale(Collection<Float> coll) {
-        return createPaintScale(coll, true, false);
+        return createPaintScale(null, coll, true, false);
     }
 
     public static LookupPaintScale createContinuousPaintScale(Collection<Float> coll, boolean logarithmic) {
-        return createPaintScale(coll, true, logarithmic);
+        return createPaintScale(null, coll, true, logarithmic);
     }
 
     private static final SortedMap<float[], LookupPaintScale> cache = new TreeMap<>(new Tools.FloatArraySameLengthsComparator());
 
-    public static LookupPaintScale createPaintScale(Collection<Float> coll, boolean continuous, boolean logarithmic) {
+    public static LookupPaintScale createPaintScale(Float givenZStep, Collection<Float> coll, boolean continuous, boolean logarithmic) {
         float minValue;
         float maxValue;
         if (coll != null && !coll.isEmpty()) {
@@ -139,12 +139,12 @@ public class StandardColours {
                 minValue = set.first();
                 maxValue = set.last();
             }
-            return createPaintScale(minValue, maxValue, continuous, Color.black);
+            return createPaintScale(givenZStep, minValue, maxValue, continuous, Color.black);
         }
         return trivialPaintScale();
     }
 
-    public static LookupPaintScale createPaintScale(float minValue, float maxValue, boolean continuous, Color implicit) {
+    public static LookupPaintScale createPaintScale(Float givenZStep, float minValue, float maxValue, boolean continuous, Color implicit) {
         float[] key = new float[]{minValue, maxValue};
         LookupPaintScale paintScale;
         Color[] colours = continuous ? StandardColours.RAINBOW_COLOURS : StandardColours.COLOURS;
@@ -154,8 +154,13 @@ public class StandardColours {
             if (minValue < maxValue) {
                 paintScale = new LookupPaintScale(minValue, maxValue, implicit);
                 float interval = maxValue - minValue;
-                double step = continuous ? interval / (colours.length - 2) : interval / colours.length;
-                step = vm.mathtools.Tools.getNiceStepForAxis((float) step);
+                double step;
+                if (givenZStep != null) {
+                    step = givenZStep;
+                } else {
+                    step = continuous ? interval / (colours.length - 2) : interval / colours.length;
+                    step = vm.mathtools.Tools.getNiceStepForAxis((float) step);
+                }
                 Logger.getLogger(StandardColours.class.getName()).log(Level.INFO, "Paint scale step defined to be: {0}", step);
                 minValue = (float) (vm.mathtools.Tools.round(minValue, (float) step, false) - step);
                 int i = 0;

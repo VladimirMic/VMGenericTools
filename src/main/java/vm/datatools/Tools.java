@@ -943,6 +943,17 @@ public class Tools {
         return storeImage(image, outputfile);
     }
 
+    public static double[][] swapRowsAndColumns(double[][] data) {
+        int length = data[0].length;
+        double[][] ret = new double[length][data.length];
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < length; j++) {
+                ret[j][i] = data[i][j];
+            }
+        }
+        return ret;
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;

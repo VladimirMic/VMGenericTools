@@ -242,9 +242,75 @@ public class Tools {
         return evaluator.correlation(a1, a2);
     }
 
+    public static double[][] sortIndexesOfCorrelationMatrixRowsToSeeClusters(double[][] corrs, double deleteValuesSmallerThan) {
+        for (double[] row : corrs) {
+            for (int j = 0; j < row.length; j++) {
+                if (row[j] < deleteValuesSmallerThan) {
+                    row[j] = Double.NaN;
+                }
+            }
+        }
+        int iterations = 10;
+        for (int iteration = 0; iteration < iterations; iteration++) {
+            SortedSet<Map.Entry<Integer, Float>> mapping = new TreeSet<>(new vm.datatools.Tools.MapByFloatValueComparator());
+            for (int i = 0; i < corrs.length; i++) {
+                float score = computeWeightedSum(i + 1, corrs[i]);
+                mapping.add(new AbstractMap.SimpleEntry<>(i, score));
+            }
+            corrs = reorder(corrs, mapping);
+        }
+        return corrs;
+    }
+
+    private static double[][] reorder(double[][] corrs, SortedSet<Map.Entry<Integer, Float>> mapping) {
+        double[][] ret = new double[corrs.length][corrs.length];
+        int[] newIndexes = new int[corrs.length];
+        Iterator<Map.Entry<Integer, Float>> it = mapping.iterator();
+        for (int i = 0; it.hasNext(); i++) {
+            Integer idx = it.next().getKey();
+            newIndexes[i] = idx;
+        }
+        for (int i = 0; i < ret.length; i++) {
+            for (int j = 0; j < ret.length; j++) {
+                ret[i][j] = corrs[newIndexes[i]][newIndexes[j]];
+            }
+        }
+        return ret;
+    }
+
+    private static float computeWeightedSum(int idx, double[] row) {
+        float ret = 0;
+        for (int i = 0; i < row.length; i++) {
+            if (!Double.isNaN(row[i])) {
+                ret += idx * Math.pow(row[i], 3);
+            }
+        }
+        return ret;
+    }
+
     public static double[][] pearsonCorrelationMatrixOfColumns(double[][] data) {
-        PearsonsCorrelation evaluator = new PearsonsCorrelation();
-        return evaluator.computeCorrelationMatrix(data).getData();
+        return pearsonCorrelationMatrixOfColumns(data, false);
+    }
+
+    public static double[][] pearsonCorrelationMatrixOfColumns(double[][] data, boolean absoluteValues) {
+        // a method in the library also exists, but it is weird: extremely slow and memory consuming!
+        if (data == null || data.length == 0 || data[0] == null) {
+            throw new IllegalArgumentException("Invalid array!");
+        }
+        double[][] ret = new double[data.length][data.length];
+        ret[data.length - 1][data.length - 1] = 1;
+        for (int i = 0; i < data.length - 1; i++) {
+            ret[i][i] = 1;
+            for (int j = i + 1; j < data.length; j++) {
+                double p = pearsonCorrelationCoefficient(data[i], data[j]);
+                if (absoluteValues) {
+                    p = Math.abs(p);
+                }
+                ret[i][j] = p;
+                ret[j][i] = p;
+            }
+        }
+        return ret;
     }
 
     public static double getMean(double[] values) {
