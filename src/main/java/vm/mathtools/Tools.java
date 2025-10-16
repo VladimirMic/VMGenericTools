@@ -317,6 +317,18 @@ public class Tools {
         return new Mean().evaluate(values);
     }
 
+    public static double getMean(List<Float> values) {
+        float sum = 0;
+        int c = 0;
+        for (Float value : values) {
+            if (value != null) {
+                sum += value;
+                c++;
+            }
+        }
+        return sum / c;
+    }
+
     public static double getVariance(double[] values) {
         return new Variance().evaluate(values);
     }
@@ -617,6 +629,10 @@ public class Tools {
 
     public static SortedMap<Float, Float> createHistogramOfValues(float[] values) {
         return createHistogramOfValues(values, false, false);
+    }
+
+    public static SortedMap<Float, Float> createHistogramOfValues(float[] values, boolean absoluteValues) {
+        return createHistogramOfValues(values, absoluteValues, false);
     }
 
     public static SortedMap<Float, Float> createHistogramOfValues(float[] values, boolean absoluteValues, boolean printLog) {
