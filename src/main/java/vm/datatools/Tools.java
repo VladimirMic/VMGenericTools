@@ -1111,4 +1111,46 @@ public class Tools {
 
     }
 
+    public static <T> int hashArray(T obj) {
+        if (obj == null) {
+            return 0;
+        }
+        Class<?> cls = obj.getClass();
+        if (!cls.isArray()) {
+            return obj.hashCode();
+        }
+
+        // Handle primitive arrays separately
+        if (obj instanceof Object[]) {
+            return Arrays.deepHashCode((Object[]) obj);
+        }
+        if (obj instanceof byte[]) {
+            return Arrays.hashCode((byte[]) obj);
+        }
+        if (obj instanceof short[]) {
+            return Arrays.hashCode((short[]) obj);
+        }
+        if (obj instanceof int[]) {
+            return Arrays.hashCode((int[]) obj);
+        }
+        if (obj instanceof long[]) {
+            return Arrays.hashCode((long[]) obj);
+        }
+        if (obj instanceof char[]) {
+            return Arrays.hashCode((char[]) obj);
+        }
+        if (obj instanceof float[]) {
+            return Arrays.hashCode((float[]) obj);
+        }
+        if (obj instanceof double[]) {
+            return Arrays.hashCode((double[]) obj);
+        }
+        if (obj instanceof boolean[]) {
+            return Arrays.hashCode((boolean[]) obj);
+        }
+
+        // Fallback (shouldn't normally happen)
+        return obj.hashCode();
+
+    }
 }
