@@ -823,6 +823,9 @@ public class Tools {
         if (maxCount == 0) {
             return ret;
         }
+        if (maxCount < 0) {
+            maxCount = Integer.MAX_VALUE / 2;
+        }
         for (int counter = 0; counter < maxCount && it.hasNext(); counter++) {
             ret.add(it.next());
             if (ret.size() % 100000 == 0) {

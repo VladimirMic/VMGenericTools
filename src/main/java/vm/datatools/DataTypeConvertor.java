@@ -643,4 +643,128 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static float[] arrayToFloatArray(Object dataOfObject) {
+        if (dataOfObject == null) {
+            return null;
+        }
+        if (dataOfObject instanceof long[] c) {
+            return DataTypeConvertor.longsArrayToFloats(c);
+        }
+        if (dataOfObject instanceof int[] c) {
+            return DataTypeConvertor.intsArrayToFloats(c);
+        }
+        if (dataOfObject instanceof float[] c) {
+            return c;
+        }
+        if (dataOfObject instanceof double[] c) {
+            return DataTypeConvertor.doublesToFloats(c);
+        }
+        throw new IllegalArgumentException("Uknown data" + dataOfObject.getClass().getSimpleName());
+    }
+
+    public static double[] arrayToDoubleArray(Object dataOfObject) {
+        if (dataOfObject == null) {
+            return null;
+        }
+        if (dataOfObject instanceof long[] c) {
+            return DataTypeConvertor.longsArrayToDoubles(c);
+        }
+        if (dataOfObject instanceof int[] c) {
+            return DataTypeConvertor.intsToDoubles(c);
+        }
+        if (dataOfObject instanceof float[] c) {
+            return DataTypeConvertor.floatsToDoubles(c);
+        }
+        if (dataOfObject instanceof double[] c) {
+            return c;
+        }
+        throw new IllegalArgumentException("Uknown data" + dataOfObject.getClass().getSimpleName());
+    }
+
+    public static int[] arrayToIntArray(Object dataOfObject) {
+        if (dataOfObject == null) {
+            return null;
+        }
+        if (dataOfObject instanceof long[] c) {
+            return DataTypeConvertor.longsToInts(c);
+        }
+        if (dataOfObject instanceof int[] c) {
+            return c;
+        }
+        if (dataOfObject instanceof float[] c) {
+            return DataTypeConvertor.floatsToInts(c);
+        }
+        if (dataOfObject instanceof double[] c) {
+            return DataTypeConvertor.doublesToInts(c);
+        }
+        throw new IllegalArgumentException("Uknown data" + dataOfObject.getClass().getSimpleName());
+    }
+
+    public static long[] arrayToLongArray(Object dataOfObject) {
+        if (dataOfObject == null) {
+            return null;
+        }
+        if (dataOfObject instanceof long[] c) {
+            return c;
+        }
+        if (dataOfObject instanceof int[] c) {
+            return DataTypeConvertor.intsToLongs(c);
+        }
+        if (dataOfObject instanceof float[] c) {
+            return DataTypeConvertor.floatsToLongs(c);
+        }
+        if (dataOfObject instanceof double[] c) {
+            return DataTypeConvertor.doublesToLongs(c);
+        }
+        throw new IllegalArgumentException("Uknown data" + dataOfObject.getClass().getSimpleName());
+    }
+
+    public static int[] longsToInts(long[] c) {
+        int[] ret = new int[c.length];
+        for (int i = 0; i < c.length; i++) {
+            ret[i] = (int) c[i];
+        }
+        return ret;
+    }
+
+    public static int[] floatsToInts(float[] c) {
+        int[] ret = new int[c.length];
+        for (int i = 0; i < c.length; i++) {
+            ret[i] = (int) c[i];
+        }
+        return ret;
+    }
+
+    public static int[] doublesToInts(double[] c) {
+        int[] ret = new int[c.length];
+        for (int i = 0; i < c.length; i++) {
+            ret[i] = (int) c[i];
+        }
+        return ret;
+    }
+
+    public static long[] intsToLongs(int[] c) {
+        long[] ret = new long[c.length];
+        for (int i = 0; i < c.length; i++) {
+            ret[i] = (long) c[i];
+        }
+        return ret;
+    }
+
+    public static long[] floatsToLongs(float[] c) {
+        long[] ret = new long[c.length];
+        for (int i = 0; i < c.length; i++) {
+            ret[i] = (long) c[i];
+        }
+        return ret;
+    }
+
+    public static long[] doublesToLongs(double[] c) {
+        long[] ret = new long[c.length];
+        for (int i = 0; i < c.length; i++) {
+            ret[i] = (long) c[i];
+        }
+        return ret;
+    }
+
 }
