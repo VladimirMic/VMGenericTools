@@ -571,6 +571,15 @@ public class Tools {
         return ret;
     }
 
+    public static float[][] copyArray(float[][] array) {
+        float[][] ret = new float[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            float[] row = array[i];
+            System.arraycopy(row, 0, ret[i], 0, row.length);
+        }
+        return ret;
+    }
+
     public static boolean isZeroInArray(float[] dists) {
         for (float dist : dists) {
             if (dist == 0) {
