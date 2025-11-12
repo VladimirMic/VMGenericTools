@@ -394,6 +394,15 @@ public class Tools {
         }
     }
 
+    public static void printArray(int[] array, String separator, boolean newline, PrintStream ps) {
+        for (int i = 0; i < array.length; i++) {
+            ps.print(array[i] + separator);
+        }
+        if (newline) {
+            ps.println();
+        }
+    }
+
     public static void printArray(long[] array, String separator, boolean newline, PrintStream ps) {
         for (int i = 0; i < array.length; i++) {
             ps.print(array[i] + separator);
