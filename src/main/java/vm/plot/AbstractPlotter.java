@@ -286,7 +286,7 @@ public abstract class AbstractPlotter {
         String pathToCSV = deriveCSVPath(path);
         if ((lastStoredPlotPath == null || !pathToCSV.equals(lastStoredPlotPath))
                 && (lastStoredPlot == null || lastStoredPlot != plot)) {
-            Logger.getLogger(AbstractPlotter.class.getName()).log(Level.INFO, "Storing raw plat data to {0}", path);
+            Logger.getLogger(AbstractPlotter.class.getName()).log(Level.INFO, "Storing raw plot data to {0}", path);
             storeCsvRawData(pathToCSV, plot);
             lastStoredPlotPath = pathToCSV;
             lastStoredPlot = plot;
