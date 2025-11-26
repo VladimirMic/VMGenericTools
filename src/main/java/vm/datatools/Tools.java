@@ -629,6 +629,23 @@ public class Tools {
         return ret;
     }
 
+    public static <T> Set<T> getIntersection(Collection<T> col1, Collection<T> col2) {
+        Set<T> ret = new HashSet();
+        Set<T> col2Set;
+        if (col2 instanceof Set cast) {
+            col2Set = cast;
+        } else {
+            col2Set = new HashSet();
+            col2Set.addAll(col2);
+        }
+        for (T o1 : col1) {
+            if (col2Set.contains(o1)) {
+                ret.add(o1);
+            }
+        }
+        return ret;
+    }
+
     public static float[] splitStringFloatVector(String string, String separator) {
         String[] array = string.split(separator);
         float[] ret = new float[array.length];
