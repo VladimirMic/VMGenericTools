@@ -21,6 +21,7 @@ import org.jfree.chart.renderer.xy.XYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.chart.ui.RectangleEdge;
+import org.jfree.data.xy.CategoryTableXYDataset;
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYDataset;
@@ -45,7 +46,10 @@ public class MyBarRenderer extends XYBarRenderer implements ColourfulRendererInt
     public MyBarRenderer(boolean colouredLabelledPointsOrBars, TreeMap<Integer, List<Float>> coloursValues, boolean logarithmic) {
         this.colouredLabelledPointsOrBars = colouredLabelledPointsOrBars;
         this.logarithmic = logarithmic;
-        this.pointsToLabels = new TreeMap<>(coloursValues);
+        this.pointsToLabels = new TreeMap<>();
+        if (coloursValues != null) {
+            this.pointsToLabels.putAll(coloursValues);
+        }
         rainboxPaintScale = new TreeMap<>();
         if (coloursValues != null) {
             Set<Integer> series = coloursValues.keySet();
@@ -117,9 +121,16 @@ public class MyBarRenderer extends XYBarRenderer implements ColourfulRendererInt
 
         RectangleEdge location = plot.getDomainAxisEdge();
         List<Double> xValues = new ArrayList();
-        List<XYDataItem> items = ((XYSeriesCollection) dataset).getSeries(0).getItems();
-        for (XYDataItem xyDataItems : items) {
-            xValues.add(xyDataItems.getXValue());
+        if (dataset instanceof XYSeriesCollection cast) {
+            List<XYDataItem> items = cast.getSeries(0).getItems();
+            for (XYDataItem xyDataItem : items) {
+                xValues.add(xyDataItem.getXValue());
+            }
+        } else if (dataset instanceof CategoryTableXYDataset cast) {
+            int itemCount = cast.getItemCount();
+            for (int i = 0; i < itemCount; i++) {
+                xValues.add((double) i);
+            }
         }
 
         Collections.sort(xValues);

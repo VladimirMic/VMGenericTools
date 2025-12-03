@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package vm.plot.impl;
 
 import java.io.File;
@@ -24,13 +20,13 @@ import vm.mathtools.Tools;
  *
  * @author au734419
  */
-public class BarPlotter extends LinesOrPointsPlotter {
+public class BarXNumbersPlotter extends LinesOrPointsPlotter {
 
-    public BarPlotter() {
+    public BarXNumbersPlotter() {
         this(false);
     }
 
-    public BarPlotter(boolean coloursByValues) {
+    public BarXNumbersPlotter(boolean coloursByValues) {
         super(false, coloursByValues);
     }
 
@@ -71,7 +67,7 @@ public class BarPlotter extends LinesOrPointsPlotter {
 
     public static SortedMap<Float, Float> createHistogramOfValuesWithPlot(List<Float> values, boolean absoluteValues, boolean logYScale, String xAxisLabel, String filePath, boolean storeAlsoPNG, boolean printLogMinMax) {
         String suf = logYScale ? "_log" : "";
-        BarPlotter plotter = new BarPlotter();
+        BarXNumbersPlotter plotter = new BarXNumbersPlotter();
         plotter.setLogY(logYScale);
         plotter.setIncludeZeroForXAxis(false);
         PrintStream err = System.err;
@@ -84,7 +80,7 @@ public class BarPlotter extends LinesOrPointsPlotter {
                 System.setErr(new PrintStream(new FileOutputStream(new File(folder, "log.csv"), true)));
                 System.err.print(xAxisLabel + ";");
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(BarPlotter.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BarXNumbersPlotter.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         SortedMap<Float, Float> histogram = Tools.createHistogramOfValues(values, absoluteValues, printLogMinMax);
