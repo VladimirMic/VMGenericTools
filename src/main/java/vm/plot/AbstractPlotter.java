@@ -424,7 +424,7 @@ public abstract class AbstractPlotter {
             xAxis.setCategoryLabelPositions(CategoryLabelPositions.STANDARD);
         } else if (verticalXLabels) {
             xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
-        } else if (maxLength >= 3 * tracesPerGroup) {
+        } else if (maxLength >= 3 * tracesPerGroup || maxLength >= 9) {
             xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
         }
     }

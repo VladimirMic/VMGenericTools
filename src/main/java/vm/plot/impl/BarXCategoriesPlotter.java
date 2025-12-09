@@ -10,26 +10,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.LogAxis;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.ui.GradientPaintTransformType;
-import org.jfree.chart.ui.StandardGradientPaintTransformer;
-import org.jfree.data.xy.CategoryTableXYDataset;
-import org.jfree.data.xy.XYSeries;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.DefaultKeyedValues2DDataset;
 import vm.colour.StandardColours;
-import static vm.colour.StandardColours.BOX_BLACK;
-import static vm.colour.StandardColours.LIGHT_BOX_BLACK;
 import static vm.colour.StandardColours.getColor;
 import vm.plot.AbstractPlotter;
-import static vm.plot.AbstractPlotter.FONT_VALUES_LABELSS;
 import static vm.plot.AbstractPlotter.SERIES_STROKE;
-import vm.plot.impl.auxiliary.MyBarPainter;
-import vm.plot.impl.auxiliary.MyBarRenderer;
+import vm.plot.impl.auxiliary.MyCategoryItemRenderer;
 
 /**
  *
@@ -43,18 +36,19 @@ public class BarXCategoriesPlotter extends AbstractPlotter {
     }
 
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object[] tracesNames, StandardColours.COLOUR_NAME[] tracesColours, Object[] groupsNames, Map<String, Float>[] map) {
-        CategoryTableXYDataset dataset = new CategoryTableXYDataset();
+        DefaultKeyedValues2DDataset dataset = new DefaultKeyedValues2DDataset();
         float minY = Float.MAX_VALUE;
-        for (int i = 0; i < groupsNames.length; i++) {
-            for (int j = 0; j < tracesNames.length; j++) {
+        for (Integer i = 0; i < groupsNames.length; i++) {
+            Comparable groupName = (Comparable) groupsNames[i];
+            for (Integer j = 0; j < tracesNames.length; j++) {
                 String tracesName = tracesNames[j].toString();
                 Float v = map[i].get(tracesName);
-                dataset.add(i * (tracesNames.length + 2) + j, v, tracesName);
+                dataset.addValue(v, tracesName, groupName);
                 minY = Math.min(minY, v);
             }
         }
         updateMinRecall(minY);
-        JFreeChart chart = ChartFactory.createXYBarChart(mainTitle, xAxisLabel, false, yAxisLabel, dataset);
+        JFreeChart chart = ChartFactory.createBarChart(mainTitle, xAxisLabel, yAxisLabel, dataset);
         return setAppearence(chart, tracesColours, groupsNames, xAxisLabel, yAxisLabel);
     }
 
@@ -65,8 +59,8 @@ public class BarXCategoriesPlotter extends AbstractPlotter {
 
     @Override
     protected void storeCsvRawData(String path, JFreeChart chart) {
-        XYPlot plot = (XYPlot) chart.getPlot();
-        CategoryTableXYDataset dataset = (CategoryTableXYDataset) plot.getDataset();
+        CategoryPlot plot = (CategoryPlot) chart.getPlot();
+        CategoryDataset dataset = plot.getDataset();
 //        try (BufferedWriter w = new BufferedWriter(new FileWriter(path))) {
 //            for (int sIdx = 0; sIdx < series.size(); sIdx++) {
 //                XYSeries cast = (XYSeries) series.get(sIdx);
@@ -115,13 +109,15 @@ public class BarXCategoriesPlotter extends AbstractPlotter {
     }
 
     protected JFreeChart setAppearence(JFreeChart chart, StandardColours.COLOUR_NAME[] tracesColours, Object[] groupsNames, String xAxisLabel, String yAxisLabel) {
-        XYPlot plot = (XYPlot) chart.getPlot();
+        CategoryPlot plot = (CategoryPlot) chart.getPlot();
         // chart colours
         setChartColorAndTitleFont(chart, plot);
 
         // x axis settings
-        ValueAxis xAxis = plot.getDomainAxis();
-        setTicksOfXNumericAxis(xAxis);
+        CategoryAxis xAxis = plot.getDomainAxis();
+        xAxis.setMaximumCategoryLabelWidthRatio(2);
+        int tracesLength = plot.getDataset().getRowCount();
+        setRotationOfXAxisCategoriesFont(xAxis, groupsNames, tracesLength);
         setLabelsOfAxis(xAxis);
         // y axis settings
         if (logY) {
@@ -138,49 +134,49 @@ public class BarXCategoriesPlotter extends AbstractPlotter {
         }
         //legend        
         setLegendFont(chart.getLegend());
-//        if (traces.length == 1) {
-//            String traceName = traces[0].getKey().toString().toLowerCase();
-//            if (chart.getLegend() != null && (traceName.equals(yAxisLabel.toLowerCase()) || traceName.equals("") || traceName.equals(xAxisLabel.toLowerCase()))) {
-//                chart.removeLegend();
-//            }
-//        }
+        if (tracesLength == 1) {
+            String traceName = plot.getDataset().getRowKey(0).toString().toLowerCase();
+            if (chart.getLegend() != null && (traceName.equals(yAxisLabel.toLowerCase()) || traceName.equals("") || traceName.equals(xAxisLabel.toLowerCase()))) {
+                chart.removeLegend();
+            }
+        }
         // set traces strokes
-        XYBarRenderer barRenderer = new MyBarRenderer(false, null, false);
+        MyCategoryItemRenderer barRenderer = new MyCategoryItemRenderer(false, null, false);
         plot.setRenderer(barRenderer);
-        XYItemRenderer renderer = barRenderer;
+//        XYItemRenderer renderer = barRenderer;
 
         AffineTransform resize = new AffineTransform();
         resize.scale(1000, 1000);
-        barRenderer.setDrawBarOutline(true); // border of the columns
+//        barRenderer.setDrawBarOutline(true); // border of the columns
         int barCount = groupsNames.length; //?
         Logger.getLogger(LinesOrPointsPlotter.class.getName()).log(Level.INFO, "Creating bars-plot with X axis named {0} and {1} bars", new Object[]{xAxisLabel, barCount});
-        barRenderer.setMargin(0);
-        barRenderer.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.HORIZONTAL));
-        barRenderer.setBarPainter(new MyBarPainter(0, 0, 0));
+//        barRenderer.setMargin(0);
+//        barRenderer.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.HORIZONTAL));
+//        barRenderer.setBarPainter(new MyBarPainter(0, 0, 0));
         for (int i = 0; i < groupsNames.length; i++) {
-            setColours(renderer, barRenderer, tracesColours, i);
+            setColours(barRenderer, tracesColours, i);
         }
-        if (renderer != null) {
-            renderer.setDefaultItemLabelFont(FONT_VALUES_LABELSS);
-//            for (Map.Entry<Integer, List<Float>> entry : pointsToLabels.entrySet()) {
-//                int seriesIdx = entry.getKey();
-//                List<Float> labels = entry.getValue();
-//                NumberFormat nf = nfs.get(seriesIdx);
-//            }
-        }
+//        if (renderer != null) {
+//            renderer.setDefaultItemLabelFont(FONT_VALUES_LABELSS);
+////            for (Map.Entry<Integer, List<Float>> entry : pointsToLabels.entrySet()) {
+////                int seriesIdx = entry.getKey();
+////                List<Float> labels = entry.getValue();
+////                NumberFormat nf = nfs.get(seriesIdx);
+////            }
+//        }
         plot.setBackgroundAlpha(0);
-        plot.setRenderer(renderer);
+//        plot.setRenderer(renderer);
         return chart;
     }
 
-    private void setColours(XYItemRenderer renderer, XYBarRenderer barRenderer, StandardColours.COLOUR_NAME[] tracesColours, int i) {
+    private void setColours(MyCategoryItemRenderer barRenderer, StandardColours.COLOUR_NAME[] tracesColours, int i) {
         Color darkColor = tracesColours == null ? StandardColours.COLOURS[i % StandardColours.COLOURS.length] : getColor(tracesColours[i], false);
         Color lightColor = tracesColours == null ? StandardColours.LIGHT_COLOURS[i % StandardColours.LIGHT_COLOURS.length] : getColor(tracesColours[i], true);
-        if (renderer != null) {
-            renderer.setSeriesOutlinePaint(i, darkColor);
-            renderer.setSeriesStroke(i, new BasicStroke(SERIES_STROKE));
+        if (barRenderer != null) {
+            barRenderer.setSeriesOutlinePaint(i, darkColor);
+            barRenderer.setSeriesStroke(i, new BasicStroke(SERIES_STROKE));
             if (barRenderer == null) {
-                renderer.setSeriesPaint(i, darkColor);
+                barRenderer.setSeriesPaint(i, darkColor);
             } else {
                 Paint gradientPaint = new GradientPaint(0.0f, 0.0f, darkColor, Float.MAX_VALUE, Float.MAX_VALUE, lightColor); // seems to be an issue but must be like this!
                 barRenderer.setSeriesPaint(i, gradientPaint);
