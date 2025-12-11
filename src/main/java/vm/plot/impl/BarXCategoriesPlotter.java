@@ -5,6 +5,9 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.awt.geom.AffineTransform;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,8 +17,6 @@ import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.LogAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.DefaultKeyedValues2DDataset;
 import vm.colour.StandardColours;
@@ -61,51 +62,27 @@ public class BarXCategoriesPlotter extends AbstractPlotter {
     protected void storeCsvRawData(String path, JFreeChart chart) {
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
         CategoryDataset dataset = plot.getDataset();
-//        try (BufferedWriter w = new BufferedWriter(new FileWriter(path))) {
-//            for (int sIdx = 0; sIdx < series.size(); sIdx++) {
-//                XYSeries cast = (XYSeries) series.get(sIdx);
-//                List<Float> xValues = new ArrayList<>();
-//                List<Float> yValues = new ArrayList<>();
-//                List<Float> labels = new ArrayList<>();
-//                List<Float> labelsMap = null;
-//                int itemCount = cast.getItemCount();
-//                for (int i = 0; i < itemCount; i++) {
-//                    float x = vm.mathtools.Tools.correctPossiblyCorruptedFloat(cast.getX(i).floatValue());
-//                    float y = vm.mathtools.Tools.correctPossiblyCorruptedFloat(cast.getY(i).floatValue());
-//                    xValues.add(x);
-//                    yValues.add(y);
-//                    if (labelsMap != null) {
-//                        Float label = labelsMap.get(i);
-//                        labels.add(label);
-//                    }
-//                }
-//                w.write("Trace;");
-//                String traceName = dataset.getSeriesKey(sIdx).toString();
-//                if (traceName.isBlank()) {
-//                    traceName = plot.getRangeAxis().getLabel();
-//                }
-//                w.write(traceName + ";X:");
-//                for (Float xValue : xValues) {
-//                    w.write(";" + xValue);
-//                }
-//                w.newLine();
-//                w.write("Trace;");
-//                w.write(traceName + ";Y:");
-//                for (Float yValue : yValues) {
-//                    w.write(";" + yValue);
-//                }
-//                w.newLine();
-//                w.write("Labels:;");
-//                w.write(traceName + ";of X:");
-//                for (Float label : labels) {
-//                    w.write(";" + label);
-//                }
-//                w.newLine();
-//            }
-//            w.flush();
-//        } catch (IOException ex) {
-//            Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(path))) {
+            int columnCount = dataset.getColumnCount();
+            int rowCount = dataset.getRowCount();
+            for (int columnIdx = 0; columnIdx < columnCount; columnIdx++) {
+                if (columnIdx == 0) {
+                    w.write("Groups;");
+                }
+                w.write(dataset.getColumnKey(columnIdx).toString() + ";");
+                for (int rowIdx = 0; rowIdx < rowCount; rowIdx++) {
+                    w.write("Trace;");
+                    w.write(dataset.getRowKey(rowIdx).toString());
+                    w.newLine();
+                    float y = vm.mathtools.Tools.correctPossiblyCorruptedFloat(dataset.getValue(rowIdx, columnIdx).floatValue());
+                    w.write(Float.toString(y) + ";");
+                }
+                w.newLine();
+            }
+            w.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(HeatMapPlotter.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     protected JFreeChart setAppearence(JFreeChart chart, StandardColours.COLOUR_NAME[] tracesColours, Object[] groupsNames, String xAxisLabel, String yAxisLabel) {
