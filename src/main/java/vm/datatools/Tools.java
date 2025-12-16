@@ -286,6 +286,17 @@ public class Tools {
         return sb.toString();
     }
 
+    public static String mapOfDistancesAsCSVString(Map<Comparable, Float> map, String pairDelimiter, String keyDelimiter) {
+        if (map == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Comparable, Float> entry : map.entrySet()) {
+            sb.append(entry.getKey().toString()).append(keyDelimiter).append(entry.getValue().toString()).append(pairDelimiter);
+        }
+        return sb.toString();
+    }
+
     public static void printMapOfKeyFloatValues(Map<Object, float[]> map) {
         Iterator<Map.Entry<Object, float[]>> it = map.entrySet().iterator();
         while (it.hasNext()) {
