@@ -70,12 +70,13 @@ public class BarXCategoriesPlotter extends AbstractPlotter {
                     w.write("Groups;");
                 }
                 w.write(dataset.getColumnKey(columnIdx).toString() + ";");
+                w.newLine();
                 for (int rowIdx = 0; rowIdx < rowCount; rowIdx++) {
                     w.write("Trace;");
-                    w.write(dataset.getRowKey(rowIdx).toString());
-                    w.newLine();
+                    w.write(dataset.getRowKey(rowIdx).toString() + ";");
                     float y = vm.mathtools.Tools.correctPossiblyCorruptedFloat(dataset.getValue(rowIdx, columnIdx).floatValue());
-                    w.write(Float.toString(y) + ";");
+                    w.write(Float.toString(y));
+                    w.newLine();
                 }
                 w.newLine();
             }
@@ -135,7 +136,7 @@ public class BarXCategoriesPlotter extends AbstractPlotter {
         }
 //        if (renderer != null) {
 //            renderer.setDefaultItemLabelFont(FONT_VALUES_LABELSS);
-////            for (Map.Entry<Integer, List<Float>> entry : pointsToLabels.entrySet()) {
+        ////            for (Map.Entry<Integer, List<Float>> entry : pointsToLabels.entrySet()) {
 ////                int seriesIdx = entry.getKey();
 ////                List<Float> labels = entry.getValue();
 ////                NumberFormat nf = nfs.get(seriesIdx);
