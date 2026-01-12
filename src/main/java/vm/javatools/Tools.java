@@ -29,7 +29,7 @@ public class Tools {
     public static final Integer PARALELISATION = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
     public static final Logger LOG = Logger.getLogger(Tools.class.getName());
     public static final DateFormat DF_DDMMYYYY_HHMM = new SimpleDateFormat("dd.MM.YYYY HH:mm");
-    public static final int[] HOURS_OF_PAUSE = new int[]{21, 8};
+    public static final int[] HOURS_OF_PAUSE = new int[]{21, 10};
 
     public static boolean isSleepDuringTheNight() {
         return sleepDuringTheNight;
