@@ -317,17 +317,22 @@ public class Tools {
         return new Mean().evaluate(values);
     }
 
-    public static Double getMean(List<Float> values) {
-        if (values == null || values.isEmpty()) {
+    public static Double getMean(List<Float>... lists) {
+        if (lists == null) {
             return null;
         }
         double sum = 0;
         int c = 0;
-        for (Float value : values) {
-            if (value != null) {
-                sum += value;
-                c++;
+        for (List<Float> values : lists) {
+            for (Float value : values) {
+                if (value != null) {
+                    sum += value;
+                    c++;
+                }
             }
+        }
+        if (c == 0) {
+            return null;
         }
         return sum / c;
     }
