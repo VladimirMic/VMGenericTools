@@ -127,7 +127,7 @@ public class Tools {
                 String line = "";
                 while (line != null) {
                     line = br.readLine();
-                    String[] split = line.split(delimiter);
+                    String[] split = delimiter.isEmpty() ? new String[]{line} : line.split(delimiter);
                     for (int i = 0; i < split.length; i++) {
                         split[i] = removeQuotes(split[i]);
                     }
@@ -1001,6 +1001,16 @@ public class Tools {
             }
         }
         return ret;
+    }
+
+    public static int containsAny(String line, String[] substrings) {
+        for (int i = 0; i < substrings.length; i++) {
+            String string = substrings[i];
+            if (line.contains(string)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
