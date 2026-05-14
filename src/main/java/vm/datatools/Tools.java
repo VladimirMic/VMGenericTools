@@ -264,7 +264,12 @@ public class Tools {
         int count = csv[0].size();
         for (int i = 0; i < count; i++) {
             String col0 = csv[0].get(i);
-            Float col1 = Float.parseFloat(csv[1].get(i));
+            Float col1;
+            try {
+                col1 = Float.valueOf(csv[1].get(i));
+            } catch (NumberFormatException e) {
+                continue;
+            }
             ret.put(col0, col1);
         }
         return ret;
@@ -1011,6 +1016,19 @@ public class Tools {
             }
         }
         return -1;
+    }
+
+    public static boolean isEqual(Object o1, Object o2) {
+        if (o1 == null && o2 == null) {
+            return true;
+        }
+        if (o1 != null && o2 == null) {
+            return false;
+        }
+        if (o1 == null && o2 != null) {
+            return false;
+        }
+        return o1.equals(o2);
     }
 
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {

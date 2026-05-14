@@ -337,8 +337,13 @@ public class Tools {
         return sum / c;
     }
 
-    public static double getVariance(double[] values) {
+    public static Double getVariance(double[] values) {
         return new Variance().evaluate(values);
+    }
+
+    public static Double getVariance(List<Float> values) {
+        double[] doubles = DataTypeConvertor.floatsListToDoubles(values);
+        return new Variance().evaluate(doubles);
     }
 
     public static double getMedian(double[] values) {
@@ -365,8 +370,13 @@ public class Tools {
         return new Variance().evaluate(DataTypeConvertor.floatsToDoubles(values));
     }
 
-    public static double getStandardDeviation(float[] values) {
+    public static Double getStandardDeviation(float[] values) {
         return new StandardDeviation().evaluate(DataTypeConvertor.floatsToDoubles(values));
+    }
+
+    public static Double getStandardDeviation(List<Float> values) {
+        double[] doubles = DataTypeConvertor.floatsListToDoubles(values);
+        return new StandardDeviation().evaluate(doubles);
     }
 
     public static double getStandardDeviation(double[] values) {
