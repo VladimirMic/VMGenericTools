@@ -5,18 +5,21 @@ import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.CategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.statistics.BoxAndWhiskerItem;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
@@ -26,13 +29,38 @@ import static vm.colour.StandardColours.getColor;
 import vm.datatools.DataTypeConvertor;
 import vm.datatools.Tools;
 import vm.plot.AbstractPlotter;
+import static vm.plot.AbstractPlotter.FONT_VALUES_LABELSS;
 import vm.plot.impl.auxiliary.MyBoxAndWhiskerRenderer;
+import vm.plot.impl.auxiliary.MyCategoryItemLabelGenerator;
+import vm.plot.impl.auxiliary.MyStandardXYItemLabelGenerator;
 
 /**
  *
  * @author au734419
  */
 public class BoxPlotXCategoriesPlotter extends AbstractPlotter {
+
+    private Map<Integer, List<Float>> labels;
+    private boolean labelsVisible;
+    protected final TreeMap<Integer, NumberFormat> nfs = new TreeMap<>();
+
+    public void setLabels(Map<Integer, List<Float>> labels) {
+        this.labels = labels;
+        if (labels != null) {
+            labelsVisible = true;
+        }
+    }
+
+    public void setLabelsVisible(boolean labelsVisible) {
+        this.labelsVisible = labelsVisible;
+    }
+
+    public void setNumberFormatForTraceLabel(int seriesIdx, NumberFormat nf) {
+        if (nfs.containsKey(seriesIdx)) {
+            nfs.remove(seriesIdx);
+        }
+        nfs.put(seriesIdx, nf);
+    }
 
     @Override
     public JFreeChart createPlot(String mainTitle, String xAxisLabel, String yAxisLabel, Object... data) {
@@ -227,6 +255,19 @@ public class BoxPlotXCategoriesPlotter extends AbstractPlotter {
             renderer.setSeriesOutlineStroke(i, new BasicStroke(3));
             renderer.setSeriesStroke(i, new BasicStroke(3));
         }
+        if (renderer != null) {
+            renderer.setDefaultItemLabelFont(FONT_VALUES_LABELSS);
+            if (labelsVisible) {
+                MyCategoryItemLabelGenerator<Float> generator = new MyCategoryItemLabelGenerator(labels, nfs);
+                for (Map.Entry<Integer, List<Float>> entry : labels.entrySet()) {
+                    int seriesIdx = entry.getKey();
+                    renderer.setSeriesItemLabelGenerator(seriesIdx, generator);
+                    renderer.setSeriesItemLabelsVisible(seriesIdx, true);
+//                    renderer.setLegendItemLabelGenerator(generator);
+                }
+            }
+        }
+
         renderer.setUseOutlinePaintForWhiskers(true);
         renderer.setMaxOutlierVisible(false);
         renderer.setMinOutlierVisible(false);

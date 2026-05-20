@@ -17,7 +17,9 @@ import java.util.List;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.EntityCollection;
+import org.jfree.chart.labels.CategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.Outlier;
 import org.jfree.chart.renderer.OutlierListCollection;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
@@ -97,12 +99,12 @@ public class MyBoxAndWhiskerRenderer extends BoxAndWhiskerRenderer {
         Number yMin = bawDataset.getMinRegularValue(row, column);
         Shape box = null;
         Paint outlinePaint = getItemOutlinePaint(row, column);
-
+        Double yyMax = null;
         if (yQ1 != null && yQ3 != null && yMax != null && yMin != null) {
 
             double yyQ1 = rangeAxis.valueToJava2D(yQ1.doubleValue(), dataArea, location);
             double yyQ3 = rangeAxis.valueToJava2D(yQ3.doubleValue(), dataArea, location);
-            double yyMax = rangeAxis.valueToJava2D(yMax.doubleValue(), dataArea, location);
+            yyMax = rangeAxis.valueToJava2D(yMax.doubleValue(), dataArea, location);
             double yyMin = rangeAxis.valueToJava2D(yMin.doubleValue(), dataArea, location);
             double xxmid = xx + state.getBarWidth() / 2.0;
             double halfW = (state.getBarWidth() / 2.0) * getWhiskerWidth();
@@ -192,6 +194,18 @@ public class MyBoxAndWhiskerRenderer extends BoxAndWhiskerRenderer {
 
             if (outlierListCollection.isLowFarOut()) {
                 drawLowFarOut(aRadius / 2.0, g2, xx + state.getBarWidth() / 2.0, minAxisValue);
+            }
+        }
+        // ITEM LABELS
+        if (yyMax != null) {
+            CategoryItemLabelGenerator generator = getItemLabelGenerator(column, row);
+            if (generator != null && isItemLabelVisible(column, row)) {
+                String label = generator.generateLabel(dataset, column, row);
+                if (label != null) {
+                    double labelX = xx + state.getBarWidth() / 2.0;
+                    double labelY = yyMax + 5;
+                    drawItemLabel(g2, plot.getOrientation(), dataset, column, row, labelX, labelY, false);
+                }
             }
         }
         // collect entity and tool tip information...

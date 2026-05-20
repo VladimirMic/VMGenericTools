@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,7 +51,6 @@ public class BarXNumbersPlotter extends LinesOrPointsPlotter {
 //        nfs.put(seriesIdx, nf);
 //        coloursLabel = coloursAxisNameOrNull;
 //    }
-
     public JFreeChart createHistogramPlot(String mainTitle, String xAxisLabel, String yAxisLabel, COLOUR_NAME traceColour, SortedMap<Float, Float> dataPoints) {
         if (traceColour == null) {
             traceColour = COLOUR_NAME.C1_BLUE;

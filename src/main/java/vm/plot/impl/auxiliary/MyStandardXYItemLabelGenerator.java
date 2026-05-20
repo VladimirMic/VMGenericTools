@@ -2,7 +2,6 @@ package vm.plot.impl.auxiliary;
 
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.Map;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.data.xy.XYDataset;
 

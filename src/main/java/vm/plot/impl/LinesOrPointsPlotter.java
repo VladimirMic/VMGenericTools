@@ -370,11 +370,11 @@ public class LinesOrPointsPlotter extends AbstractPlotter {
         }
         if (renderer != null) {
             renderer.setDefaultItemLabelFont(FONT_VALUES_LABELSS);
-            for (Map.Entry<Integer, List<Float>> entry : pointsToLabels.entrySet()) {
-                int seriesIdx = entry.getKey();
-                List<Float> labels = entry.getValue();
-                NumberFormat nf = nfs.get(seriesIdx);
-                if (pointLabelsVisible) {
+            if (pointLabelsVisible) {
+                for (Map.Entry<Integer, List<Float>> entry : pointsToLabels.entrySet()) {
+                    int seriesIdx = entry.getKey();
+                    List<Float> labels = entry.getValue();
+                    NumberFormat nf = nfs.get(seriesIdx);
                     MyStandardXYItemLabelGenerator<Float> generator = new MyStandardXYItemLabelGenerator(labels, nf);
                     renderer.setSeriesItemLabelGenerator(seriesIdx, generator);
                     renderer.setSeriesItemLabelsVisible(seriesIdx, true);
