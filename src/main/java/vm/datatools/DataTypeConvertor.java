@@ -295,10 +295,12 @@ public class DataTypeConvertor {
         return ret;
     }
 
-    public static String[] objectsToStrings(List objects) {
+    public static String[] objectsToStrings(Collection objects) {
         String[] ret = new String[objects.size()];
-        for (int i = 0; i < objects.size(); i++) {
-            ret[i] = objects.get(i).toString();
+        int i = 0;
+        for (Object object : objects) {
+            ret[i] = object.toString();
+            i++;
         }
         return ret;
     }

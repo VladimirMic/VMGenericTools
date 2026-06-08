@@ -1018,6 +1018,16 @@ public class Tools {
         return -1;
     }
 
+    public static int equalsAny(String line, String[] substrings) {
+        for (int i = 0; i < substrings.length; i++) {
+            String string = substrings[i];
+            if (line.equals(string)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static boolean isEqual(Object o1, Object o2) {
         if (o1 == null && o2 == null) {
             return true;
