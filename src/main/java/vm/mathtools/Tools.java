@@ -362,7 +362,7 @@ public class Tools {
         return new Median().evaluate(DataTypeConvertor.intsToDoubles(values));
     }
 
-    public static double getMean(float[] values) {
+    public static Double getMean(float[] values) {
         return new Mean().evaluate(DataTypeConvertor.floatsToDoubles(values));
     }
 
