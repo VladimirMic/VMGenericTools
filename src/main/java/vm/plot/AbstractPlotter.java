@@ -467,7 +467,14 @@ public abstract class AbstractPlotter {
         if (label.equals("recall") || label.equals("precision") || label.equals("accuracy")) {
             NumberFormat nf = NumberFormat.getInstance(Locale.US);
             yAxis.setNumberFormatOverride(nf);
-            yAxis.setUpperBound(1);
+            if (yBounds != null) {
+                yAxis.setUpperBound(yBounds[1]);
+                if (!includeZeroForYAxis) {
+                    yAxis.setLowerBound(yBounds[0]);
+                }
+            } else {
+                yAxis.setUpperBound(1);
+            }
             if (!includeZeroForYAxis) {
                 yAxis.setLowerBound(minRecall);
             }

@@ -1041,6 +1041,14 @@ public class Tools {
         return o1.equals(o2);
     }
 
+    public static <T> T[] trimNullsFromArray(T[] array) {
+        int last = array.length;
+        while (last > 0 && array[last - 1] == null) {
+            last--;
+        }
+        return Arrays.copyOf(array, last);
+    }
+
     public static class IntArraySameLengthsComparator implements Comparator<int[]>, Serializable {
 
         private static final long serialVersionUID = 159756321810L;

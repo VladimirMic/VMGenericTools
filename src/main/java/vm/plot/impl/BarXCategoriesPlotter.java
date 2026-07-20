@@ -50,7 +50,7 @@ public class BarXCategoriesPlotter extends AbstractPlotter {
         }
         updateMinRecall(minY);
         JFreeChart chart = ChartFactory.createBarChart(mainTitle, xAxisLabel, yAxisLabel, dataset);
-        return setAppearence(chart, tracesColours, groupsNames, xAxisLabel, yAxisLabel);
+        return setAppearence(chart, tracesColours, tracesNames, groupsNames, xAxisLabel, yAxisLabel);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class BarXCategoriesPlotter extends AbstractPlotter {
         }
     }
 
-    protected JFreeChart setAppearence(JFreeChart chart, StandardColours.COLOUR_NAME[] tracesColours, Object[] groupsNames, String xAxisLabel, String yAxisLabel) {
+    protected JFreeChart setAppearence(JFreeChart chart, StandardColours.COLOUR_NAME[] tracesColours,  Object[] tracesNames, Object[] groupsNames, String xAxisLabel, String yAxisLabel) {
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
         // chart colours
         setChartColorAndTitleFont(chart, plot);
@@ -131,7 +131,7 @@ public class BarXCategoriesPlotter extends AbstractPlotter {
 //        barRenderer.setMargin(0);
 //        barRenderer.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.HORIZONTAL));
 //        barRenderer.setBarPainter(new MyBarPainter(0, 0, 0));
-        for (int i = 0; i < groupsNames.length; i++) {
+        for (int i = 0; i < tracesNames.length; i++) {
             setColours(barRenderer, tracesColours, i);
         }
 //        if (renderer != null) {
