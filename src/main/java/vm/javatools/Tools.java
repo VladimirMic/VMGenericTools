@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -144,6 +145,17 @@ public class Tools {
         g2d.dispose();
 
         return dimg;
+    }
+
+    public static void delete(File folder) {
+        if (folder.isDirectory()) {
+            File[] listFiles = folder.listFiles();
+            for (File f : listFiles) {
+                delete(f);
+            }
+            folder.delete();
+        }
+        folder.delete();
     }
 
     public static class ArrayIterator<T> implements Iterator<T> {
