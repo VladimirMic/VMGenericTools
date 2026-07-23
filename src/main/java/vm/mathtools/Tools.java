@@ -350,6 +350,11 @@ public class Tools {
         return new Median().evaluate(values);
     }
 
+    public static double getMedian(double[][] values) {
+        double[] array = DataTypeConvertor.matrixToArray(values);
+        return new Median().evaluate(array);
+    }
+
     public static double getMean(int[] values) {
         return new Mean().evaluate(DataTypeConvertor.intsToDoubles(values));
     }

@@ -769,4 +769,25 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static double[] matrixToArray(double[][] values) {
+        if (values == null) {
+            return new double[0];
+        }
+        int length = 0;
+        for (double[] row : values) {
+            if (row != null) {
+                length += row.length;
+            }
+        }
+        double[] ret = new double[length];
+        int destPos = 0;
+        for (double[] row : values) {
+            if (row != null) {
+                System.arraycopy(row, 0, ret, destPos, row.length);
+                destPos += row.length;
+            }
+        }
+        return ret;
+    }
+
 }
