@@ -790,4 +790,27 @@ public class DataTypeConvertor {
         return ret;
     }
 
+    public static <T> T[][] listOfArraysToMatrix(List<T[]> vectors) {
+        int rows = vectors.size();
+        T[] array = vectors.get(0);
+        int cols = array.length;
+        Class<? extends Object> aClass = array[0].getClass();
+        T[][] ret = (T[][]) java.lang.reflect.Array.newInstance(aClass, rows, cols);
+        for (int i = 0; i < vectors.size(); i++) {
+            T[] vector = vectors.get(i);
+            ret[i] = vector;
+        }
+        return ret;
+    }
+
+    public static double[][] listOfDoubleArraysToMatrix(List<double[]> vectors) {
+        double[] array = vectors.get(0);
+        double[][] ret = new double[vectors.size()][array.length];
+        for (int i = 0; i < vectors.size(); i++) {
+            double[] vector = vectors.get(i);
+            ret[i] = vector;
+        }
+        return ret;
+    }
+
 }
