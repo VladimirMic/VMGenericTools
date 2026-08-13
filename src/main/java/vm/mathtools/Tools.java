@@ -60,6 +60,22 @@ public class Tools {
         return new String(hexChars);
     }
 
+    public static int getSum(int[] array) {
+        int ret = 0;
+        for (int a : array) {
+            ret += a;
+        }
+        return ret;
+    }
+
+    public static float getSum(float[] array) {
+        float ret = 0;
+        for (float a : array) {
+            ret += a;
+        }
+        return ret;
+    }
+
     public static enum LOGICAL_CONNECTION {
         AND,
         OR
