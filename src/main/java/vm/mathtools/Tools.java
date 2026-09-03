@@ -408,6 +408,14 @@ public class Tools {
         return new Min().evaluate(DataTypeConvertor.floatsToDoubles(values));
     }
 
+    public static int getMin(int[] values) {
+        int ret = Integer.MAX_VALUE;
+        for (int i : values) {
+            ret = Math.min(ret, i);
+        }
+        return ret;
+    }
+
     public static double getMin(double[] values) {
         return new Min().evaluate(values);
     }
