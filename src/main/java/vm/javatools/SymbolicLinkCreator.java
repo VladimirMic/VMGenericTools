@@ -24,13 +24,13 @@ public class SymbolicLinkCreator {
             String source = JOptionPane.showInputDialog("Full path of the source file?");
             File sourceF = new File(source);
             if (!sourceF.exists()) {
-                throw new IllegalArgumentException("File " + source + " does not exist");
+//                throw new IllegalArgumentException("File " + source + " does not exist");
             }
             System.err.println(source);
-            String link = JOptionPane.showInputDialog("Folder name to new symbolic link?");
+            String link = JOptionPane.showInputDialog("Folder name where to store new symbolic link?");
             System.err.println(link);
             File linkF = new File(link, sourceF.getName());
-            linkF.mkdirs();
+            linkF.getParentFile().mkdirs();
             Files.createSymbolicLink(linkF.toPath(), sourceF.toPath());
         }
     }
