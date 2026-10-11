@@ -34,6 +34,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import javax.imageio.ImageIO;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.jetbrains.bio.npy.NpyFile;
+import org.jetbrains.bio.npy.NpyArray;
+import java.nio.file.Paths;
 
 /**
  *
@@ -1246,6 +1251,27 @@ public class Tools {
 
         // Fallback (shouldn't normally happen)
         return obj.hashCode();
+
+    }
+
+    public static RealMatrix loadNpyMatrix(String filePath) {
+        // Načtení .npy souboru
+        NpyArray npyArray = NpyFile.read(Paths.get(filePath), 1000);
+        int[] shape = npyArray.getShape();
+        if (shape.length != 2) {
+            throw new IllegalArgumentException("The .npy file must contain a 2D matrix, but shape is " + shape.length + "D.");
+        }
+        int rows = shape[0];
+        int cols = shape[1];
+        double[] flatData = npyArray.asDoubleArray();
+        double[][] data2d = new double[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                data2d[i][j] = flatData[i * cols + j];
+            }
+        }
+
+        return MatrixUtils.createRealMatrix(data2d);
 
     }
 }
