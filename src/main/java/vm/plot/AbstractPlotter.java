@@ -163,6 +163,10 @@ public abstract class AbstractPlotter {
         this.xStep = xStep;
     }
 
+    public Double getxStep() {
+        return xStep;
+    }
+
     protected double setAxisUnits(Double step, ValueAxis axis, Integer axisImplicitTicksNumber, boolean forceIntegerStep) {
         if (step == null && axisImplicitTicksNumber == null) {
             throw new IllegalArgumentException("At least one param, step and axisImplicitTicksNumber must be non-null");

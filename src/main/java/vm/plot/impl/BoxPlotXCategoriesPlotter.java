@@ -19,7 +19,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.labels.CategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.statistics.BoxAndWhiskerItem;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
@@ -32,7 +31,6 @@ import vm.plot.AbstractPlotter;
 import static vm.plot.AbstractPlotter.FONT_VALUES_LABELSS;
 import vm.plot.impl.auxiliary.MyBoxAndWhiskerRenderer;
 import vm.plot.impl.auxiliary.MyCategoryItemLabelGenerator;
-import vm.plot.impl.auxiliary.MyStandardXYItemLabelGenerator;
 
 /**
  *
@@ -294,6 +292,9 @@ public class BoxPlotXCategoriesPlotter extends AbstractPlotter {
                 w.newLine();
                 for (int columnIdx = 0; columnIdx < columnKeys.size(); columnIdx++) {
                     BoxAndWhiskerItem item = dataset.getItem(rowIdx, columnIdx);
+                    if (item.getQ1() == null) {
+                        continue;
+                    }
                     double q1 = item.getQ1().doubleValue();
                     double median = item.getMedian().doubleValue();
                     double q3 = item.getQ3().doubleValue();
