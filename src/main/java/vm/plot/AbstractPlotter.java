@@ -58,7 +58,7 @@ public abstract class AbstractPlotter {
 
     public static final Logger LOG = Logger.getLogger(AbstractPlotter.class.getName());
 
-    protected static final Integer FONT_SIZE_AXIS_LABEL = 28;
+    protected static final Integer FONT_SIZE_AXIS_LABEL = 42;
     protected static final Integer FONT_SIZE_AXIS_TICKS = FONT_SIZE_AXIS_LABEL;
     protected static final Integer FONT_SIZE_VALUES_LABELS = 20;
 
